@@ -479,7 +479,7 @@ def resource_create(context, data_dict):
                   uploader.get_max_resource_size())
 
     # Custom code starts
-
+    logging.warning("=============ckan_validation custom code================")
     if get_create_mode_from_config() == u'sync':
         is_local_upload = (
             hasattr(upload, 'filename') and

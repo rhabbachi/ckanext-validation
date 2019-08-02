@@ -1,8 +1,9 @@
 # encoding: utf-8
 import json
-
+import os
 from ckan.lib.helpers import url_for_static
 from ckantoolkit import url_for, _, config, asbool, literal
+import logging
 
 
 def get_validation_badge(resource, in_listing=False):
@@ -48,8 +49,10 @@ def validation_extract_report_from_errors(errors):
 
     report = None
     for error in errors.keys():
-        if error == 'validation':
-            report = errors[error][0]
+        if error.lower() == 'validation':
+            logging.warning("FLAG")
+            logging.warning(errors)
+            report = errors[error]
             # Remove full path from table source
             source = report['tables'][0]['source']
             report['tables'][0]['source'] = source.split('/')[-1]
@@ -89,3 +92,22 @@ def bootstrap_version():
         return '3'
     else:
         return '2'
+
+
+def show_validation_schemas():
+    """ Returns a list of validation schemas"""
+    schema_directory = config.get('ckanext.validation.schema_directory')
+    if schema_directory:
+        return _files_from_directory(schema_directory).keys()
+    else:
+        return []
+
+
+def _files_from_directory(path, extension='.json'):
+    listed_files = {}
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if extension in file:
+                name = file.split(".json")[0]
+                listed_files[name] = os.path.join(root, file)
+    return listed_files
