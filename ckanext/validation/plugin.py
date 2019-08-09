@@ -7,7 +7,8 @@ import os
 import ckan.plugins as p
 import ckantoolkit as t
 
-
+from custom_checks import ForeignKeyCheck
+from goodtables.registry import registry
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
 from ckanext.validation.logic import (
@@ -36,6 +37,8 @@ from ckanext.validation.utils import (
 
 
 log = logging.getLogger(__name__)
+
+registry.register_check(ForeignKeyCheck, 'foreign-key', 'custom', 'body', None)
 
 
 class ValidationPlugin(p.SingletonPlugin):

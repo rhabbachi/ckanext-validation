@@ -7,6 +7,7 @@ import json
 import re
 import os
 import requests
+import tabulator
 import math
 from sqlalchemy.orm.exc import NoResultFound
 from goodtables import validate
@@ -92,15 +93,13 @@ def run_validation_job(resource):
     file_format = resource.get(u'format', u'').lower()
     df = _load_dataframe(source, file_format)
     actual_headers = df.columns
-
     if schema.get("transpose"):
         transposed = _transpose_dataframe(df)
         source = _dump_dataframe(transposed, file_format)
     else:
-        source = _dump_dataframe(df, file_format)
+        source = _dump_dataframe(df, file_format, source)
 
     _format = resource[u'format'].lower()
-
     report = _validate_table(source, _format=_format, schema=schema, **options)
 
     # Hide uploaded files
@@ -155,8 +154,7 @@ def run_validation_job(resource):
 def _load_dataframe(data, extension):
     # Read in table
     if extension == "csv":
-        f = cStringIO.StringIO(data)
-        df = pandas.read_csv(f, header=None, index_col=None)
+        df = pandas.read_csv(data, header=None, index_col=None)
     elif extension in ["xls", "xlsx"]:
         df = pandas.read_excel(data, header=None, index_col=None)
     df.columns = df.iloc[0]
@@ -170,21 +168,22 @@ def _transpose_dataframe(df):
         transposed = df
     else:
         transposed = df.T
-        transposed = transposed.iloc[1:]
     return transposed
 
 
-def _dump_dataframe(df, extension):
+def _dump_dataframe(df, extension, filepath):
+    df = df.iloc[1:]
     # Write out table
-    out = cStringIO.StringIO()
     if extension == "csv":
+        # HACK - For some reason can't get cStringIO to work with CSV files.
+        # goodtables compalins that there is no object "readable"
+        out = filepath+".tmp"
         df.to_csv(out, columns=None, index=None)
-        out.seek(0)
-        return out.read()
     elif extension in ["xls", "xlsx"]:
+        out = cStringIO.StringIO()
         df.to_excel(out, columns=None, index=None)
         out.seek(0)
-        return out
+    return out
 
 
 def _validate_table(source, _format=u'csv', schema=None, **options):

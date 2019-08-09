@@ -26,6 +26,12 @@
       "values": {
         "form_snippet": "hidden.html"
       }
+    },
+    {
+      "preset_name": "foreign_keys",
+      "values": {
+        "form_snippet": "foreign_keys.html"
+      }
     }
   ]
 }
