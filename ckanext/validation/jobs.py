@@ -95,11 +95,12 @@ def run_validation_job(resource):
     actual_headers = df.columns
     if schema.get("transpose"):
         transposed = _transpose_dataframe(df)
-        source = _dump_dataframe(transposed, file_format)
+        source = _dump_dataframe(transposed, file_format, source)
     else:
         source = _dump_dataframe(df, file_format, source)
 
     _format = resource[u'format'].lower()
+    logging.warning(options)
     report = _validate_table(source, _format=_format, schema=schema, **options)
 
     # Hide uploaded files
@@ -112,22 +113,26 @@ def run_validation_job(resource):
     # If table was transposed for validation, reverse the transposition
     if schema.get("transpose"):
         report_string = json.dumps(report)
-        report_string = re.sub(r'(column)(-| )', r'x987asdwn23r\2', report_string)
+        report_string = re.sub(r'(column)(-| )', r'x987asdwn23l\2', report_string)
+        report_string = re.sub(r'(Column)(-| )', r'x987asdwn23u\2', report_string)
         report_string = re.sub(r'(row)(-| )', r'column\2', report_string)
-        report_string = re.sub(r'x987asdwn23r', 'row', report_string)
+        report_string = re.sub(r'(Row)(-| )', r'Column\2', report_string)
+        report_string = re.sub(r'x987asdwn23l', 'row', report_string)
+        report_string = re.sub(r'x987asdwn23u', 'Row', report_string)
         report = json.loads(report_string)
         report['tables'][0]['headers'] = list(actual_headers)
 
-        def get_row(x):
-            try:
-                x['row'] = list(df.iloc[x['row-number']-1].fillna(''))
-            except IndexError:
-                x['row'] = []
-            return x
-        report['tables'][0]['errors'] = list(map(
-            get_row,
-            report['tables'][0]['errors']
-        ))
+    # FIXME: Not clear on why I have to add the row back in to the report here
+    def get_row(x):
+        try:
+            x['row'] = list(df.iloc[x['row-number']-1].fillna(''))
+        except IndexError:
+            x['row'] = []
+        return x
+    report['tables'][0]['errors'] = list(map(
+        get_row,
+        report['tables'][0]['errors']
+    ))
 
     if report['table-count'] > 0:
         validation.status = u'success' if report[u'valid'] else u'failure'
@@ -154,9 +159,9 @@ def run_validation_job(resource):
 def _load_dataframe(data, extension):
     # Read in table
     if extension == "csv":
-        df = pandas.read_csv(data, header=None, index_col=None)
+        df = pandas.read_csv(open(data, 'rU'), header=None, index_col=None)
     elif extension in ["xls", "xlsx"]:
-        df = pandas.read_excel(data, header=None, index_col=None)
+        df = pandas.read_excel(open(data, 'rU'), header=None, index_col=None)
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
     return df
@@ -187,11 +192,13 @@ def _dump_dataframe(df, extension, filepath):
 
 
 def _validate_table(source, _format=u'csv', schema=None, **options):
-
-    report = validate(source, format=_format, schema=schema, **options)
-
+    report = validate(
+        source,
+        format=_format,
+        schema=schema,
+        **options
+    )
     log.debug(u'Validating source: {}'.format(source))
-
     return report
 
 

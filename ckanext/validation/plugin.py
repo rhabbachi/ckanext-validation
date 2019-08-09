@@ -38,7 +38,9 @@ from ckanext.validation.utils import (
 
 log = logging.getLogger(__name__)
 
-registry.register_check(ForeignKeyCheck, 'foreign-key', 'custom', 'body', None)
+# Register custom checks here.
+# Not used the check decorator because wanted code to be kept in a seperate module.
+registry.register_check(ForeignKeyCheck, 'foreign-key', None, None, None)
 
 
 class ValidationPlugin(p.SingletonPlugin):

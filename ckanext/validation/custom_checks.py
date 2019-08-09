@@ -1,17 +1,24 @@
 # encoding: utf-8
-from goodtables import check, Error
+from goodtables import Error, spec
 import logging
 import ckantoolkit as t
+
+spec['errors']['foreign-key'] = {
+    "name": "Foreign Key Error",
+    "type": "schema",
+    "context": "body",
+    "weight": 7,
+    "message": 'Foreign Key Error: Value in column {column_number} and row {row_number} not a valid value',
+    "description": "This value must be exactly one of the values from the foreign reference."
+}
 
 
 class ForeignKeyCheck(object):
 
     def __init__(self, **options):
-        logging.warning("INITIALISING FOREIGN KEY CHECK")
         self.__foreign_fields_cache = None
 
     def check_row(self, cells):
-        logging.warning("CHECKING ROW")
         # Prepare cache
         if self.__foreign_fields_cache is None:
             self.__foreign_fields_cache = \
@@ -21,19 +28,13 @@ class ForeignKeyCheck(object):
         errors = []
         for cell in cells:
             if cell['field'].descriptor.get('foreignKey'):
-                logging.warning("Cell has foreign key")
                 valid_values = self.__foreign_fields_cache[cell['header']]
                 if cell['value'] not in valid_values:
-                    message = (
-                        'Foreign Key Error: Value in column {column_number} ' +
-                        'and row {row_number} not a valid value'
-                    )
-                    error = Error(
-                        'custom-error',
+                    errors.append(Error(
+                        'foreign-key',
                         cell,
-                        message=message
-                    )
-                    errors.append(error)
+                        row_number=cell['row-number']
+                    ))
         return errors
 
     @staticmethod
@@ -56,7 +57,22 @@ class ForeignKeyCheck(object):
             'resource_id': resource_id,
             'fields': [field]
         }
-        result = t.get_action('datastore_search')(None, data_dict)
-        logging.warning(result)
-        logging.warning(result.records)
-        return ['id1', 'id2', 'id3']
+        register_translator()
+        result = t.get_action('datastore_search')(
+            # FIXME: Should we really ignore the auth here?
+            {'ignore_auth': True},
+            data_dict
+        )
+        valid_values = [x[field] for x in result.get('records', [])]
+        logging.warning(valid_values)
+        return valid_values
+
+
+def register_translator():
+    # Workaround until core translation function defaults to Flask
+    from paste.registry import Registry
+    from ckan.lib.cli import MockTranslator
+    registry = Registry()
+    registry.prepare()
+    from pylons import translator
+    registry.register(translator, MockTranslator())
