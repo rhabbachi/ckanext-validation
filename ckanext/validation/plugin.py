@@ -6,7 +6,7 @@ import json
 import os
 import ckan.plugins as p
 import ckantoolkit as t
-
+from ckan.common import config
 from custom_checks import ForeignKeyCheck
 from goodtables.registry import registry
 from ckanext.validation import settings
@@ -24,7 +24,8 @@ from ckanext.validation.helpers import (
     validation_extract_report_from_errors,
     dump_json_value,
     bootstrap_version,
-    show_validation_schemas
+    show_validation_schemas,
+    validation_get_foreign_keys
 )
 from ckanext.validation.validators import (
     resource_schema_validator,
@@ -117,18 +118,18 @@ to create the database tables:
             u'resource_validation_run': auth_resource_validation_run,
             u'resource_validation_show': auth_resource_validation_show,
             u'resource_validation_delete': auth_resource_validation_delete,
-            u'resource_validation_run_batch': auth_resource_validation_run_batch,
+            u'resource_validation_run_batch': auth_resource_validation_run_batch
         }
 
     # ITemplateHelpers
-
     def get_helpers(self):
         return {
             u'get_validation_badge': get_validation_badge,
             u'validation_extract_report_from_errors': validation_extract_report_from_errors,
             u'dump_json_value': dump_json_value,
             u'bootstrap_version': bootstrap_version,
-            u'validator_show_validation_schemas': show_validation_schemas
+            u'validator_show_validation_schemas': show_validation_schemas,
+            u'validation_get_foreign_keys': validation_get_foreign_keys
         }
 
     # IResourceController

@@ -8,8 +8,8 @@ spec['errors']['foreign-key'] = {
     "type": "schema",
     "context": "body",
     "weight": 7,
-    "message": 'Foreign Key Error: Value in column {column_number} and row {row_number} not a valid value',
-    "description": "This value must be exactly one of the values from the foreign reference."
+    "message": 'Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}',
+    "description": "Values in this field must be taken from the foreign key field in the referenced data table."
 }
 
 
@@ -28,12 +28,18 @@ class ForeignKeyCheck(object):
         errors = []
         for cell in cells:
             if cell['field'].descriptor.get('foreignKey'):
-                valid_values = self.__foreign_fields_cache[cell['header']]
+                valid_values = self.__foreign_fields_cache[cell['header']]['values']
+                resource_id = self.__foreign_fields_cache[cell['header']]['resource_id']
+                resource_url = self.__foreign_fields_cache[cell['header']]['resource_url']
                 if cell['value'] not in valid_values:
                     errors.append(Error(
                         'foreign-key',
                         cell,
-                        row_number=cell['row-number']
+                        row_number=cell['row-number'],
+                        message_substitutions={
+                            'resource_id': resource_id,
+                            'resource_url': resource_url
+                        }
                     ))
         return errors
 
@@ -45,14 +51,33 @@ class ForeignKeyCheck(object):
             if field is not None:
                 foreign_key = field.descriptor.get('foreignKey')
                 if foreign_key:
-                    values = ForeignKeyCheck._get_valid_values(foreign_key)
+                    res_id, field = tuple(foreign_key.split(':')[0:2])
+                    values = ForeignKeyCheck._get_valid_values(
+                        res_id,
+                        field
+                    )
                     header = cell['header']
-                    cache[header] = values
+                    res_url = ForeignKeyCheck._get_resource_url(res_id)
+                    cache[header] = {
+                        'values': values,
+                        'resource_id': res_id,
+                        'resource_url': res_url
+                    }
         return cache
 
     @staticmethod
-    def _get_valid_values(foreign_key):
-        resource_id, field = tuple(foreign_key.split(':')[0:2])
+    def _get_resource_url(resource_id):
+        # Ideally include a link to the referenced dataset in error report
+        # TODO: Not quite figured out how to do this yet
+        resource = t.get_action('resource_show')(
+            # FIXME: Should we really ignore the auth here?
+            {'ignore_auth': True},
+            {'id': resource_id}
+        )
+        return resource.get('url', '')
+
+    @staticmethod
+    def _get_valid_values(resource_id, field):
         data_dict = {
             'resource_id': resource_id,
             'fields': [field]
@@ -64,7 +89,6 @@ class ForeignKeyCheck(object):
             data_dict
         )
         valid_values = [x[field] for x in result.get('records', [])]
-        logging.warning(valid_values)
         return valid_values
 
 

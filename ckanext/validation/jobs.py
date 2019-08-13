@@ -5,16 +5,13 @@ import logging
 import datetime
 import json
 import re
-import os
 import requests
-import tabulator
-import math
 from sqlalchemy.orm.exc import NoResultFound
 from goodtables import validate
 from ckan.model import Session
 import ckan.lib.uploader as uploader
-from schemed_table import SchemedTable
 import ckantoolkit as t
+from helpers import validation_load_json_schema
 
 from ckanext.validation.model import Validation
 
@@ -78,17 +75,14 @@ def run_validation_job(resource):
     if not source:
         source = resource[u'url']
 
+    # Load the the schema as a dictionary
     schema = resource.get(u'schema')
     if schema and isinstance(schema, basestring):
-        if schema.startswith('http'):
-            r = requests.get(schema)
-            schema = r.json()
-        elif schema[0].strip() not in ['{', '[']:  # If not a valid json string
-            schema_directory = t.config['ckanext.validation.schema_directory']
-            file_path = schema_directory + '/' + schema.strip() + '.json'
-            schema = load_schema_from_path(file_path).schema
-        else:
-            schema = json.loads(schema)
+        schema = validation_load_json_schema(schema)
+
+    # Foreign keys requires using resource metadata in validation step
+    # We insert the metadata into schema here
+    _prep_foreign_keys(schema, resource)
 
     file_format = resource.get(u'format', u'').lower()
     df = _load_dataframe(source, file_format)
@@ -100,9 +94,9 @@ def run_validation_job(resource):
         source = _dump_dataframe(df, file_format, source)
 
     _format = resource[u'format'].lower()
-    logging.warning(options)
-    report = _validate_table(source, _format=_format, schema=schema, **options)
 
+    report = _validate_table(source, _format=_format, schema=schema, **options)
+    logging.warning(report)
     # Hide uploaded files
     for table in report.get('tables', []):
         if table['source'].startswith('/'):
@@ -210,16 +204,15 @@ def _get_site_user_api_key():
     return site_user['apikey']
 
 
-def load_schema_from_path(path):
-    """
-    Given an absolute file path (beginning with /) load a json schema object
-    in that file.
-    """
-    if os.path.exists(path):
-        try:
-            return SchemedTable(path)
-        except Exception:
-            log.error("Error reading schema " + path)
-            raise
-    else:
-        raise IOError(path + " file not found")
+def _prep_foreign_keys(schema, resource):
+    # Fields in resource of form "foreign-key-<field>" store foreign references
+    # Insert these into the schema
+    foreign_keys = {}
+    for k, v in resource.iteritems():
+        if k.startswith('foreign-key-'):
+            field_name = k.split('foreign-key-')[1]
+            foreign_keys[field_name] = v + ":" + field_name
+
+    for field in schema['fields']:
+        if field['name'] in foreign_keys.keys():
+            field['foreignKey'] = foreign_keys[field['name']]
