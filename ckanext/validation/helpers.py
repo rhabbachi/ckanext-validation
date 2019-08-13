@@ -1,8 +1,14 @@
 # encoding: utf-8
 import json
-
+import os
 from ckan.lib.helpers import url_for_static
-from ckantoolkit import url_for, _, config, asbool, literal
+from ckantoolkit import url_for, _, config, asbool, literal, get_action
+from ckanext.scheming.helpers import scheming_get_dataset_schema
+from schemed_table import SchemedTable
+import logging
+import requests
+
+log = logging.getLogger(__name__)
 
 
 def get_validation_badge(resource, in_listing=False):
@@ -48,8 +54,8 @@ def validation_extract_report_from_errors(errors):
 
     report = None
     for error in errors.keys():
-        if error == 'validation':
-            report = errors[error][0]
+        if error.lower() == 'validation':
+            report = errors[error]
             # Remove full path from table source
             source = report['tables'][0]['source']
             report['tables'][0]['source'] = source.split('/')[-1]
@@ -89,3 +95,84 @@ def bootstrap_version():
         return '3'
     else:
         return '2'
+
+
+def validation_get_schema(dataset_type, resource_type):
+    schema = scheming_get_dataset_schema(dataset_type)
+    for resource in schema.get('resources', []):
+        if resource.get("resource_type", "") == resource_type:
+            for field in resource.get('resource_fields', []):
+                if field['field_name'] == "schema":
+                    return validation_load_json_schema(field['field_value'])
+
+
+def validation_load_json_schema(schema):
+    if schema.startswith('http'):
+        r = requests.get(schema)
+        return r.json()
+    elif schema[0].strip() not in ['{', '[']:  # If not a valid json string
+        schema_directory = config['ckanext.validation.schema_directory']
+        file_path = schema_directory + '/' + schema.strip() + '.json'
+        return validation_load_schemed_table(file_path).schema
+    else:
+        return json.loads(schema)
+
+
+def validation_get_foreign_keys(dataset_type, resource_type):
+    schema = validation_get_schema(dataset_type, resource_type)
+    foreign_keys = schema.get('foreignKeys', [])
+    foreign_key_options = {}
+    for key in foreign_keys:
+        field = filter(lambda x: x['name'] == key['fields'], schema['fields'])[0]
+        ref_resource_type = key['reference']['resource']
+        ref_resource_field = key['reference']['fields']
+        ref_options = []
+        # Could use the resource_search action to autofill options.
+        # But resource search only reveals public resources
+        # May want to reveal resources that are available inside orgs.
+        # results = get_action('resource_search')(
+        #     None,
+        #     {'query': 'schema:geographic_facilities'}
+        # )['results']
+        # log.warning(results)
+        foreign_key_options[key['fields']] = {
+            'field_name': key['fields'],
+            'field_title': field['title'],
+            'options': ref_options
+        }
+    log.warning(foreign_key_options)
+    return foreign_key_options
+
+
+def validation_load_schemed_table(filepath):
+    """
+    Given an absolute file path (beginning with /) load a json schema object
+    in that file.
+    """
+    if os.path.exists(filepath):
+        try:
+            return SchemedTable(filepath)
+        except Exception:
+            log.error("Error reading schema " + filepath)
+            raise
+    else:
+        raise IOError(filepath + " file not found")
+
+
+def show_validation_schemas():
+    """ Returns a list of validation schemas"""
+    schema_directory = config.get('ckanext.validation.schema_directory')
+    if schema_directory:
+        return _files_from_directory(schema_directory).keys()
+    else:
+        return []
+
+
+def _files_from_directory(path, extension='.json'):
+    listed_files = {}
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if extension in file:
+                name = file.split(".json")[0]
+                listed_files[name] = os.path.join(root, file)
+    return listed_files

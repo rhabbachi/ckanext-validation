@@ -3,10 +3,12 @@
 import logging
 import cgi
 import json
-
+import os
 import ckan.plugins as p
 import ckantoolkit as t
-
+from ckan.common import config
+from custom_checks import ForeignKeyCheck
+from goodtables.registry import registry
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
 from ckanext.validation.logic import (
@@ -22,6 +24,8 @@ from ckanext.validation.helpers import (
     validation_extract_report_from_errors,
     dump_json_value,
     bootstrap_version,
+    show_validation_schemas,
+    validation_get_foreign_keys
 )
 from ckanext.validation.validators import (
     resource_schema_validator,
@@ -35,8 +39,13 @@ from ckanext.validation.utils import (
 
 log = logging.getLogger(__name__)
 
+# Register custom checks here.
+# Not used the check decorator because wanted code to be kept in a seperate module.
+registry.register_check(ForeignKeyCheck, 'foreign-key', None, None, None)
+
 
 class ValidationPlugin(p.SingletonPlugin):
+    p.implements(p.IConfigurable)
     p.implements(p.IConfigurer)
     p.implements(p.IActions)
     p.implements(p.IRoutes, inherit=True)
@@ -46,8 +55,18 @@ class ValidationPlugin(p.SingletonPlugin):
     p.implements(p.ITemplateHelpers)
     p.implements(p.IValidators)
 
-    # IConfigurer
+    # IConfigurable
+    def configure(self, config):
 
+        # Check that if schema_directory given, it exists.
+        schema_directory = config.get('ckanext.validation.schema_directory')
+        if schema_directory:
+            if not os.path.isdir(schema_directory):
+                raise ValueError(
+                    'ckanext.validator.schema_directory not a valid path'
+                )
+
+    # IConfigurer
     def update_config(self, config_):
         if not tables_exist():
             log.critical(u'''
@@ -99,17 +118,18 @@ to create the database tables:
             u'resource_validation_run': auth_resource_validation_run,
             u'resource_validation_show': auth_resource_validation_show,
             u'resource_validation_delete': auth_resource_validation_delete,
-            u'resource_validation_run_batch': auth_resource_validation_run_batch,
+            u'resource_validation_run_batch': auth_resource_validation_run_batch
         }
 
     # ITemplateHelpers
-
     def get_helpers(self):
         return {
             u'get_validation_badge': get_validation_badge,
             u'validation_extract_report_from_errors': validation_extract_report_from_errors,
             u'dump_json_value': dump_json_value,
             u'bootstrap_version': bootstrap_version,
+            u'validator_show_validation_schemas': show_validation_schemas,
+            u'validation_get_foreign_keys': validation_get_foreign_keys
         }
 
     # IResourceController
