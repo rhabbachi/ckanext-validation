@@ -50,7 +50,9 @@ def run_validation_job(resource):
         options.update(resource_options)
 
     dataset = t.get_action('package_show')(
-        {'ignore_auth': True}, {'id': resource['package_id']})
+        {'ignore_auth': True},
+        {'id': resource['package_id']}
+    )
 
     source = None
     if resource.get(u'url_type') == u'upload':
@@ -80,23 +82,24 @@ def run_validation_job(resource):
     if schema and isinstance(schema, basestring):
         schema = validation_load_json_schema(schema)
 
+    # Load the data as a dataframe
+    _format = resource.get(u'format', u'').lower()
+    original_df = _load_dataframe(source, _format)
+    actual_headers = original_df.columns
+
+    # Some of the tables (lists of indicators) are transposed for readability
+    altered_df = original_df.copy()
+    if schema.get("transpose"):
+        altered_df = _transpose_dataframe(original_df)
+
     # Foreign keys requires using resource metadata in validation step
     # We insert the metadata into schema here
-    _prep_foreign_keys(schema, resource)
+    _prep_foreign_keys(dataset, schema, resource, altered_df)
 
-    file_format = resource.get(u'format', u'').lower()
-    df = _load_dataframe(source, file_format)
-    actual_headers = df.columns
-    if schema.get("transpose"):
-        transposed = _transpose_dataframe(df)
-        source = _dump_dataframe(transposed, file_format, source)
-    else:
-        source = _dump_dataframe(df, file_format, source)
-
-    _format = resource[u'format'].lower()
-
+    # Having extracted/altered data, we write back to disk for validation.
+    source = _dump_dataframe(altered_df, _format, source)
     report = _validate_table(source, _format=_format, schema=schema, **options)
-    logging.warning(report)
+
     # Hide uploaded files
     for table in report.get('tables', []):
         if table['source'].startswith('/'):
@@ -119,10 +122,12 @@ def run_validation_job(resource):
     # FIXME: Not clear on why I have to add the row back in to the report here
     def get_row(x):
         try:
-            x['row'] = list(df.iloc[x['row-number']-1].fillna(''))
-        except IndexError:
-            x['row'] = []
+            x['row'] = list(original_df.iloc[x['row-number']-1].fillna(''))
+        except (IndexError, KeyError):
+            x['row'] = list(original_df.iloc[0].fillna(''))
+            x['row-number'] = 1
         return x
+
     report['tables'][0]['errors'] = list(map(
         get_row,
         report['tables'][0]['errors']
@@ -204,15 +209,32 @@ def _get_site_user_api_key():
     return site_user['apikey']
 
 
-def _prep_foreign_keys(schema, resource):
-    # Fields in resource of form "foreign-key-<field>" store foreign references
-    # Insert these into the schema
-    foreign_keys = {}
-    for k, v in resource.iteritems():
-        if k.startswith('foreign-key-'):
-            field_name = k.split('foreign-key-')[1]
-            foreign_keys[field_name] = v + ":" + field_name
+def _prep_foreign_keys(package, table_schema, resource, df):
 
-    for field in schema['fields']:
+    foreign_keys = {}
+
+    for key in table_schema['foreignKeys']:
+
+        resources = {v['schema']: v for v in package['resources']}
+        field = key['fields']
+        reference = key['reference']['resource']
+        form_field = 'foreign-key-' + field,
+
+        # An empty reference indicates another field in the same table
+        # Far easier to get valid values from the table and insert here.
+        if reference == "":
+            foreign_keys[field] = list(df[key['reference']['fields']][1:])
+        # Fields in resource of form "foreign-key-<field>" store references
+        # Insert these user-specified references into the schema
+        elif form_field in resource.keys():
+            foreign_keys[field] = resource[form_field] + ":" + field
+        # If no reference in form, check if reference is in same package
+        elif reference in resources.keys():
+            foreign_keys[field] = resources[reference]['id'] + ":" + field
+        # Default to some unique value identifying a reference not found error.
+        else:
+            foreign_keys[field] = "NOTFOUND:" + field
+
+    for field in table_schema['fields']:
         if field['name'] in foreign_keys.keys():
             field['foreignKey'] = foreign_keys[field['name']]

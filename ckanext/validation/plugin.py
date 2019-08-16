@@ -63,7 +63,7 @@ class ValidationPlugin(p.SingletonPlugin):
         if schema_directory:
             if not os.path.isdir(schema_directory):
                 raise ValueError(
-                    'ckanext.validator.schema_directory not a valid path'
+                    'ckanext.validation.schema_directory not a valid path'
                 )
 
     # IConfigurer
