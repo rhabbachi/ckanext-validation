@@ -213,9 +213,9 @@ def _prep_foreign_keys(package, table_schema, resource, df):
 
     foreign_keys = {}
 
-    for key in table_schema['foreignKeys']:
+    for key in table_schema.get('foreignKeys', {}):
 
-        resources = {v['schema']: v for v in package['resources']}
+        resources = {v.get('schema', None): v for v in package['resources']}
         field = key['fields']
         reference = key['reference']['resource']
         form_field = 'foreign-key-' + field,
@@ -235,6 +235,7 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         else:
             foreign_keys[field] = "NOTFOUND:" + field
 
-    for field in table_schema['fields']:
-        if field['name'] in foreign_keys.keys():
-            field['foreignKey'] = foreign_keys[field['name']]
+    if foreign_keys:
+        for field in table_schema['fields']:
+            if field['name'] in foreign_keys.keys():
+                field['foreignKey'] = foreign_keys[field['name']]

@@ -62,6 +62,7 @@ class ForeignKeyCheck(object):
     @staticmethod
     def _create_foreign_fields_cache(cells):
         cache = {}
+
         for column_number, cell in enumerate(cells, start=1):
 
             default_field = namedtuple('field', 'descriptor')
