@@ -11,7 +11,10 @@ from goodtables import validate
 from ckan.model import Session
 import ckan.lib.uploader as uploader
 import ckantoolkit as t
+import shapefile
+import zipfile
 from helpers import validation_load_json_schema
+import ckan.lib.base as base
 
 from ckanext.validation.model import Validation
 
@@ -161,6 +164,11 @@ def _load_dataframe(data, extension):
         df = pandas.read_csv(open(data, 'rU'), header=None, index_col=None)
     elif extension in ["xls", "xlsx"]:
         df = pandas.read_excel(open(data, 'rU'), header=None, index_col=None)
+    elif extension in ["shp"]:
+        df = _read_shapefile(data)
+        logging.warning(df)
+    elif extension in ['geojson']:
+        pass
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
     return df
@@ -207,6 +215,33 @@ def _get_site_user_api_key():
     site_user = t.get_action('get_site_user')(
         {'ignore_auth': True}, {'id': site_user_name})
     return site_user['apikey']
+
+
+def _read_shapefile(shp_path):
+    """
+    Read a shapefile into a Pandas dataframe with a 'coords' column holding
+    the geometry information. This uses the pyshp package.
+    """
+    zipped_file = zipfile.PyZipFile(shp_path)
+    files = zipped_file.namelist()
+    shp_files = filter(lambda v: '.shp' in v, files)
+
+    if len(shp_files) > 1:
+        base.abort(400, 'Can only accept one shp file per zipped archive')
+
+    myshp = zipped_file.open(shp_files[0])
+    mydbf = zipped_file.open(shp_files[0][:-4]+'.dbf')
+    myshx = zipped_file.open(shp_files[0][:-4]+'.shx')
+
+    try:
+        sf = shapefile.Reader(shp=myshp, dbf=mydbf, shx=myshx)
+        fields = [x[0] for x in sf.fields][1:]
+        records = sf.records()
+        logging.warning(records)
+        return pandas.DataFrame(columns=fields, data=records)
+    except shapefile.ShapefileException as e:
+        log.error(e)
+        base.abort(500, 'Not a valid shp file')
 
 
 def _prep_foreign_keys(package, table_schema, resource, df):
