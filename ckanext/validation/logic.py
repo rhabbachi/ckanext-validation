@@ -480,7 +480,7 @@ def resource_create(context, data_dict):
 
     # Custom code starts
     logging.warning("=============ckan_validation custom code================")
-    if get_create_mode_from_config() == u'sync':
+    if get_create_mode_from_config() == u'sync' and "schema" in data_dict:
         is_local_upload = (
             hasattr(upload, 'filename') and
             upload.filename is not None and
@@ -588,7 +588,7 @@ def resource_update(context, data_dict):
 
     # Custom code starts
 
-    if get_update_mode_from_config() == u'sync':
+    if get_update_mode_from_config() == u'sync' and "schema" in data_dict:
         is_local_upload = (
             hasattr(upload, 'filename') and
             upload.filename is not None and
