@@ -218,22 +218,23 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         resources = {v.get('schema', None): v for v in package['resources']}
         field = key['fields']
         reference = key['reference']['resource']
+        reference_field = key['reference']['fields']
         form_field = 'foreign-key-' + field,
 
         # An empty reference indicates another field in the same table
         # Far easier to get valid values from the table and insert here.
         if reference == "":
-            foreign_keys[field] = list(df[key['reference']['fields']][1:])
+            foreign_keys[field] = list(df[reference_field][1:])
         # Fields in resource of form "foreign-key-<field>" store references
         # Insert these user-specified references into the schema
         elif form_field in resource.keys():
-            foreign_keys[field] = resource[form_field] + ":" + field
+            foreign_keys[field] = resource[form_field] + ":" + reference_field
         # If no reference in form, check if reference is in same package
         elif reference in resources.keys():
-            foreign_keys[field] = resources[reference]['id'] + ":" + field
+            foreign_keys[field] = resources[reference]['id'] + ":" + reference_field
         # Default to some unique value identifying a reference not found error.
         else:
-            foreign_keys[field] = "NOTFOUND:" + field
+            foreign_keys[field] = "NOTFOUND:" + reference_field
 
     if foreign_keys:
         for field in table_schema['fields']:
