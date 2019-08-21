@@ -51,15 +51,10 @@ def get_validation_badge(resource, in_listing=False):
 
 
 def validation_extract_report_from_errors(errors):
-    logging.warning('==VALIDATION_EXTRACT_REPORT_FROM_ERRORS==')
-    logging.warning(errors)
-    logging.warning('=========================================')
+
     report = None
     for error in errors.keys():
         if error.lower() == 'validation':
-            logging.warning(error)
-            logging.warning(errors[error])
-            logging.warning('=========================================')
             report = errors[error]
             # Remove full path from table source
             source = report['tables'][0]['source']
@@ -74,8 +69,6 @@ click the button below to replace the file.''')
                 'data-module-div="validation-report-dialog"',
             ]
             new_error = literal(msg.format(params=' '.join(params)))
-            logging.warning(new_error)
-            logging.warning('=========================================')
             errors[error] = [new_error]
             break
 

@@ -1,14 +1,6 @@
 {% ckan_extends %}
-
-ERRORS FROM BACKEND
-{{errors}}
 {% set validation_report, errors = h.validation_extract_report_from_errors(errors) %}
-
 {% block errors_list %}
-  VALIDATION REPORT
-  {{validation_report}}
-  EXTRACTED ERRORS
-  {{errors}}
   {{ super() }}
   {% if validation_report %}
     {% if h.bootstrap_version() == '3' %}
