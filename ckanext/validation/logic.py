@@ -653,5 +653,9 @@ def _run_sync_validation(resource_id, local_upload=False, new_resource=True):
                 {u'id': resource_id}
             )
 
+        logging.warning('======RAISE VALIDATION ERROR=====')
+        logging.warning(report)
+        logging.warning('=================================')
+
         raise t.ValidationError({
             u'validation': [report]})
