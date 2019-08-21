@@ -99,9 +99,10 @@ def run_validation_job(resource):
     # We insert the metadata into schema here
     _prep_foreign_keys(dataset, schema, resource, altered_df)
 
-    # Having extracted/altered data, we write back to disk for validation.
-    source = _dump_dataframe(altered_df, _format, source)
-    report = _validate_table(source, _format=_format, schema=schema, **options)
+    # Having extracted/altered data, we wrap up as an excel StringIO.
+    # This keeps dataframe in memory, rather than having to write back to disk.
+    source = _excel_string_io_wrapper(altered_df)
+    report = _validate_table(source, _format='xlsx', schema=schema, **options)
 
     # Hide uploaded files
     for table in report.get('tables', []):
@@ -166,7 +167,6 @@ def _load_dataframe(data, extension):
         df = pandas.read_excel(open(data, 'rU'), header=None, index_col=None)
     elif extension in ["shp"]:
         df = _read_shapefile(data)
-        logging.warning(df)
     elif extension in ['geojson']:
         pass
     df.columns = df.iloc[0]
@@ -183,18 +183,11 @@ def _transpose_dataframe(df):
     return transposed
 
 
-def _dump_dataframe(df, extension, filepath):
-    df = df.iloc[1:]
-    # Write out table
-    if extension == "csv":
-        # HACK - For some reason can't get cStringIO to work with CSV files.
-        # goodtables compalins that there is no object "readable"
-        out = filepath+".tmp"
-        df.to_csv(out, columns=None, index=None)
-    elif extension in ["xls", "xlsx"]:
-        out = cStringIO.StringIO()
-        df.to_excel(out, columns=None, index=None)
-        out.seek(0)
+def _excel_string_io_wrapper(df):
+    df = df.iloc[1:]  # Remove headers
+    out = cStringIO.StringIO()
+    df.to_excel(out, columns=None, index=None)
+    out.seek(0)
     return out
 
 
@@ -236,9 +229,8 @@ def _read_shapefile(shp_path):
     try:
         sf = shapefile.Reader(shp=myshp, dbf=mydbf, shx=myshx)
         fields = [x[0] for x in sf.fields][1:]
-        records = sf.records()
-        logging.warning(records)
-        return pandas.DataFrame(columns=fields, data=records)
+        records = [fields] + sf.records()
+        return pandas.DataFrame(data=records)
     except shapefile.ShapefileException as e:
         log.error(e)
         base.abort(500, 'Not a valid shp file')
