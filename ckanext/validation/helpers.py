@@ -69,7 +69,7 @@ click the button below to replace the file.''')
                 'data-module-div="validation-report-dialog"',
             ]
             new_error = literal(msg.format(params=' '.join(params)))
-            errors[error] = [new_error]
+            errors[error] = new_error
             break
 
     return report, errors
