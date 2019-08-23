@@ -2,6 +2,7 @@
 from goodtables import Error, spec
 import ckantoolkit as t
 from collections import namedtuple
+import logging
 
 spec['errors']['foreign-key'] = {
     "name": "Foreign Key Error",
@@ -17,12 +18,14 @@ class ForeignKeyCheck(object):
 
     def __init__(self, **options):
         self.__foreign_fields_cache = None
+        self._missing_ref = {}
 
     def check_row(self, cells):
         # Prepare cache
         if self.__foreign_fields_cache is None:
             self.__foreign_fields_cache = \
                 ForeignKeyCheck._create_foreign_fields_cache(cells)
+            logging.warning(self.__foreign_fields_cache)
 
         # Step through the cells and check values are valid
         errors = []
@@ -37,16 +40,20 @@ class ForeignKeyCheck(object):
                 resource_id = self.__foreign_fields_cache[cell['header']]['resource_id']
                 resource_url = self.__foreign_fields_cache[cell['header']]['resource_url']
 
-                if not valid_values and cell['row-number'] == 1:
+                # Check if ref resource missing, so we only return one error
+                missing = self._missing_ref.get(field.descriptor.get('name'))
+
+                if not valid_values and cell['row-number'] <= 2:
                     errors.append(Error(
                         'foreign-key',
                         cell,
                         row_number=cell['row-number'],
-                        message="No foreign-key reference values found.  Have you uploaded/selected a valid resource?"
+                        message=("No foreign-key reference found. "
+                                 "Does the referenced resource exist?")
                     ))
+                    self._missing_ref[field.descriptor.get('name')] = True
 
-                elif cell['value'] not in valid_values:
-
+                elif cell['value'] not in valid_values and not missing:
                     errors.append(Error(
                         'foreign-key',
                         cell,
@@ -62,7 +69,7 @@ class ForeignKeyCheck(object):
     @staticmethod
     def _create_foreign_fields_cache(cells):
         cache = {}
-
+        logging.warning("creating cache")
         for column_number, cell in enumerate(cells, start=1):
 
             default_field = namedtuple('field', 'descriptor')
@@ -71,23 +78,28 @@ class ForeignKeyCheck(object):
 
             if foreign_key:
 
+                # Default to empty values if resource not found/specfied
+                res_id = ""
+                res_url = ""
+                values = []
+
                 # If field is a string, then it is a resource reference
                 if isinstance(foreign_key, basestring):
-                    res_id, field = tuple(foreign_key.split(':')[0:2])
-                    res_url = ForeignKeyCheck._get_resource_url(res_id)
-                    values = ForeignKeyCheck._get_valid_values(
-                        res_id,
-                        field
-                    )
+                    try:
+                        res_id, field = tuple(foreign_key.split(':')[0:2])
+                        res_url = ForeignKeyCheck._get_resource_url(res_id)
+                        values = ForeignKeyCheck._get_valid_values(
+                            res_id,
+                            field
+                        )
+                    except t.ObjectNotFound:
+                        pass
+                        
                 # If field is a list, then the valid values already determined
                 elif type(foreign_key) is list:
                     res_id = ""
                     res_url = ""
                     values = foreign_key
-                else:
-                    res_id = ""
-                    res_url = ""
-                    values = []
 
                 cache[cell['header']] = {
                     'values': values,

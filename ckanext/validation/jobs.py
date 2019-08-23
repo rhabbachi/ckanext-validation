@@ -263,6 +263,8 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         else:
             foreign_keys[field] = "NOTFOUND:" + reference_field
 
+    logging.warning(foreign_keys)
+
     if foreign_keys:
         for field in table_schema['fields']:
             if field['name'] in foreign_keys.keys():
