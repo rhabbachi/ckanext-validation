@@ -168,7 +168,7 @@ def _load_dataframe(data, extension):
     elif extension in ["shp"]:
         df = _read_shapefile(data)
     elif extension in ['geojson']:
-        pass
+        base.abort(400, 'Can\'t validate GeoJSON yet.  Please upload a shp file.')
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
     return df
@@ -248,19 +248,22 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         reference_field = key['reference']['fields']
         form_field = 'foreign-key-' + field,
 
-        # An empty reference indicates another field in the same table
-        # Far easier to get valid values from the table and insert here.
-        if reference == "":
-            foreign_keys[field] = list(df[reference_field].iloc[1:])
-        # Fields in resource of form "foreign-key-<field>" store references
-        # Insert these user-specified references into the schema
-        elif form_field in resource.keys():
-            foreign_keys[field] = resource[form_field] + ":" + reference_field
-        # If no reference in form, check if reference is in same package
-        elif reference in resources.keys():
-            foreign_keys[field] = resources[reference]['id'] + ":" + reference_field
-        # Default to some unique value identifying a reference not found error.
-        else:
+        try:
+            # An empty reference indicates another field in the same table
+            # Far easier to get valid values from the table and insert here.
+            if reference == "":
+                foreign_keys[field] = list(df[reference_field].iloc[1:])
+            # Fields in resource of form "foreign-key-<field>" store references
+            # Insert these user-specified references into the schema
+            elif form_field in resource.keys():
+                foreign_keys[field] = resource[form_field] + ":" + reference_field
+            # If no reference in form, check if reference is in same package
+            elif reference in resources.keys():
+                foreign_keys[field] = resources[reference]['id'] + ":" + reference_field
+            # Default to some unique value identifying a reference not found error.
+            else:
+                foreign_keys[field] = "NOTFOUND:" + reference_field
+        except Exception:
             foreign_keys[field] = "NOTFOUND:" + reference_field
 
     if foreign_keys:

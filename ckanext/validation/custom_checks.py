@@ -53,7 +53,7 @@ class ForeignKeyCheck(object):
                     ))
                     self._missing_ref[field.descriptor.get('name')] = True
 
-                elif cell['value'] not in valid_values and not missing:
+                elif str(cell['value']) not in valid_values and not missing:
                     errors.append(Error(
                         'foreign-key',
                         cell,
@@ -69,7 +69,6 @@ class ForeignKeyCheck(object):
     @staticmethod
     def _create_foreign_fields_cache(cells):
         cache = {}
-        logging.warning("creating cache")
         for column_number, cell in enumerate(cells, start=1):
 
             default_field = namedtuple('field', 'descriptor')
@@ -94,7 +93,7 @@ class ForeignKeyCheck(object):
                         )
                     except t.ObjectNotFound:
                         pass
-                        
+
                 # If field is a list, then the valid values already determined
                 elif type(foreign_key) is list:
                     res_id = ""
@@ -125,7 +124,7 @@ class ForeignKeyCheck(object):
         data_dict = {
             'resource_id': resource_id,
             'fields': [field],
-            'limit': 1000
+            'limit': 3000
         }
         register_translator()
         result = t.get_action('datastore_search')(
@@ -133,7 +132,7 @@ class ForeignKeyCheck(object):
             {'ignore_auth': True},
             data_dict
         )
-        valid_values = [x[field] for x in result.get('records', [])]
+        valid_values = [str(x[field]) for x in result.get('records', [])]
         return valid_values
 
 
