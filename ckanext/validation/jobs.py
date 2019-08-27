@@ -251,7 +251,7 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         # An empty reference indicates another field in the same table
         # Far easier to get valid values from the table and insert here.
         if reference == "":
-            foreign_keys[field] = list(df[reference_field][1:])
+            foreign_keys[field] = list(df[reference_field].iloc[1:])
         # Fields in resource of form "foreign-key-<field>" store references
         # Insert these user-specified references into the schema
         elif form_field in resource.keys():
@@ -262,8 +262,6 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         # Default to some unique value identifying a reference not found error.
         else:
             foreign_keys[field] = "NOTFOUND:" + reference_field
-
-    logging.warning(foreign_keys)
 
     if foreign_keys:
         for field in table_schema['fields']:
