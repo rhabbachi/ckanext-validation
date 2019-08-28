@@ -219,21 +219,22 @@ def _read_shapefile(shp_path):
     files = zipped_file.namelist()
     shp_files = filter(lambda v: '.shp' in v, files)
 
-    if len(shp_files) > 1:
-        base.abort(400, 'Can only accept one shp file per zipped archive')
-
-    myshp = zipped_file.open(shp_files[0])
-    mydbf = zipped_file.open(shp_files[0][:-4]+'.dbf')
-    myshx = zipped_file.open(shp_files[0][:-4]+'.shx')
+    if len(shp_files) != 1:
+        base.abort(400, 'Zipped archive must contain exactly one .shp file.')
 
     try:
+        myshp = zipped_file.open(shp_files[0])
+        mydbf = zipped_file.open(shp_files[0][:-4]+'.dbf')
+        myshx = zipped_file.open(shp_files[0][:-4]+'.shx')
+
         sf = shapefile.Reader(shp=myshp, dbf=mydbf, shx=myshx)
         fields = [x[0] for x in sf.fields][1:]
         records = [fields] + sf.records()
         return pandas.DataFrame(data=records)
+
     except shapefile.ShapefileException as e:
         log.error(e)
-        base.abort(500, 'Not a valid shp file')
+        base.abort(500, 'Not a valid shp file: ' + str(e))
 
 
 def _prep_foreign_keys(package, table_schema, resource, df):
