@@ -215,10 +215,15 @@ def _read_shapefile(shp_path):
     Read a shapefile into a Pandas dataframe with a 'coords' column holding
     the geometry information. This uses the pyshp package.
     """
-    zipped_file = zipfile.PyZipFile(shp_path)
-    files = zipped_file.namelist()
-    shp_files = filter(lambda v: '.shp' in v, files)
+    try:
+        zipped_file = zipfile.PyZipFile(shp_path)
+        files = zipped_file.namelist()
 
+    except Exception as e:
+        log.error(e)
+        base.abort(400, 'Could not unzip file: ' + str(e))
+
+    shp_files = filter(lambda v: '.shp' in v, files)
     if len(shp_files) != 1:
         base.abort(400, 'Zipped archive must contain exactly one .shp file.')
 
@@ -234,7 +239,7 @@ def _read_shapefile(shp_path):
 
     except shapefile.ShapefileException as e:
         log.error(e)
-        base.abort(500, 'Not a valid shp file: ' + str(e))
+        base.abort(400, 'Not a valid shp file: ' + str(e))
 
 
 def _prep_foreign_keys(package, table_schema, resource, df):
