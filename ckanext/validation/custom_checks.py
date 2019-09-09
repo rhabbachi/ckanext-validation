@@ -4,6 +4,9 @@ import ckantoolkit as t
 from collections import namedtuple
 import logging
 
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
 spec['errors']['foreign-key'] = {
     "name": "Foreign Key Error",
     "type": "schema",
@@ -12,6 +15,44 @@ spec['errors']['foreign-key'] = {
     "message": 'Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}',
     "description": "Values in this field must be taken from the foreign key field in the referenced data table."
 }
+
+spec['errors']['missing-geometry'] = {
+    "name": "Geometry Error",
+    "type": "schema",
+    "context": "body",
+    "weight": 7,
+    "message": 'There is no geometry specified for row {row_number}.',
+    "description": "Every record in a geometry file, must include geometry co-ordinates."
+}
+
+
+def geometry_check(cells):
+    """
+    Certain file types come with built in geometry e.g. SHP and GeoJSON. For
+    these file types we prepare them with an adr_geometry_exists column, and
+    here require that column to be truthy if the file is to pass validation.  This
+    """
+    log.debug('Geometry Check Called')
+
+    for cell in cells:
+        # Only run check if an adr_geometry_exists column in data
+        if cell['header'] == 'adr_geometry_check':
+            # If the geometry is falsy (including strings "False") then error
+            if not cell['value'] or (cell['value'] in ["False", "false"]):
+                log.debug('Missing geometry in row ' + str(cell['row-number']))
+                return [Error(
+                    'missing-geometry',
+                    None,
+                    row_number=cell['row-number']
+                )]
+            # If geometry exists
+            else:
+                log.debug('Found geometry in cell: ' +
+                          str(cell) + " - " + str(cell['value']))
+                return []
+    else:
+        log.debug("No geometry in this dataset")
+        return []
 
 
 class ForeignKeyCheck(object):

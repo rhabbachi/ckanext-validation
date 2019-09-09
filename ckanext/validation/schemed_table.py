@@ -31,7 +31,11 @@ class SchemedTable:
             enum = f.get('constraints', {}).pop('enum', [])
 
             # State basic field constraints
-            default_values = ["", "--conditions--", "type: "+str(f['type'])]
+            default_values = [
+                "",
+                "--conditions--",
+                "type: "+str(f.get('type', 'unrestricted'))
+            ]
             for k, v in f.get('constraints', {}).iteritems():
                 default_values += [str(k)+": "+str(v)]
 

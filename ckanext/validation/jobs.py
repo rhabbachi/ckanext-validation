@@ -15,9 +15,8 @@ import shapefile
 import zipfile
 from helpers import validation_load_json_schema
 import ckan.lib.base as base
-
+from collections import OrderedDict
 from ckanext.validation.model import Validation
-
 
 log = logging.getLogger(__name__)
 
@@ -121,7 +120,6 @@ def run_validation_job(resource):
         report_string = re.sub(r'x987asdwn23l', 'row', report_string)
         report_string = re.sub(r'x987asdwn23u', 'Row', report_string)
         report = json.loads(report_string)
-        report['tables'][0]['headers'] = list(actual_headers)
 
     # FIXME: Not clear on why I have to add the row back in to the report here
     def get_row(x):
@@ -132,18 +130,21 @@ def run_validation_job(resource):
             x['row-number'] = 1
         return x
 
-    report['tables'][0]['errors'] = list(map(
-        get_row,
-        report['tables'][0]['errors']
-    ))
-
     if report['table-count'] > 0:
+        report['tables'][0]['errors'] = list(map(
+            get_row,
+            report['tables'][0]['errors']
+        ))
+        report['tables'][0]['headers'] = list(actual_headers)
+
         validation.status = u'success' if report[u'valid'] else u'failure'
         validation.report = report
     else:
         validation.status = u'error'
         validation.error = {
-            'message': '\n'.join(report['warnings']) or u'No tables found'}
+            'message': '\n'.join(report['warnings']) or u'No tables found'
+        }
+
     validation.finished = datetime.datetime.utcnow()
 
     Session.add(validation)
@@ -168,7 +169,7 @@ def _load_dataframe(data, extension):
     elif extension in ["shp"]:
         df = _read_shapefile(data)
     elif extension in ['geojson']:
-        base.abort(400, 'Can\'t validate GeoJSON yet.  Please upload a shp file.')
+        df = _read_geojson(data)
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
     return df
@@ -196,6 +197,7 @@ def _validate_table(source, _format=u'csv', schema=None, **options):
         source,
         format=_format,
         schema=schema,
+        preset='unordered-table',
         **options
     )
     log.debug(u'Validating source: {}'.format(source))
@@ -203,11 +205,42 @@ def _validate_table(source, _format=u'csv', schema=None, **options):
 
 
 def _get_site_user_api_key():
-
     site_user_name = t.get_action('get_site_user')({'ignore_auth': True}, {})
     site_user = t.get_action('get_site_user')(
         {'ignore_auth': True}, {'id': site_user_name})
     return site_user['apikey']
+
+
+def _read_geojson(geojson_path):
+    """
+    Reads a geojson file in as a pandas dataframe ready for validation.
+    """
+    # Load as plain JSON
+    try:
+        with open(geojson_path, 'r') as read_file:
+            geojson = json.load(read_file)
+    except Exception as e:
+        log.exception(e)
+        base.abort(400, 'Unable to import json: ' + str(e))
+
+    # Structure the data
+    try:
+        def create_row(feature):
+            row = OrderedDict(feature['properties'])
+            row['adr_geometry_check'] = bool(feature['geometry']['coordinates'])
+            return row
+
+        df_dict = map(create_row, geojson['features'])
+
+    except Exception as e:
+        base.abort(400, 'Unable to import geoJSON: ' + str(e))
+
+    # Create the dataframe and insert the headers as the first row
+    df = pandas.DataFrame(df_dict)
+    cols = pandas.DataFrame([list(df.columns)], columns=list(df.columns))
+    df = pandas.concat([cols, df], axis=0, ignore_index=True)
+
+    return df
 
 
 def _read_shapefile(shp_path):
@@ -220,7 +253,7 @@ def _read_shapefile(shp_path):
         files = zipped_file.namelist()
 
     except Exception as e:
-        log.error(e)
+        log.exception(e)
         base.abort(400, 'Could not unzip file: ' + str(e))
 
     shp_files = filter(lambda v: '.shp' in v, files)
@@ -235,7 +268,23 @@ def _read_shapefile(shp_path):
         sf = shapefile.Reader(shp=myshp, dbf=mydbf, shx=myshx)
         fields = [x[0] for x in sf.fields][1:]
         records = [fields] + sf.records()
-        return pandas.DataFrame(data=records)
+        df = pandas.DataFrame(data=records)
+
+        def get_geometry(index):
+            if index == 0:
+                return 'adr_geometry_check'
+            if index > 0:
+                try:
+                    return bool(sf.shapes()[index-1].points)
+                except Exception as e:
+                    log.debug("Failed to find geometry for index " +
+                              str(index) + ":" + str(e))
+                    return False
+
+        df['adr_geometry_check'] = df.index.to_series().map(get_geometry)
+        log.debug(df)
+
+        return df
 
     except shapefile.ShapefileException as e:
         log.error(e)

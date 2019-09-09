@@ -7,7 +7,8 @@ import os
 import ckan.plugins as p
 import ckantoolkit as t
 from ckan.common import config
-from custom_checks import ForeignKeyCheck
+from custom_checks import ForeignKeyCheck, geometry_check
+from custom_presets import unordered_preset
 from goodtables.registry import registry
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
@@ -40,8 +41,10 @@ from ckanext.validation.utils import (
 log = logging.getLogger(__name__)
 
 # Register custom checks here.
-# Not used the check decorator because wanted code to be kept in a seperate module.
+# Not used check decorator because code should be kept in a seperate module.
 registry.register_check(ForeignKeyCheck, 'foreign-key', None, None, None)
+registry.register_check(geometry_check, 'missing-geometry', None, None, None)
+registry.register_preset(unordered_preset, 'unordered-table')
 
 
 class ValidationPlugin(p.SingletonPlugin):
