@@ -7,7 +7,6 @@ import pandas
 import logging
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 
 def unordered_preset(source, schema=None, **options):

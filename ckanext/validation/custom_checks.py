@@ -5,7 +5,6 @@ from collections import namedtuple
 import logging
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 spec['errors']['foreign-key'] = {
     "name": "Foreign Key Error",
