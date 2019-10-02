@@ -25,7 +25,8 @@ def unordered_preset(source, schema=None, **options):
     # Prepare schema
     if schema is not None:
 
-        df = pandas.read_excel(source, dtype=str)
+        df = pandas.read_excel(source, dtype=unicode)
+        log.debug(df.dtypes)
 
         if not schema.get('require_field_order', True):
             log.debug("Considering whether to switch column order")
