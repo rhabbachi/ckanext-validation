@@ -82,7 +82,7 @@ def resource_validation_run(context, data_dict):
     t.check_access(u'resource_validation_run', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': u'Missing value'})
+        raise t.ValidationError({u'resource_id': [u'Missing value']})
 
     resource = t.get_action(u'resource_show')(
         {}, {u'id': data_dict[u'resource_id']})
@@ -93,14 +93,14 @@ def resource_validation_run(context, data_dict):
     # Ensure format is supported
     if not resource.get(u'format', u'').lower() in settings.SUPPORTED_FORMATS:
         raise t.ValidationError(
-            {u'format': u'Unsupported resource format.' +
+            {u'format': [u'Unsupported resource format.' +
              u'Must be one of {}'.format(
-                 u','.join(settings.SUPPORTED_FORMATS))})
+                 u','.join(settings.SUPPORTED_FORMATS))]})
 
     # Ensure there is a URL or file upload
     if not resource.get(u'url') and not resource.get(u'url_type') == u'upload':
         raise t.ValidationError(
-            {u'url': u'Resource must have a valid URL or an uploaded file'})
+            {u'url': [u'Resource must have a valid URL or an uploaded file']})
 
     # Check if there was an existing validation for the resource
 
@@ -157,7 +157,7 @@ def resource_validation_show(context, data_dict):
     t.check_access(u'resource_validation_show', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': u'Missing value'})
+        raise t.ValidationError({u'resource_id': [u'Missing value']})
 
     Session = context['model'].Session
 
@@ -189,7 +189,7 @@ def resource_validation_delete(context, data_dict):
     t.check_access(u'resource_validation_delete', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': u'Missing value'})
+        raise t.ValidationError({u'resource_id': [u'Missing value']})
 
     Session = context['model'].Session
 
@@ -516,7 +516,7 @@ def resource_create(context, data_dict):
 def resource_update(context, data_dict):
     '''Update a resource.
 
-    This is duplicate of the CKAN core resource_update action, with just the
+    This is a duplicate of the CKAN core resource_update action, with just the
     addition of a synchronous data validation step.
 
     This is of course not ideal but it's the only way right now to hook
@@ -626,7 +626,7 @@ def _run_sync_validation(resource_id, local_upload=False, new_resource=True):
         log.info(
             u'Could not run validation for resource {}: {}'.format(
                 resource_id, str(e)))
-        return
+        raise e
 
     validation = t.get_action(u'resource_validation_show')(
         {u'ignore_auth': True},

@@ -170,6 +170,11 @@ def _load_dataframe(data, extension):
         df = _read_shapefile(data)
     elif extension in ['geojson']:
         df = _read_geojson(data)
+    else:
+        raise t.ValidationError({
+            'Incorrect Extension': ['Cannot validate the file. Please check'
+                                    'the file extension is correct.']
+        })
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
     return df
@@ -221,7 +226,9 @@ def _read_geojson(geojson_path):
             geojson = json.load(read_file)
     except Exception as e:
         log.exception(e)
-        base.abort(400, 'Unable to import json: ' + str(e))
+        raise t.ValidationError({
+            'GeoJSON': [u'Unable to import json: ' + str(e)]
+        })
 
     # Structure the data
     try:
@@ -233,7 +240,9 @@ def _read_geojson(geojson_path):
         df_dict = map(create_row, geojson['features'])
 
     except Exception as e:
-        base.abort(400, 'Unable to import geoJSON: ' + str(e))
+        raise t.ValidationError({
+            'GeoJSON': [u'Unable to import geoJSON: ' + str(e)]
+        })
 
     # Create the dataframe and insert the headers as the first row
     df = pandas.DataFrame(df_dict)
@@ -254,11 +263,15 @@ def _read_shapefile(shp_path):
 
     except Exception as e:
         log.exception(e)
-        base.abort(400, 'Could not unzip file: ' + str(e))
+        raise t.ValidationError({
+            'SHP File': [u'Could not unzip file: ' + str(e)]
+        })
 
     shp_files = filter(lambda v: '.shp' in v, files)
     if len(shp_files) != 1:
-        base.abort(400, 'Zipped archive must contain exactly one .shp file.')
+        raise t.ValidationError({
+            'SHP File': [u'Zipped archive must contain exactly one .shp file.']
+        })
 
     try:
         myshp = zipped_file.open(shp_files[0])
@@ -288,7 +301,9 @@ def _read_shapefile(shp_path):
 
     except shapefile.ShapefileException as e:
         log.error(e)
-        base.abort(400, 'Not a valid shp file: ' + str(e))
+        raise t.ValidationError({
+            'SHP File': [u'Not a valid shp file: ' + str(e)]
+        })
 
 
 def _prep_foreign_keys(package, table_schema, resource, df):
@@ -297,11 +312,16 @@ def _prep_foreign_keys(package, table_schema, resource, df):
 
     for key in table_schema.get('foreignKeys', {}):
 
+        log.debug("Prepping Foreign Key: " + str(key))
+
         resources = {v.get('schema', None): v for v in package['resources']}
         field = key['fields']
         reference = key['reference']['resource']
         reference_field = key['reference']['fields']
-        form_field = 'foreign-key-' + field,
+        form_field = 'foreign-key-' + field
+
+        log.debug("Resource Keys: " + str(resource.keys()))
+        log.debug("Form Field: " + str(form_field))
 
         try:
             # An empty reference indicates another field in the same table
@@ -321,6 +341,9 @@ def _prep_foreign_keys(package, table_schema, resource, df):
         except Exception:
             foreign_keys[field] = "NOTFOUND:" + reference_field
 
+    log.debug("Foreign keys: " + str(foreign_keys))
+
+    # Write foreign key info to schema so it's available in goodtables check
     if foreign_keys:
         for field in table_schema['fields']:
             if field['name'] in foreign_keys.keys():
