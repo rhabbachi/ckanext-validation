@@ -65,7 +65,8 @@ class ForeignKeyCheck(object):
         if self.__foreign_fields_cache is None:
             self.__foreign_fields_cache = \
                 ForeignKeyCheck._create_foreign_fields_cache(cells)
-            logging.warning(self.__foreign_fields_cache)
+            log.debug("The Foreign Fields Cache:")
+            log.debug(self.__foreign_fields_cache)
 
         # Step through the cells and check values are valid
         errors = []
