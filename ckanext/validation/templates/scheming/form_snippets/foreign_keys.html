@@ -1,22 +1,22 @@
 {% import 'macros/form.html' as form %}
 
 <div id='foreign_keys'>
-  <h3 class="page-heading">
-    {{ _('Foreign Keys') }}
+  <h3 class="page-heading form-group">
+    {{ _('External References (Foreign Keys)') }}
   </h3>
   <p>
-    This resource has fields which must contain values that match those from another resource.
-    For each field below, please specify the ID of the other resource where these values are defined.
+    This resource table has fields which must contain values that match those specified in another resource table.
+    For each field below, please specify the resource ID of the other resource where these values are defined.
   </p>
 
-
-{% for key, data in  h.validation_get_foreign_keys(object_type, resource_type).iteritems() %}
+{% for key, key_data in  h.validation_get_foreign_keys(object_type, resource_type).iteritems() %}
   {% call form.input(
-      'foreign-key-'+data.field_name,
-      id='field-foreign-key-' + data.field_name,
-      label=h.scheming_language_text(data.field_title + " (" + data.field_name + ")"),
+      'foreign-key-'+key_data.field_name,
+      id='field-foreign-key-' + key_data.field_name,
+      label=h.scheming_language_text(key_data.field_title + " (" + key_data.field_name + ")"),
       attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
-      is_required=True
+      is_required=True,
+      value=data.get("foreign-key-" + key_data['field_name'])
     )
   %}
   {% endcall %}

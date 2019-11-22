@@ -65,7 +65,8 @@ class ForeignKeyCheck(object):
         if self.__foreign_fields_cache is None:
             self.__foreign_fields_cache = \
                 ForeignKeyCheck._create_foreign_fields_cache(cells)
-            logging.warning(self.__foreign_fields_cache)
+            log.debug("The Foreign Fields Cache:")
+            log.debug(self.__foreign_fields_cache)
 
         # Step through the cells and check values are valid
         errors = []
@@ -76,9 +77,16 @@ class ForeignKeyCheck(object):
 
             if field.descriptor.get('foreignKey'):
 
-                valid_values = self.__foreign_fields_cache[cell['header']]['values']
-                resource_id = self.__foreign_fields_cache[cell['header']]['resource_id']
-                resource_url = self.__foreign_fields_cache[cell['header']]['resource_url']
+                if not self.__foreign_fields_cache.get(cell['header']):
+                    self.__foreign_fields_cache = merge_two_dicts(
+                        self.__foreign_fields_cache,
+                        ForeignKeyCheck._create_foreign_fields_cache([cell])
+                    )
+
+                cell_cache = self.__foreign_fields_cache.get(cell['header'])
+                valid_values = cell_cache.get('values', [])
+                resource_id = cell_cache.get('resource_id', "")
+                resource_url = cell_cache.get('resource_url', "")
 
                 # Check if ref resource missing, so we only return one error
                 missing = self._missing_ref.get(field.descriptor.get('name'))
@@ -108,9 +116,13 @@ class ForeignKeyCheck(object):
 
     @staticmethod
     def _create_foreign_fields_cache(cells):
+
+        log.debug("Creating foreign key cache")
         cache = {}
+
         for column_number, cell in enumerate(cells, start=1):
 
+            log.debug("Cell: {}".format(cell))
             default_field = namedtuple('field', 'descriptor')
             field = cell.get('field', default_field(descriptor={}))
             foreign_key = field.descriptor.get('foreignKey')
@@ -146,6 +158,7 @@ class ForeignKeyCheck(object):
                     'resource_url': res_url
                 }
 
+        log.debug("Foreign Key cache: {}".format(cache))
         return cache
 
     @staticmethod
@@ -172,6 +185,7 @@ class ForeignKeyCheck(object):
             {'ignore_auth': True},
             data_dict
         )
+        log.debug("Got valid values: {}".format(result))
         valid_values = [str(x[field]) for x in result.get('records', [])]
         return valid_values
 
@@ -184,3 +198,9 @@ def register_translator():
     registry.prepare()
     from pylons import translator
     registry.register(translator, MockTranslator())
+
+
+def merge_two_dicts(x, y):
+    z = x.copy()   # start with x's keys and values
+    z.update(y)    # modifies z with y's keys and values & returns None
+    return z
