@@ -6,9 +6,7 @@ import json
 import os
 import ckan.plugins as p
 import ckantoolkit as t
-from ckan.common import config
 from custom_checks import ForeignKeyCheck, geometry_check
-from custom_presets import unordered_preset
 from goodtables.registry import registry
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
