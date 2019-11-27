@@ -622,8 +622,21 @@ def _run_sync_validation(resource_id, local_upload=False, new_resource=True):
             {u'ignore_auth': True},
             {u'resource_id': resource_id,
              u'async': False})
+
     except t.ValidationError as e:
-        log.info(
+
+        # Delete uploaded file
+        if local_upload:
+            delete_local_uploaded_file(resource_id)
+            
+        if new_resource:
+            # Delete resource
+            t.get_action(u'resource_delete')(
+                {u'ignore_auth': True, 'user': None},
+                {u'id': resource_id}
+            )
+
+        log.debug(
             u'Could not run validation for resource {}: {}'.format(
                 resource_id, str(e)))
         raise e
