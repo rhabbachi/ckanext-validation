@@ -54,11 +54,10 @@ class UniqueConstraint(object):
             all_values_are_none = (set(column_values) == {None})
             if not all_values_are_none:
                 if column_values in cache['data']:
-                    message_substitutions = {
-                        'row_numbers': ', '.join(map(str, cache['refs'] + [row_number])),
-                    }
-
                     # Custom code =============================================
+                    message_substitutions = {
+                        'row_numbers': str(row_number),
+                    }
                     if len(column_numbers) == 1:
                         error = Error(
                             'unique-constraint',

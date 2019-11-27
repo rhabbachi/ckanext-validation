@@ -484,16 +484,23 @@ def _remove_misleading_uniqueness_errors(report, schema):
         primary_key = schema.get("primaryKey", [])
         headers = table['headers']
         errors = table['errors']
-        primary_key_column_numbers = [
-            headers.index(key)+1 for key in primary_key
-        ]
         required_errors = [
             e for e in errors if e['code'] == 'required-constraint'
         ]
+        primary_key_column_numbers = []
+
+        for key in primary_key:
+            try:
+                primary_key_column_numbers.append(headers.index(key)+1)
+            except ValueError:
+                pass
+
         for error in required_errors:
             if error['column-number'] in primary_key_column_numbers:
                 filtered_errors = [
                     e for e in errors if e['code'] != 'unique-constraint'
                 ]
                 table['errors'] = filtered_errors
+                break
+
     return report
