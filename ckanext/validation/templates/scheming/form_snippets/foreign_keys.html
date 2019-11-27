@@ -3,10 +3,13 @@
 <div id='foreign_keys'>
   <h3 class="page-heading form-group">
     {{ _('External References (Foreign Keys)') }}
+    <a class="btn btn-primary pull-right" href="/dataset" target="_blank"> Browse Data</a>
   </h3>
   <p>
-    This resource table has fields which must contain values that match those specified in another resource table.
-    For each field below, please specify the resource ID of the other resource where these values are defined.
+    This resource table has fields whose values must match those specified in another table.
+    For each field below, <a target="_blank" href="/dataset">please browse the data</a> to find the other table where these values are defined.
+    Copy and paste the resource's ID below.
+    E.g. For area_id you should find your finalised Geographic Data package, and copy and paste the resource ID of the location hierarchy below.
   </p>
 
 {% for key, key_data in  h.validation_get_foreign_keys(object_type, resource_type).iteritems() %}
