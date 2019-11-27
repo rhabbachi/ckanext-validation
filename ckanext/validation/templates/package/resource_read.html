@@ -7,3 +7,7 @@
 
   {% resource 'ckanext-validation/main' %}
 {% endblock %}
+{% block resource_read_url %}
+  <p class="text-muted break-word">{{ _('Resource ID:') }} <span style="color: #e31837">{{ res.id }}</span></p>
+  {{ super() }}
+{% endblock %}

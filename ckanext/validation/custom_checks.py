@@ -25,6 +25,87 @@ spec['errors']['missing-geometry'] = {
 }
 
 
+class UniqueConstraint(object):
+    """
+    We create a copy of the GoodTables uniqueness check so that we can
+    issue a more specific error message whe composite uniqueness check fails.
+    """
+
+    def __init__(self, **options):
+        self.__unique_fields_cache = None
+
+    def check_row(self, cells):
+        errors = []
+
+        # Prepare unique checks
+        if self.__unique_fields_cache is None:
+            self.__unique_fields_cache = _create_unique_fields_cache(cells)
+
+        # Check unique
+        for column_numbers, cache in self.__unique_fields_cache.items():
+            column_cells = tuple(
+                cell
+                for column_number, cell in enumerate(cells, start=1)
+                if column_number in column_numbers
+            )
+            column_values = tuple(cell.get('value') for cell in column_cells)
+            row_number = column_cells[0]['row-number']
+
+            all_values_are_none = (set(column_values) == {None})
+            if not all_values_are_none:
+                if column_values in cache['data']:
+                    # Custom code =============================================
+                    message_substitutions = {
+                        'row_numbers': str(row_number),
+                    }
+                    if len(column_numbers) == 1:
+                        error = Error(
+                            'unique-constraint',
+                            column_cells[0],
+                            message_substitutions=message_substitutions
+                        )
+                    else:
+                        error = Error(
+                            'unique-constraint',
+                            column_cells[0],
+                            message="Rows {row_numbers} have a composite uniqueness constraint violation. Primary key fields must form a unique combination in the dataset.",
+                            message_substitutions=message_substitutions
+                        )
+                    # End Custom code =========================================
+                    errors.append(error)
+                cache['data'].add(column_values)
+                cache['refs'].append(row_number)
+
+        return errors
+
+
+# Internal
+def _create_unique_fields_cache(cells):
+    primary_key_column_numbers = []
+    cache = {}
+
+    # Unique
+    for column_number, cell in enumerate(cells, start=1):
+        field = cell.get('field')
+        if field is not None:
+            if field.descriptor.get('primaryKey'):
+                primary_key_column_numbers.append(column_number)
+            if field.constraints.get('unique'):
+                cache[tuple([column_number])] = {
+                    'data': set(),
+                    'refs': [],
+                }
+
+    # Primary key
+    if primary_key_column_numbers:
+        cache[tuple(primary_key_column_numbers)] = {
+            'data': set(),
+            'refs': [],
+        }
+
+    return cache
+
+
 def geometry_check(cells):
     """
     Certain file types come with built in geometry e.g. SHP and GeoJSON. For

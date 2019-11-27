@@ -6,7 +6,7 @@ import json
 import os
 import ckan.plugins as p
 import ckantoolkit as t
-from custom_checks import ForeignKeyCheck, geometry_check
+from custom_checks import ForeignKeyCheck, geometry_check, UniqueConstraint
 from goodtables.registry import registry
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
@@ -42,6 +42,7 @@ log = logging.getLogger(__name__)
 # Not used check decorator because code should be kept in a seperate module.
 registry.register_check(ForeignKeyCheck, 'foreign-key', None, None, None)
 registry.register_check(geometry_check, 'missing-geometry', None, None, None)
+registry.register_check(UniqueConstraint, 'unique-constraint', None, None, None)
 
 
 class ValidationPlugin(p.SingletonPlugin):

@@ -130,6 +130,11 @@ def run_validation_job(resource):
     if schema.get("transpose"):
         report = _correct_transposition(report)
 
+    # The UniquenessConstraint gives misleading errors
+    # If a primary key value from the first row
+    if schema.get("primaryKey"):
+        _remove_misleading_uniqueness_errors(report, schema)
+
     # FIXME: Not clear on why I have to add the row back in to the report here
     def get_row(x):
         try:
@@ -472,3 +477,30 @@ def _correct_column_ordering(errors, column_mapping):
         errors
     ))
     return list(map(correct_columns, errors))
+
+
+def _remove_misleading_uniqueness_errors(report, schema):
+    for table in report['tables']:
+        primary_key = schema.get("primaryKey", [])
+        headers = table['headers']
+        errors = table['errors']
+        required_errors = [
+            e for e in errors if e['code'] == 'required-constraint'
+        ]
+        primary_key_column_numbers = []
+
+        for key in primary_key:
+            try:
+                primary_key_column_numbers.append(headers.index(key)+1)
+            except ValueError:
+                pass
+
+        for error in required_errors:
+            if error['column-number'] in primary_key_column_numbers:
+                filtered_errors = [
+                    e for e in errors if e['code'] != 'unique-constraint'
+                ]
+                table['errors'] = filtered_errors
+                break
+
+    return report
