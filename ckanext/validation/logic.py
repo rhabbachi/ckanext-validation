@@ -87,6 +87,10 @@ def resource_validation_run(context, data_dict):
     resource = t.get_action(u'resource_show')(
         {}, {u'id': data_dict[u'resource_id']})
 
+    if data_dict.get('schema'):
+        log.debug("Setting schema: " + str(data_dict['schema']))
+        resource['schema'] = data_dict['schema']
+
     # TODO: limit to sysadmins
     async_job = data_dict.get(u'async', True)
 
@@ -594,7 +598,7 @@ def resource_update(context, data_dict):
             upload.filename is not None and
             isinstance(upload, uploader.ResourceUpload))
         _run_sync_validation(
-            id, local_upload=is_local_upload, new_resource=False)
+            id, local_upload=is_local_upload, new_resource=False, schema=data_dict.get('schema'))
 
     # Custom code ends
 
@@ -615,13 +619,14 @@ def resource_update(context, data_dict):
     return resource
 
 
-def _run_sync_validation(resource_id, local_upload=False, new_resource=True):
+def _run_sync_validation(resource_id, local_upload=False, new_resource=True, schema=None):
 
     try:
         t.get_action(u'resource_validation_run')(
             {u'ignore_auth': True},
             {u'resource_id': resource_id,
-             u'async': False})
+             u'async': False,
+             u'schema': schema})
 
     except t.ValidationError as e:
 
