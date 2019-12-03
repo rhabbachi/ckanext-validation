@@ -120,7 +120,7 @@ def run_validation_job(resource):
         report['warnings'][index] = re.sub(r'Table ".*"', 'Table', warning)
 
     # If table's columns reordered, correct the column ordering in report
-    if not schema.get('require_field_order', True):
+    if column_mapping:
         report['tables'][0]['errors'] = _correct_column_ordering(
             report['tables'][0]['errors'],
             column_mapping
@@ -464,6 +464,7 @@ def _reorder_columns(schema, df):
 
 
 def _correct_column_ordering(errors, column_mapping):
+
     def correct_columns(x):
         new_col = column_mapping[x['column-number']]
         x['column-number'] = new_col
