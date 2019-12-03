@@ -46,7 +46,7 @@ class TestBadges(object):
         resource = factories.Resource(
             format='CSV',
             validation_status='success',
-            validation_timestamp=datetime.datetime.utcnow()
+            validation_timestamp=str(datetime.datetime.utcnow())
         )
 
         out = get_validation_badge(resource)
@@ -62,7 +62,7 @@ class TestBadges(object):
         resource = factories.Resource(
             format='CSV',
             validation_status='failure',
-            validation_timestamp=datetime.datetime.utcnow()
+            validation_timestamp=str(datetime.datetime.utcnow())
         )
 
         out = get_validation_badge(resource)
@@ -78,7 +78,7 @@ class TestBadges(object):
         resource = factories.Resource(
             format='CSV',
             validation_status='error',
-            validation_timestamp=datetime.datetime.utcnow()
+            validation_timestamp=str(datetime.datetime.utcnow())
         )
 
         out = get_validation_badge(resource)
