@@ -95,6 +95,7 @@ def run_validation_job(resource):
 
     # For e.g. geojson there is no specified column ordering in the input.
     # Here we reorder columns if necessary for Goodtables to process.
+    column_mapping = {}
     if not schema.get('require_field_order', True):
         altered_df, column_mapping = _reorder_columns(schema, altered_df)
 
