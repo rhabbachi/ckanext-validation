@@ -9,7 +9,7 @@ import logging
 import requests
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+
 
 def get_validation_badge(resource, in_listing=False):
 
@@ -183,15 +183,6 @@ def validation_load_schemed_table(filepath):
             raise
     else:
         raise IOError(filepath + " file not found")
-
-
-def show_validation_schemas():
-    """ Returns a list of validation schemas"""
-    schema_directory = config.get('ckanext.validation.schema_directory')
-    if schema_directory:
-        return _files_from_directory(schema_directory).keys()
-    else:
-        return []
 
 
 def _files_from_directory(path, extension='.json'):
