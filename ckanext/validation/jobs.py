@@ -150,7 +150,7 @@ def run_validation_job(resource):
             get_row,
             report['tables'][0]['errors']
         ))
-        report['tables'][0]['headers'] = list(actual_headers)
+        report['tables'][0]['headers'] = list(actual_headers.fillna(""))
 
         validation.status = u'success' if report[u'valid'] else u'failure'
         validation.report = report
