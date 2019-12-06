@@ -22,8 +22,6 @@ log = logging.getLogger(__name__)
 
 
 def run_validation_job(resource):
-    import pydevd_pycharm
-    pydevd_pycharm.settrace('172.17.0.1', port=1234, stdoutToServer=True, stderrToServer=True)
 
     log.debug(u'Validating resource {}'.format(resource['id']))
 
@@ -93,10 +91,13 @@ def run_validation_job(resource):
     # Drop entirely empty columns
     original_df.dropna(axis='columns', how='all', inplace=True)
 
+    # Fill missing headers if there is data in column
+    original_df.columns = original_df.columns.fillna("Missing header")
+
     actual_headers = original_df.columns
 
     altered_df = original_df.copy()
-    
+
     # Some of the tables (lists of indicators) are transposed for readability
     if schema.get("transpose"):
         altered_df = _transpose_dataframe(altered_df)
