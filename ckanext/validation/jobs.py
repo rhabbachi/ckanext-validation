@@ -1,6 +1,7 @@
 # encoding: utf-8
 import cStringIO
 import pandas
+import numpy
 import logging
 import datetime
 import json
@@ -21,6 +22,8 @@ log = logging.getLogger(__name__)
 
 
 def run_validation_job(resource):
+    import pydevd_pycharm
+    pydevd_pycharm.settrace('172.17.0.1', port=1234, stdoutToServer=True, stderrToServer=True)
 
     log.debug(u'Validating resource {}'.format(resource['id']))
 
@@ -86,12 +89,17 @@ def run_validation_job(resource):
     # Load the data as a dataframe
     _format = resource.get(u'format', u'').lower()
     original_df = _load_dataframe(source, _format)
+
+    # Drop entirely empty columns
+    original_df.dropna(axis='columns', how='all', inplace=True)
+
     actual_headers = original_df.columns
 
-    # Some of the tables (lists of indicators) are transposed for readability
     altered_df = original_df.copy()
+    
+    # Some of the tables (lists of indicators) are transposed for readability
     if schema.get("transpose"):
-        altered_df = _transpose_dataframe(original_df)
+        altered_df = _transpose_dataframe(altered_df)
 
     # For e.g. geojson there is no specified column ordering in the input.
     # Here we reorder columns if necessary for Goodtables to process.
