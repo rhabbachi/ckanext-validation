@@ -30,8 +30,7 @@
           label=h.scheming_language_text(key_data.field_title + " (" + key_data.field_name + ")"),
           attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
           is_required=True,
-          value=data.get("foreign-key-" + key_data['field_name'], key_data.get('default_value')),
-          error=errors
+          value=data.get("foreign-key-" + key_data['field_name'], key_data.get('default_value'))
         )
       %}
       {% endcall %}
