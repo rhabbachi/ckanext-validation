@@ -1,27 +1,40 @@
 {% import 'macros/form.html' as form %}
+{% set foreign_key_options = h.validation_get_foreign_keys(object_type, resource_type, pkg_name) %}
+<div class="foreign-keys">
+  <a type="button"
+     data-toggle="collapse"
+     data-target="#foreign-keys-toggle"
+     aria-expanded="{{foreign_key_options.expand_form}}"
+     aria-controls="foreign-keys-toggle"
+     style="cursor: pointer;">
+    Edit Foreign Key References
+  </a>
+  <div class="toggle-box {{'collapse' if not foreign_key_options.expand_form}}" id="foreign-keys-toggle" style>
+    <div id='foreign_keys'>
+      <h3 class="page-heading form-group">
+        {{ _('External References (Foreign Keys)') }}
+        <a class="btn btn-primary pull-right" href="/dataset" target="_blank"> Browse Data</a>
+      </h3>
 
-<div id='foreign_keys'>
-  <h3 class="page-heading form-group">
-    {{ _('External References (Foreign Keys)') }}
-    <a class="btn btn-primary pull-right" href="/dataset" target="_blank"> Browse Data</a>
-  </h3>
-  <p>
-    This resource table has fields whose values must match those specified in another table.
-    For each field below, <a target="_blank" href="/dataset">please browse the data</a> to find the other table where these values are defined.
-    Copy and paste the resource's ID below.
-    E.g. For area_id you should find your finalised Geographic Data package, and copy and paste the resource ID of the location hierarchy below.
-  </p>
+      <p>
+        This resource table has fields whose values must match those specified in another table.
+        For each field below, <a target="_blank" href="/dataset">please browse the data</a> to find the other table where these values are defined.
+        Copy and paste the resource's ID below.
+        E.g. For area_id you should find your finalised Geographic Data package, and copy and paste the resource ID of the location hierarchy below.
+      </p>
 
-{% for key, key_data in  h.validation_get_foreign_keys(object_type, resource_type).iteritems() %}
-  {% call form.input(
-      'foreign-key-'+key_data.field_name,
-      id='field-foreign-key-' + key_data.field_name,
-      label=h.scheming_language_text(key_data.field_title + " (" + key_data.field_name + ")"),
-      attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
-      is_required=True,
-      value=data.get("foreign-key-" + key_data['field_name'])
-    )
-  %}
-  {% endcall %}
-{% endfor %}
+    {% for key, key_data in foreign_key_options.fields.iteritems() %}
+      {% call form.input(
+          'foreign-key-'+key_data.field_name,
+          id='field-foreign-key-' + key_data.field_name,
+          label=h.scheming_language_text(key_data.field_title + " (" + key_data.field_name + ")"),
+          attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+          is_required=True,
+          value=data.get("foreign-key-" + key_data['field_name'], key_data.get('default_value'))
+        )
+      %}
+      {% endcall %}
+    {% endfor %}
+    </div>
+  </div>
 </div>

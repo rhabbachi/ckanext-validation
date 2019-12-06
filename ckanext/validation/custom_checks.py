@@ -212,14 +212,13 @@ class ForeignKeyCheck(object):
 
                 # Default to empty values if resource not found/specfied
                 res_id = ""
-                res_url = ""
                 values = []
 
                 # If field is a string, then it is a resource reference
                 if isinstance(foreign_key, basestring):
                     try:
                         res_id, field = tuple(foreign_key.split(':')[0:2])
-                        res_url = ForeignKeyCheck._get_resource_url(res_id)
+                        log.debug("Getting valid foreign key values")
                         values = ForeignKeyCheck._get_valid_values(
                             res_id,
                             field
@@ -230,28 +229,15 @@ class ForeignKeyCheck(object):
                 # If field is a list, then the valid values already determined
                 elif type(foreign_key) is list:
                     res_id = ""
-                    res_url = ""
                     values = foreign_key
 
                 cache[cell['header']] = {
                     'values': values,
                     'resource_id': res_id,
-                    'resource_url': res_url
                 }
 
         log.debug("Foreign Key cache: {}".format(cache))
         return cache
-
-    @staticmethod
-    def _get_resource_url(resource_id):
-        # Ideally include a link to the referenced dataset in error report
-        # TODO: Not quite figured out how to do this yet
-        resource = t.get_action('resource_show')(
-            # FIXME: Should we really ignore the auth here?
-            {'ignore_auth': True},
-            {'id': resource_id}
-        )
-        return resource.get('url', '')
 
     @staticmethod
     def _get_valid_values(resource_id, field):

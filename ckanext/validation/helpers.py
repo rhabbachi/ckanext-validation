@@ -75,6 +75,15 @@ click the button below to replace the file.''')
     return report, errors
 
 
+def show_validation_schemas():
+    """ Returns a list of validation schemas"""
+    schema_directory = config.get('ckanext.validation.schema_directory')
+    if schema_directory:
+        return _files_from_directory(schema_directory).keys()
+    else:
+        return []
+
+
 def dump_json_value(value, indent=None):
     """
     Returns the object passed serialized as a JSON string.
@@ -118,28 +127,45 @@ def validation_load_json_schema(schema):
         return json.loads(schema)
 
 
-def validation_get_foreign_keys(dataset_type, resource_type):
+def validation_get_foreign_keys(dataset_type, resource_type, pkg_name):
+    log.debug(pkg_name)
+
+    organization_id = get_action('package_show')(
+        None,
+        {'id': pkg_name}
+    ).get('organization', {}).get('id')
+    organization_extras = get_action('organization_show')(
+        None,
+        {'id': organization_id}
+    ).get('extras', [])
+    organization_extras = dict((d['key'], d['value']) for d in organization_extras)
+    log.debug("Organisation Extras: {}".format(organization_extras))
+
     schema = validation_get_schema(dataset_type, resource_type)
     foreign_keys = schema.get('foreignKeys', [])
-    foreign_key_options = {}
+    foreign_key_options = {
+        'fields': {},
+        'expand_form': False
+    }
+
     for key in foreign_keys:
+
         field = filter(lambda x: x['name'] == key['fields'], schema['fields'])[0]
         ref_resource_type = key['reference']['resource']
         ref_resource_field = key['reference']['fields']
         ref_options = []
-        # Could use the resource_search action to autofill options.
-        # But resource search only reveals public resources
-        # May want to reveal resources that are available inside orgs.
-        # results = get_action('resource_search')(
-        #     None,
-        #     {'query': 'schema:geographic_facilities'}
-        # )['results']
-        # log.warning(results)
-        foreign_key_options[key['fields']] = {
+
+        default_value = organization_extras.get('foreign-key-'+key['fields'])
+        if not default_value:
+            foreign_key_options['expand_form'] = True
+
+        foreign_key_options['fields'][key['fields']] = {
             'field_name': key['fields'],
             'field_title': field['title'],
+            'default_value': default_value,
             'options': ref_options
         }
+
     log.warning(foreign_key_options)
     return foreign_key_options
 
@@ -157,15 +183,6 @@ def validation_load_schemed_table(filepath):
             raise
     else:
         raise IOError(filepath + " file not found")
-
-
-def show_validation_schemas():
-    """ Returns a list of validation schemas"""
-    schema_directory = config.get('ckanext.validation.schema_directory')
-    if schema_directory:
-        return _files_from_directory(schema_directory).keys()
-    else:
-        return []
 
 
 def _files_from_directory(path, extension='.json'):

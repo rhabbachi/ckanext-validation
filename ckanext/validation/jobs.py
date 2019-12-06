@@ -150,7 +150,7 @@ def run_validation_job(resource):
             get_row,
             report['tables'][0]['errors']
         ))
-        report['tables'][0]['headers'] = list(actual_headers)
+        report['tables'][0]['headers'] = list(actual_headers.fillna(""))
 
         validation.status = u'success' if report[u'valid'] else u'failure'
         validation.report = report
@@ -375,7 +375,6 @@ def _remove_na(na_value, df):
 
 
 def _prep_foreign_keys(package, table_schema, resource, df):
-
     foreign_keys = {}
 
     for key in table_schema.get('foreignKeys', {}):
@@ -390,6 +389,11 @@ def _prep_foreign_keys(package, table_schema, resource, df):
 
         log.debug("Resource Keys: " + str(resource.keys()))
         log.debug("Form Field: " + str(form_field))
+
+        if form_field in resource.keys() and not resource[form_field]:
+            raise t.ValidationError({
+                'Required Foreign Key Configuration': ['Missing {} field'.format(field)]
+            })
 
         try:
             # An empty reference indicates another field in the same table
@@ -432,9 +436,9 @@ def _reorder_columns(schema, df):
     errors = {}
     for field in set(required_field_order) - set(submitted_field_order):
         df[field] = pandas.np.NaN
-        error_key = "Missing {} field".format(field)
+        error_key = "Missing {} column".format(field)
         error_message = ("Uploaded data file is missing required "
-                         "field \"{}\"".format(field))
+                         "column \"{}\"".format(field))
         errors[error_key] = [error_message]
 
     if errors:
