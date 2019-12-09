@@ -6100,7 +6100,7 @@ function escape(html, encode) {
 }
 
 function unescape(html) {
-	// explicitly match decimal, hex, and named HTML entities 
+	// explicitly match decimal, hex, and named HTML entities
   return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g, function(_, n) {
     n = n.toLowerCase();
     if (n === 'colon') return ':';
@@ -6442,12 +6442,12 @@ module.exports = {
 			"description": "The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."
 		},
 		"required-constraint": {
-			"name": "Required Constraint",
+			"name": "Required Field",
 			"type": "schema",
 			"context": "body",
 			"weight": 9,
 			"message": "Column {column_number} is a required field, but row {row_number} has no value",
-			"description": "This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."
+			"description": "This field is a required field, but it contains no value.\n\n Please update your data to ensure this field has a valid value. "
 		},
 		"pattern-constraint": {
 			"name": "Pattern Constraint",
@@ -6463,15 +6463,15 @@ module.exports = {
 			"context": "body",
 			"weight": 9,
 			"message": "Rows {row_numbers} has unique constraint violation in column {column_number}",
-			"description": "This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."
+			"description": "This field is a unique field but it contains a value that has been used in another row.\n\n "
 		},
 		"enumerable-constraint": {
-			"name": "Enumerable Constraint",
+			"name": "Invalid Value",
 			"type": "schema",
 			"context": "body",
 			"weight": 7,
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}",
-			"description": "This field value should be equal to one of the values in the enumeration constraint.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."
+			"description": "This field value should be equal to one of the values in a pre-specified list.\n\n  Please update the value making sure it exactly matches one of the valid values in the specified list."
 		},
 		"minimum-constraint": {
 			"name": "Minimum Constraint",
@@ -6489,6 +6489,14 @@ module.exports = {
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}",
 			"description": "This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."
 		},
+    "foreign-key": {
+        "name": "Area ID Error",
+        "type": "schema",
+        "context": "body",
+        "weight": 7,
+        "message": 'Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}',
+        "description": "Area IDs must match those from the referenced location hierachy.  Please check the location hierachy."
+    },
 		"minimum-length-constraint": {
 			"name": "Minimum Length Constraint",
 			"type": "schema",
