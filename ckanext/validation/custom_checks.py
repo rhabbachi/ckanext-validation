@@ -3,6 +3,7 @@ from goodtables import Error, spec
 import ckantoolkit as t
 from collections import namedtuple
 import logging
+from goodtables.checks.constraints_checks import create_check_constraint
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,50 @@ spec['errors']['missing-geometry'] = {
     "message": 'There is no geometry specified for row {row_number}.',
     "description": "Every record in a geometry file, must include geometry co-ordinates."
 }
+
+spec['errors']["enumerable-constraint"] = {
+    "name": "Invalid Value",
+    "type": "schema",
+    "context": "body",
+    "weight": 7,
+    "message": "The value {value} in row {row_number} and column {column_number} is not found in the list of valid values for this field: {constraint}",
+    "description": "This field value should be equal to one of the values in the list of valid values.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."
+}
+
+
+def enumerable_constraint(cells):
+    errors = []
+    log.warning("Called enumerable constraint")
+
+    for cell in cells:
+
+        field = cell.get('field')
+        value = cell.get('value')
+        log.warning("Field: {} Value: {}".format(field, value))
+
+        # Skip if cell has no field
+        if field is None:
+            continue
+
+        # Check constraint
+        valid = field.test_value(value, constraints=['enum'])
+        log.warning('Valid: {}'.format(valid))
+
+        # Add error
+        if not valid:
+            message_substitutions = {
+                'value': '"{}"'.format(value),
+                'constraint': '"{}"'.format('", "'.join(field.constraints['enum']))
+            }
+            log.warning("Message substitutions: {}".format(message_substitutions))
+            error = Error(
+                'enumerable-constraint',
+                cell,
+                message_substitutions=message_substitutions
+            )
+            errors.append(error)
+
+    return errors
 
 
 class UniqueConstraint(object):
@@ -233,7 +278,7 @@ class ForeignKeyCheck(object):
 
                 cache[cell['header']] = {
                     'values': values,
-                    'resource_id': res_id,
+                    'resource_id': res_id
                 }
 
         log.debug("Foreign Key cache: {}".format(cache))
