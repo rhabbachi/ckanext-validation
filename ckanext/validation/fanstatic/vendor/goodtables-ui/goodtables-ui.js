@@ -6415,7 +6415,7 @@ module.exports = {
 			"context": "head",
 			"weight": 9,
 			"message": "Header in column {column_number} doesn't match field name {field_name} in the schema",
-			"description": "One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."
+			"description": "One of the data source headers doesn't match the field name defined in the schema.\n\n Please update your data so that the headers match the headers in the template."
 		},
 		"extra-header": {
 			"name": "Extra Header",
@@ -6423,7 +6423,7 @@ module.exports = {
 			"context": "head",
 			"weight": 9,
 			"message": "There is an extra header in column {column_number}",
-			"description": "The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."
+			"description": "The first row of the data source contains header that doesn't exist in the schema.\n\n Please update your data so that the headers match the headers in the template."
 		},
 		"missing-header": {
 			"name": "Missing Header",
@@ -6431,7 +6431,7 @@ module.exports = {
 			"context": "head",
 			"weight": 9,
 			"message": "There is a missing header in column {column_number}",
-			"description": "Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."
+			"description": "Based on the schema there should be a header that is missing in the first row of the data source.\n\n Please update your data so that the headers match the headers in the template."
 		},
 		"type-or-format-error": {
 			"name": "Type or Format Error",
@@ -6455,7 +6455,7 @@ module.exports = {
 			"context": "body",
 			"weight": 7,
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}",
-			"description": "This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."
+			"description": "This field value should conform to constraint pattern.\n\n Please update the value making sure it matches the specified regex pattern."
 		},
 		"unique-constraint": {
 			"name": "Unique Constraint",
@@ -6463,7 +6463,7 @@ module.exports = {
 			"context": "body",
 			"weight": 9,
 			"message": "Rows {row_numbers} has unique constraint violation in column {column_number}",
-			"description": "This field is a unique field but it contains a value that has been used in another row.\n\n "
+			"description": "This field (or combination of fields) must be unique, but aanother row has the same value(s).  Please make sure that the field(s) are unique within the dataset.\n\n "
 		},
 		"enumerable-constraint": {
 			"name": "Invalid Value",
@@ -6479,7 +6479,7 @@ module.exports = {
 			"context": "body",
 			"weight": 7,
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}",
-			"description": "This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."
+			"description": "This field value should be greater or equal than constraint value.\n\n Please update the value making sure it is larger than the minimum valid value. "
 		},
 		"maximum-constraint": {
 			"name": "Maximum Constraint",
@@ -6487,7 +6487,7 @@ module.exports = {
 			"context": "body",
 			"weight": 7,
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}",
-			"description": "This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."
+			"description": "This field value should be less or equal than constraint value.\n\n Please update the value making sure it smaller than the maxium valid value."
 		},
     "foreign-key": {
         "name": "Area ID Error",
@@ -6511,7 +6511,7 @@ module.exports = {
 			"context": "body",
 			"weight": 7,
 			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}",
-			"description": "A lenght of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."
+			"description": "A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."
 		}
 	}
 };
