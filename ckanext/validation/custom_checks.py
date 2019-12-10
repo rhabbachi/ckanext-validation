@@ -40,9 +40,9 @@ def enumerable_constraint(cells):
     log.warning("Called enumerable constraint")
 
     for cell in cells:
-
+        log.debug("Enumerable Constraint: Cell {}".format(cell))
         field = cell.get('field')
-        value = cell.get('value')
+        value = cell.get('value').encode('utf-8')
         log.warning("Field: {} Value: {}".format(field, value))
 
         # Skip if cell has no field
@@ -67,6 +67,7 @@ def enumerable_constraint(cells):
             )
             errors.append(error)
 
+    log.debug('Enumerable constraint: Finished checking row')
     return errors
 
 
@@ -80,6 +81,7 @@ class UniqueConstraint(object):
         self.__unique_fields_cache = None
 
     def check_row(self, cells):
+        log.debug('Checking unique constraint')
         errors = []
 
         # Prepare unique checks
@@ -187,6 +189,7 @@ class ForeignKeyCheck(object):
         self._missing_ref = {}
 
     def check_row(self, cells):
+        log.debug("Checking foreign keys")
         # Prepare cache
         if self.__foreign_fields_cache is None:
             self.__foreign_fields_cache = \
