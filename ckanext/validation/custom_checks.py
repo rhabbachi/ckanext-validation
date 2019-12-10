@@ -40,10 +40,8 @@ def enumerable_constraint(cells):
     log.warning("Called enumerable constraint")
 
     for cell in cells:
-        log.debug("Enumerable Constraint: Cell {}".format(cell))
         field = cell.get('field')
-        value = cell.get('value').encode('utf-8')
-        log.warning("Field: {} Value: {}".format(field, value))
+        value = cell.get('value')
 
         # Skip if cell has no field
         if field is None:
@@ -51,7 +49,6 @@ def enumerable_constraint(cells):
 
         # Check constraint
         valid = field.test_value(value, constraints=['enum'])
-        log.warning('Valid: {}'.format(valid))
 
         # Add error
         if not valid:
@@ -67,7 +64,6 @@ def enumerable_constraint(cells):
             )
             errors.append(error)
 
-    log.debug('Enumerable constraint: Finished checking row')
     return errors
 
 
