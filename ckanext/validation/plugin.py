@@ -40,6 +40,7 @@ from ckanext.validation.utils import (
     get_create_mode_from_config,
     get_update_mode_from_config,
 )
+from ckan.lib.plugins import DefaultTranslation
 
 
 log = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ registry.register_check(UniqueConstraint, 'unique-constraint', None, None, None)
 registry.register_check(enumerable_constraint, 'enumerable-constraint', None, None, None)
 
 
-class ValidationPlugin(p.SingletonPlugin):
+class ValidationPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IConfigurable)
     p.implements(p.IConfigurer)
     p.implements(p.IActions)
@@ -62,6 +63,7 @@ class ValidationPlugin(p.SingletonPlugin):
     p.implements(p.IPackageController, inherit=True)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IValidators)
+    p.implements(p.ITranslation)
 
     # IConfigurable
     def configure(self, config):
