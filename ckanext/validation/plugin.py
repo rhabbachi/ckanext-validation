@@ -5,6 +5,7 @@ import cgi
 import json
 import os
 import ckan.plugins as p
+from ckan.common import _
 import ckantoolkit as t
 from custom_checks import (
     ForeignKeyCheck,
@@ -167,7 +168,7 @@ to create the database tables:
         elif schema_url:
             if (not isinstance(schema_url, basestring) or
                     not schema_url.lower()[:4] == u'http'):
-                raise t.ValidationError({u'schema_url': 'Must be a valid URL'})
+                raise t.ValidationError({u'schema_url': _('Must be a valid URL')})
             data_dict[u'schema'] = schema_url
         elif schema_json:
             data_dict[u'schema'] = schema_json

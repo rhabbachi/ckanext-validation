@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 import ckan.plugins as plugins
 import ckan.lib.uploader as uploader
+from ckan.common import _
 
 import ckantoolkit as t
 
@@ -82,7 +83,7 @@ def resource_validation_run(context, data_dict):
     t.check_access(u'resource_validation_run', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': [u'Missing value']})
+        raise t.ValidationError({u'resource_id': [_(u'Missing value')]})
 
     resource = t.get_action(u'resource_show')(
         {}, {u'id': data_dict[u'resource_id']})
@@ -97,14 +98,14 @@ def resource_validation_run(context, data_dict):
     # Ensure format is supported
     if not resource.get(u'format', u'').lower() in settings.SUPPORTED_FORMATS:
         raise t.ValidationError(
-            {u'format': [u'Unsupported resource format.' +
-             u'Must be one of {}'.format(
+            {u'format': [_(u'Unsupported resource format.' +
+             u'Must be one of {}').format(
                  u','.join(settings.SUPPORTED_FORMATS))]})
 
     # Ensure there is a URL or file upload
     if not resource.get(u'url') and not resource.get(u'url_type') == u'upload':
         raise t.ValidationError(
-            {u'url': [u'Resource must have a valid URL or an uploaded file']})
+            {u'url': [_(u'Resource must have a valid URL or an uploaded file')]})
 
     # Check if there was an existing validation for the resource
 
@@ -161,7 +162,7 @@ def resource_validation_show(context, data_dict):
     t.check_access(u'resource_validation_show', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': [u'Missing value']})
+        raise t.ValidationError({u'resource_id': [_(u'Missing value')]})
 
     Session = context['model'].Session
 
@@ -193,7 +194,7 @@ def resource_validation_delete(context, data_dict):
     t.check_access(u'resource_validation_delete', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
-        raise t.ValidationError({u'resource_id': [u'Missing value']})
+        raise t.ValidationError({u'resource_id': [_(u'Missing value')]})
 
     Session = context['model'].Session
 
