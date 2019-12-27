@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-validation 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-12-20 14:36+0000\n"
+"POT-Creation-Date: 2019-12-27 16:00+0000\n"
 "PO-Revision-Date: 2019-12-20 14:41+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -51,8 +51,114 @@ msgid ""
 "click the button below to replace the file."
 msgstr ""
 
-#: ckanext/validation/logic.py:544 ckanext/validation/logic.py:558
+#: ckanext/validation/jobs.py:161
+msgid "No tables found"
+msgstr ""
+
+#: ckanext/validation/jobs.py:191
+msgid "Incorrect Extension"
+msgstr ""
+
+#: ckanext/validation/jobs.py:191
+msgid "Cannot validate the file. Please check the file extension is correct."
+msgstr ""
+
+#: ckanext/validation/jobs.py:206 ckanext/validation/jobs.py:222
+msgid "Format"
+msgstr ""
+
+#: ckanext/validation/jobs.py:207
+msgid ""
+"Could not read your CSV file. Are you sure your specified format {} is "
+"correct?"
+msgstr ""
+
+#: ckanext/validation/jobs.py:223
+msgid ""
+"Could not read your Excel file. Are you sure your specified format {} is "
+"correct?"
+msgstr ""
+
+#: ckanext/validation/jobs.py:231
+msgid "Multiple Worksheets"
+msgstr ""
+
+#: ckanext/validation/jobs.py:231
+msgid "Your Excel file must contain only one worksheet for validation."
+msgstr ""
+
+#: ckanext/validation/jobs.py:249
+msgid "Unable to import json: "
+msgstr ""
+
+#: ckanext/validation/jobs.py:263
+msgid "Unable to import geoJSON: "
+msgstr ""
+
+#: ckanext/validation/jobs.py:286 ckanext/validation/jobs.py:292
+#: ckanext/validation/jobs.py:324
+msgid "SHP File"
+msgstr ""
+
+#: ckanext/validation/jobs.py:286
+msgid "Could not unzip file: "
+msgstr ""
+
+#: ckanext/validation/jobs.py:292
+msgid "Zipped archive must contain exactly one .shp file."
+msgstr ""
+
+#: ckanext/validation/jobs.py:324
+msgid "Not a valid shp file: "
+msgstr ""
+
+#: ckanext/validation/jobs.py:396
+msgid "Required Foreign Key Configuration"
+msgstr ""
+
+#: ckanext/validation/jobs.py:396
+msgid "Missing {} field"
+msgstr ""
+
+#: ckanext/validation/jobs.py:440
+msgid "Missing {} column"
+msgstr ""
+
+#: ckanext/validation/jobs.py:441
+msgid "Uploaded data file is missing required column \"{}\""
+msgstr ""
+
+#: ckanext/validation/logic.py:86 ckanext/validation/logic.py:165
+#: ckanext/validation/logic.py:197
+msgid "Missing value"
+msgstr ""
+
+#: ckanext/validation/logic.py:101
+msgid "Unsupported resource format.Must be one of {}"
+msgstr ""
+
+#: ckanext/validation/logic.py:108
+msgid "Resource must have a valid URL or an uploaded file"
+msgstr ""
+
+#: ckanext/validation/logic.py:545 ckanext/validation/logic.py:559
 msgid "Resource was not found."
+msgstr ""
+
+#: ckanext/validation/plugin.py:171
+msgid "Must be a valid URL"
+msgstr ""
+
+#: ckanext/validation/validators.py:26
+msgid "Invalid Table Schema descriptor: {}"
+msgstr ""
+
+#: ckanext/validation/validators.py:30
+msgid "JSON error in Table Schema descriptor: {}"
+msgstr ""
+
+#: ckanext/validation/validators.py:41
+msgid "Invalid Table Schema: {}"
 msgstr ""
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:68
@@ -134,4 +240,7 @@ msgstr ""
 #: ckanext/validation/templates/validation/snippets/validation_report_dialog_bs2.html:4
 msgid "Data Validation Report"
 msgstr ""
+
+#~ msgid "Cannot validate the file. Please checkthe file extension is correct."
+#~ msgstr ""
 
