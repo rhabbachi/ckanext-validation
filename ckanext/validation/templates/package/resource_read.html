@@ -9,5 +9,18 @@
 {% endblock %}
 {% block resource_read_url %}
   <p class="text-muted break-word">{{ _('Resource ID:') }} <span style="color: #e31837">{{ res.id }}</span></p>
-  {{ super() }}
+
+  {% if res.format == 'url'%}
+    {% if res.url and h.is_url(res.url) %}
+      <H2 class="text-muted ellipsis">{{ _('URL:') }} <a class="resource-url-analytics" href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></H2>
+    {% elif res.url %}
+      <H2 class="text-muted break-word">{{ _('URL:') }} {{ res.url }}</H2>
+    {% endif %}
+  {% else %}
+    {% if res.url and h.is_url(res.url) %}
+      <p class="text-muted ellipsis">{{ _('URL:') }} <a class="resource-url-analytics" href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
+    {% elif res.url %}
+      <p class="text-muted break-word">{{ _('URL:') }} {{ res.url }}</p>
+    {% endif %}
+  {% endif %}
 {% endblock %}
