@@ -3083,7 +3083,7 @@ var Form = exports.Form = function (_React$Component) {
               _react2.default.createElement(
                 'label',
                 { htmlFor: 'schema' },
-                'Schema'
+                ckan.i18n._('Schema')
               ),
               '\xA0 [',
               _react2.default.createElement(
@@ -3268,13 +3268,13 @@ var Form = exports.Form = function (_React$Component) {
                       onOptionsChange('errorLimit', ev.target.checked ? 1 : null);
                     }
                   }),
-                  'Stop on first error'
+                  ckan.i18n._('Stop on first error')
                 )
               ),
               _react2.default.createElement(
                 'small',
                 null,
-                'Indicate whether validation should stop on the first error, or attempt to collect all errors.'
+                ckan.i18n._('Indicate whether validation should stop on the first error, or attempt to collect all errors.')
               )
             ),
             _react2.default.createElement(
@@ -3301,13 +3301,13 @@ var Form = exports.Form = function (_React$Component) {
                       }
                     }
                   }),
-                  'Ignore blank rows'
+                  ckan.i18n._('Ignore blank rows')
                 )
               ),
               _react2.default.createElement(
                 'small',
                 null,
-                'Indicate whether blank rows should be considered as errors, or simply ignored.'
+                ckan.i18n._('Indicate whether blank rows should be considered as errors, or simply ignored.')
               )
             ),
             _react2.default.createElement(
@@ -3334,13 +3334,13 @@ var Form = exports.Form = function (_React$Component) {
                       }
                     }
                   }),
-                  'Ignore duplicate rows'
+                  ckan.i18n._('Ignore duplicate rows')
                 )
               ),
               _react2.default.createElement(
                 'small',
                 null,
-                'Indicate whether duplicate rows should be considered as errors, or simply ignored.'
+                ckan.i18n._('Indicate whether duplicate rows should be considered as errors, or simply ignored.')
               )
             )
           )
@@ -3359,8 +3359,8 @@ var Form = exports.Form = function (_React$Component) {
           { className: 'row-message' },
           _react2.default.createElement(_MessageGroup.MessageGroup, {
             type: 'warning',
-            title: 'There is fatal error in validation',
-            expandText: 'Error details',
+            title: ckan.i18n._('There is fatal error in validation'),
+            expandText: ckan.i18n._('Error details'),
             messages: [error.message]
           })
         ),
@@ -3572,7 +3572,7 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
           _react2.default.createElement(
             'span',
             { className: 'text-uppercase label label-danger' },
-            'Invalid'
+            ckan.i18n._('Invalid')
           ),
           _react2.default.createElement(
             'span',
@@ -3600,7 +3600,7 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
             { className: 'error-details-link', onClick: function onClick() {
                 return _this2.setState({ showErrorDetails: !showErrorDetails });
               } },
-            'Error details'
+            ckan.i18n._('Error details')
           )
         ),
         showErrorDetails && description && _react2.default.createElement(
@@ -3618,7 +3618,7 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
           _react2.default.createElement(
             'p',
             null,
-            'The full list of error messages:'
+            ckan.i18n._('The full list of error messages:')
           ),
           _react2.default.createElement(
             'ul',
@@ -3657,7 +3657,7 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
               { onClick: function onClick() {
                   _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
                 } },
-              'Show next 10 rows'
+              ckan.i18n._('Show next 10 rows')
             )
           )
         )
@@ -3824,9 +3824,9 @@ function InvalidTable(_ref) {
         _react2.default.createElement(
           'span',
           { className: 'file-count' },
-          'Invalid ',
+          ckan.i18n._('Invalid '),
           tableNumber,
-          ' of ',
+          ' / ',
           tablesCount
         )
       )
@@ -6301,221 +6301,7 @@ if (true) {
   !*** ./src/spec.json ***!
   \***********************/
 /***/ (function(module, exports) {
-
-module.exports = {
-	"version": "1.0.0",
-	"errors": {
-		"io-error": {
-			"name": "IO Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source returned an IO Error of type {error_type}",
-			"description": "Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."
-		},
-		"http-error": {
-			"name": "HTTP Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source returned an HTTP error with a status code of {status_code}",
-			"description": "Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."
-		},
-		"source-error": {
-			"name": "Source Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source has not supported or has inconsistent contents; no tabular data can be extracted",
-			"description": "Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."
-		},
-		"scheme-error": {
-			"name": "Scheme Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source is in an unknown scheme; no tabular data can be extracted",
-			"description": "Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."
-		},
-		"format-error": {
-			"name": "Format Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source is in an unknown format; no tabular data can be extracted",
-			"description": "Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."
-		},
-		"encoding-error": {
-			"name": "Encoding Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source could not be successfully decoded with {encoding} encoding",
-			"description": "Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."
-		},
-		"blank-header": {
-			"name": "Blank Header",
-			"type": "structure",
-			"context": "head",
-			"weight": 3,
-			"message": "Header in column {column_number} is blank",
-			"description": "A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."
-		},
-		"duplicate-header": {
-			"name": "Duplicate Header",
-			"type": "structure",
-			"context": "head",
-			"weight": 3,
-			"message": "Header in column {column_number} is duplicated to header in column(s) {column_numbers}",
-			"description": "Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."
-		},
-		"blank-row": {
-			"name": "Blank Row",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} is completely blank",
-			"description": "This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."
-		},
-		"duplicate-row": {
-			"name": "Duplicate Row",
-			"type": "structure",
-			"context": "body",
-			"weight": 5,
-			"message": "Row {row_number} is duplicated to row(s) {row_numbers}",
-			"description": "The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."
-		},
-		"extra-value": {
-			"name": "Extra Value",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} has an extra value in column {column_number}",
-			"description": "This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."
-		},
-		"missing-value": {
-			"name": "Missing Value",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} has a missing value in column {column_number}",
-			"description": "This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."
-		},
-		"schema-error": {
-			"name": "Table Schema Error",
-			"type": "schema",
-			"context": "table",
-			"weight": 15,
-			"message": "Table Schema error: {error_message}",
-			"description": "Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema cheks in {validator}."
-		},
-		"non-matching-header": {
-			"name": "Non-Matching Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "Header in column {column_number} doesn't match field name {field_name} in the schema",
-			"description": "One of the data source headers doesn't match the field name defined in the schema.\n\n Please update your data so that the headers match the headers in the template."
-		},
-		"extra-header": {
-			"name": "Extra Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "There is an extra header in column {column_number}",
-			"description": "The first row of the data source contains header that doesn't exist in the schema.\n\n Please update your data so that the headers match the headers in the template."
-		},
-		"missing-header": {
-			"name": "Missing Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "There is a missing header in column {column_number}",
-			"description": "Based on the schema there should be a header that is missing in the first row of the data source.\n\n Please update your data so that the headers match the headers in the template."
-		},
-		"type-or-format-error": {
-			"name": "Type or Format Error",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}",
-			"description": "The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."
-		},
-		"required-constraint": {
-			"name": "Required Field",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "Column {column_number} is a required field, but row {row_number} has no value",
-			"description": "This field is a required field, but it contains no value.\n\n Please update your data to ensure this field has a valid value. "
-		},
-		"pattern-constraint": {
-			"name": "Pattern Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}",
-			"description": "This field value should conform to constraint pattern.\n\n Please update the value making sure it matches the specified regex pattern."
-		},
-		"unique-constraint": {
-			"name": "Unique Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "Rows {row_numbers} has unique constraint violation in column {column_number}",
-			"description": "This field (or combination of fields) must be unique, but aanother row has the same value(s).  Please make sure that the field(s) are unique within the dataset.\n\n "
-		},
-		"enumerable-constraint": {
-			"name": "Invalid Value",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}",
-			"description": "This field value should be equal to one of the values in a pre-specified list.\n\n  Please update the value making sure it exactly matches one of the valid values in the specified list."
-		},
-		"minimum-constraint": {
-			"name": "Minimum Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}",
-			"description": "This field value should be greater or equal than constraint value.\n\n Please update the value making sure it is larger than the minimum valid value. "
-		},
-		"maximum-constraint": {
-			"name": "Maximum Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}",
-			"description": "This field value should be less or equal than constraint value.\n\n Please update the value making sure it smaller than the maxium valid value."
-		},
-    "foreign-key": {
-        "name": "Area ID Error",
-        "type": "schema",
-        "context": "body",
-        "weight": 7,
-        "message": 'Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}',
-        "description": "Area IDs must match those from the referenced location hierachy.  Please check the location hierachy."
-    },
-		"minimum-length-constraint": {
-			"name": "Minimum Length Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}",
-			"description": "A lenght of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."
-		},
-		"maximum-length-constraint": {
-			"name": "Maximum Length Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}",
-			"description": "A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."
-		}
-	}
-};
-
+  module.exports = window.spec_override;
 /***/ })
 /******/ ]);
 });
