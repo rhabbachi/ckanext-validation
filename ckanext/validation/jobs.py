@@ -17,6 +17,7 @@ import zipfile
 from helpers import validation_load_json_schema
 from collections import OrderedDict
 from ckanext.validation.model import Validation
+from custom_checks import setup_custom_goodtables
 
 log = logging.getLogger(__name__)
 
@@ -354,6 +355,7 @@ def _excel_string_io_wrapper(df):
 
 
 def _validate_table(source, _format=u'csv', schema=None, **options):
+    setup_custom_goodtables()
     report = validate(
         source,
         format=_format,
