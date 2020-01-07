@@ -3824,7 +3824,8 @@ function InvalidTable(_ref) {
         _react2.default.createElement(
           'span',
           { className: 'file-count' },
-          ckan.i18n._('Invalid '),
+          ckan.i18n._('Invalid'),
+          ' ',
           tableNumber,
           ' / ',
           tablesCount
