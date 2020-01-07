@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-validation 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-12-30 11:04+0000\n"
+"POT-Creation-Date: 2020-01-07 12:46+0000\n"
 "PO-Revision-Date: 2019-12-20 14:41+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -17,230 +17,817 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.6.0\n"
 
 #: ckanext/validation/controller.py:36
 msgid "Unauthorized to read this validation report"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/controller.py:39
 msgid "No validation report exists for this resource"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/helpers.py:24
-msgid "Valid data"
-msgstr ""
+#: ckanext/validation/custom_checks.py:318
+msgid "IO Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:322
+msgid "The data source returned an IO Error of type {error_type}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:323
+msgid ""
+"Data reading error because of IO error.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix path if it's not correct."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:326
+msgid "HTTP Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:330
+msgid "The data source returned an HTTP error with a status code of {status_code}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:331
+msgid ""
+"Data reading error because of HTTP error.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix url link if it's not correct."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:334
+msgid "Source Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:338
+msgid ""
+"The data source has not supported or has inconsistent contents; no "
+"tabular data can be extracted"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:339
+msgid ""
+"Data reading error because of not supported or inconsistent contents.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data contents (e.g. change JSON data to array or arrays/objects).\n"
+" - Set correct source settings in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:342
+msgid "Scheme Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:346
+msgid "The data source is in an unknown scheme; no tabular data can be extracted"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:347
+msgid ""
+"Data reading error because of incorrect scheme.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n"
+" - Set correct scheme in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:350
+msgid "Format Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:354
+msgid "The data source is in an unknown format; no tabular data can be extracted"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:355
+msgid ""
+"Data reading error because of incorrect format.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data format (e.g. change file extension from `txt` to `csv`).\n"
+" - Set correct format in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:358
+msgid "Encoding Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:362
+msgid "The data source could not be successfully decoded with {encoding} encoding"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:363
+msgid ""
+"Data reading error because of an encoding problem.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data source if it's broken.\n"
+" - Set correct encoding in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:366
+msgid "Blank Header"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:370
+msgid "Header in column {column_number} is blank"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:371
+msgid ""
+"A column in the header row is missing a value. Column names should be "
+"provided.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column name to the first row of the data source.\n"
+" - If the first row starts with, or ends with a comma, remove it.\n"
+" - If this error should be ignored disable `blank-header` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:374
+msgid "Duplicate Header"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:378
+msgid ""
+"Header in column {column_number} is duplicated to header in column(s) "
+"{column_numbers}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:379
+msgid ""
+"Two columns in the header row have the same value. Column names should be"
+" unique.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column name to the first row of the data.\n"
+" - If the first row starts with, or ends with a comma, remove it.\n"
+" - If this error should be ignored disable `duplicate-header` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:382
+msgid "Blank Row"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:386
+msgid "Row {row_number} is completely blank"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:387
+msgid ""
+"This row is empty. A row should contain at least one value.\n"
+"\n"
+" How it could be resolved:\n"
+" - Delete the row.\n"
+" - If this error should be ignored disable `blank-row` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:390
+msgid "Duplicate Row"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:394
+msgid "Row {row_number} is duplicated to row(s) {row_numbers}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:395
+msgid ""
+"The exact same data has been seen in another row.\n"
+"\n"
+" How it could be resolved:\n"
+" - If some of the data is incorrect, correct it.\n"
+" - If the whole row is an incorrect duplicate, remove it.\n"
+" - If this error should be ignored disable `duplicate-row` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:398
+msgid "Extra Value"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:402
+msgid "Row {row_number} has an extra value in column {column_number}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:403
+msgid ""
+"This row has more values compared to the header row (the first row in the"
+" data source). A key concept is that all the rows in tabular data must "
+"have the same number of columns.\n"
+"\n"
+" How it could be resolved:\n"
+" - Check data has an extra comma between the values in this row.\n"
+" - If this error should be ignored disable `extra-value` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:406
+msgid "Missing Value"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:410
+msgid "Row {row_number} has a missing value in column {column_number}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:411
+msgid ""
+"This row has less values compared to the header row (the first row in the"
+" data source). A key concept is that all the rows in tabular data must "
+"have the same number of columns.\n"
+"\n"
+" How it could be resolved:\n"
+" - Check data is not missing a comma between the values in this row.\n"
+" - If this error should be ignored disable `missing-value` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:414
+msgid "Table Schema Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:418
+msgid "Table Schema error: {error_message}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:419
+msgid ""
+"Provided schema is not valid.\n"
+"\n"
+" How it could be resolved:\n"
+" - Update schema descriptor to be a valid descriptor\n"
+" - If this error should be ignored disable schema checks in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:422
+msgid "Non-Matching Header"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:426
+msgid ""
+"Header in column {column_number} doesn't match field name {field_name} in"
+" the schema"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:427
+msgid ""
+"One of the data source headers doesn't match the field name defined in "
+"the schema.\n"
+"\n"
+" How it could be resolved:\n"
+" - Rename header in the data source or field in the schema\n"
+" - If this error should be ignored disable `non-matching-header` check in"
+" {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:430
+msgid "Extra Header"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:434
+msgid "There is an extra header in column {column_number}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:435
+msgid ""
+"The first row of the data source contains header that doesn't exist in "
+"the schema.\n"
+"\n"
+" How it could be resolved:\n"
+" - Remove the extra column from the data source or add the missing field "
+"to the schema\n"
+" - If this error should be ignored disable `extra-header` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:438
+msgid "Missing Header"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:442
+msgid "There is a missing header in column {column_number}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:443
+msgid ""
+"Based on the schema there should be a header that is missing in the first"
+" row of the data source.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column to the data source or remove the extra field "
+"from the schema\n"
+" - If this error should be ignored disable `missing-header` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:446
+msgid "Type or Format Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:450
+msgid ""
+"The value {value} in row {row_number} and column {column_number} is not "
+"type {field_type} and format {field_format}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:451
+msgid ""
+"The value does not match the schema type and format for this field.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If this value is correct, adjust the type and/or format.\n"
+" - To ignore the error, disable the `type-or-format-error` check in "
+"{validator}. In this case all schema checks for row values will be "
+"ignored."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:454
+msgid "Required Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:458
+msgid ""
+"Column {column_number} is a required field, but row {row_number} has no "
+"value"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:459
+msgid ""
+"This field is a required field, but it contains no value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove the `required` constraint from the "
+"schema.\n"
+" - If this error should be ignored disable `required-constraint` check in"
+" {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:462
+msgid "Pattern Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:466
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the pattern constraint of {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:467
+msgid ""
+"This field value should conform to constraint pattern.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `pattern` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `pattern-constraint` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:470
+msgid "Unique Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:474
+msgid ""
+"Rows {row_numbers} has unique constraint violation in column "
+"{column_number}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:475
+msgid ""
+"This field is a unique field but it contains a value that has been used "
+"in another row.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then the values in this column are not unique. "
+"Remove the `unique` constraint from the schema.\n"
+" - If this error should be ignored disable `unique-constraint` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:478
+msgid "Invalid Value"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:482
+msgid ""
+"The value {value} in row {row_number} and column {column_number} is not "
+"found in the list of valid values for this field: {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:483
+msgid ""
+"This field value should be equal to one of the values in a pre-specified "
+"list.\n"
+"\n"
+"  Please update the value making sure it exactly matches one of the valid"
+" values in the specified list."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:486
+msgid "Minimum Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:490
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the minimum constraint of {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:491
+msgid ""
+"This field value should be greater or equal than constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `minimum` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `minimum-constraint` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:494
+msgid "Maximum Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:498
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the maximum constraint of {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:499
+msgid ""
+"This field value should be less or equal than constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `maximum` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `maximum-constraint` check in "
+"{validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:502
+msgid "Minimum Length Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:506
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the minimum length constraint of {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:507
+msgid ""
+"A length of this field value should be greater or equal than schema "
+"constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `minimumLength` "
+"constraint in the schema.\n"
+" - If this error should be ignored disable `minimum-length-constraint` "
+"check in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:510
+msgid "Maximum Length Constraint"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:514
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the maximum length constraint of {constraint}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:515
+msgid ""
+"A length of this field value should be less or equal than schema "
+"constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `maximumLength` "
+"constraint in the schema.\n"
+" - If this error should be ignored disable `maximum-length-constraint` "
+"check in {validator}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:518
+msgid "Geometry Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:522
+msgid "There is no geometry specified for row {row_number}."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:523
+msgid "Every record in a geometry file, must include geometry co-ordinates."
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:526
+msgid "Area ID Error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:530
+msgid ""
+"Value in column {column_number} and row {row_number} is not found in the "
+"referenced data table: {resource_id}"
+msgstr "Untranslated French"
+
+#: ckanext/validation/custom_checks.py:531
+msgid ""
+"Area IDs must match those from the referenced location hierachy.  Please "
+"check the location hierachy."
+msgstr "Untranslated French"
 
 #: ckanext/validation/helpers.py:25
-msgid "Invalid data"
-msgstr ""
+msgid "Valid data"
+msgstr "Untranslated French"
 
 #: ckanext/validation/helpers.py:26
-msgid "Error during validation"
-msgstr ""
+msgid "Invalid data"
+msgstr "Untranslated French"
 
 #: ckanext/validation/helpers.py:27
-msgid "Data validation unknown"
-msgstr ""
+msgid "Error during validation"
+msgstr "Untranslated French"
 
-#: ckanext/validation/helpers.py:62
+#: ckanext/validation/helpers.py:28
+msgid "Data validation unknown"
+msgstr "Untranslated French"
+
+#: ckanext/validation/helpers.py:63
 msgid ""
 "\n"
 "There are validation issues with this file, please see the\n"
 "<a {params}>report</a> for details. Once you have resolved the issues,\n"
 "click the button below to replace the file."
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:161
+#: ckanext/validation/jobs.py:162
 msgid "No tables found"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:191
+#: ckanext/validation/jobs.py:192
 msgid "Incorrect Extension"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:191
+#: ckanext/validation/jobs.py:192
 msgid "Cannot validate the file. Please check the file extension is correct."
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:206 ckanext/validation/jobs.py:222
+#: ckanext/validation/jobs.py:207 ckanext/validation/jobs.py:223
 msgid "Format"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:207
+#: ckanext/validation/jobs.py:208
 msgid ""
 "Could not read your CSV file. Are you sure your specified format {} is "
 "correct?"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:223
+#: ckanext/validation/jobs.py:224
 msgid ""
 "Could not read your Excel file. Are you sure your specified format {} is "
 "correct?"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:231
+#: ckanext/validation/jobs.py:232
 msgid "Multiple Worksheets"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:231
+#: ckanext/validation/jobs.py:232
 msgid "Your Excel file must contain only one worksheet for validation."
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:249
+#: ckanext/validation/jobs.py:250
 msgid "Unable to import json: "
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:263
+#: ckanext/validation/jobs.py:264
 msgid "Unable to import geoJSON: "
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:286 ckanext/validation/jobs.py:292
-#: ckanext/validation/jobs.py:324
+#: ckanext/validation/jobs.py:287 ckanext/validation/jobs.py:293
+#: ckanext/validation/jobs.py:325
 msgid "SHP File"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:286
+#: ckanext/validation/jobs.py:287
 msgid "Could not unzip file: "
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:292
+#: ckanext/validation/jobs.py:293
 msgid "Zipped archive must contain exactly one .shp file."
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:324
+#: ckanext/validation/jobs.py:325
 msgid "Not a valid shp file: "
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:396
+#: ckanext/validation/jobs.py:398
 msgid "Required Foreign Key Configuration"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:396
+#: ckanext/validation/jobs.py:398
 msgid "Missing {} field"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:440
+#: ckanext/validation/jobs.py:442
 msgid "Missing {} column"
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/jobs.py:441
+#: ckanext/validation/jobs.py:443
 msgid "Uploaded data file is missing required column \"{}\""
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/logic.py:86 ckanext/validation/logic.py:165
 #: ckanext/validation/logic.py:197
 msgid "Missing value"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/logic.py:101
 msgid "Unsupported resource format.Must be one of {}"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/logic.py:108
 msgid "Resource must have a valid URL or an uploaded file"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/logic.py:545 ckanext/validation/logic.py:559
 msgid "Resource was not found."
-msgstr ""
+msgstr "Untranslated French"
 
-#: ckanext/validation/plugin.py:171
+#: ckanext/validation/plugin.py:164
 msgid "Must be a valid URL"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/validators.py:26
 msgid "Invalid Table Schema descriptor: {}"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/validators.py:30
 msgid "JSON error in Table Schema descriptor: {}"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/validators.py:41
 msgid "Invalid Table Schema: {}"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:68
 msgid "Upload"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:69
 msgid "Upload a Data Schema file from your computer"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:76
 msgid "Link"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:77
 msgid "URL for a Data Schema file available on the Internet"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:84
 msgid "JSON"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:85
 msgid "Enter manually a Table Schema JSON object"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:89
 msgid "Clear"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:178
 #: ckanext/validation/templates/scheming/form_snippets/resource_schema.html:16
 msgid "Data Schema"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:180
 msgid "Data Schema URL"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/fanstatic/js/module-resource-schema.js:236
 msgid "Uploaded Data Schema"
-msgstr ""
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3092
+msgid "Schema"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3277
+msgid "Stop on first error"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3283
+msgid ""
+"Indicate whether validation should stop on the first error, or attempt to"
+" collect all errors."
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3310
+msgid "Ignore blank rows"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3316
+msgid ""
+"Indicate whether blank rows should be considered as errors, or simply "
+"ignored."
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3343
+#, fuzzy
+#| msgid "Duplicate Row"
+msgid "Ignore duplicate rows"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3349
+msgid ""
+"Indicate whether duplicate rows should be considered as errors, or simply"
+" ignored."
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3368
+#, fuzzy
+#| msgid "Error during validation"
+msgid "There is fatal error in validation"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3369
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3609
+msgid "Error details"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3581
+#, fuzzy
+msgid "Invalid"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3627
+msgid "The full list of error messages:"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3666
+msgid "Show next 10 rows"
+msgstr "Untranslated French"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3833
+#, fuzzy
+#| msgid "Invalid"
+msgid "Invalid "
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/package/resource_read.html:11
 msgid "Resource ID:"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/package/resource_read.html:15
 #: ckanext/validation/templates/package/resource_read.html:17
 #: ckanext/validation/templates/package/resource_read.html:21
 #: ckanext/validation/templates/package/resource_read.html:23
 msgid "URL:"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/scheming/form_snippets/foreign_keys.html:15
 msgid "External References (Foreign Keys)"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/scheming/form_snippets/validation_options.html:16
 msgid ""
 " You can pass a JSON object of validation options. See <a "
 "href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
 "options\">here</a> for more information."
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/validation/validation_read.html:4
 msgid "Validation Report"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/validation/validation_read.html:27
 msgid "Validation timestamp"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/validation/validation_read.html:29
 msgid "Duration"
-msgstr ""
+msgstr "Untranslated French"
 
 #: ckanext/validation/templates/validation/snippets/validation_report_dialog.html:6
 #: ckanext/validation/templates/validation/snippets/validation_report_dialog_bs2.html:4
 msgid "Data Validation Report"
-msgstr ""
-
-#~ msgid "Cannot validate the file. Please checkthe file extension is correct."
-#~ msgstr ""
-
+msgstr "Untranslated French"
