@@ -5,15 +5,16 @@ import cgi
 import json
 import os
 import ckan.plugins as p
+from ckan.common import _
 import ckantoolkit as t
 from custom_checks import (
     ForeignKeyCheck,
     geometry_check,
     UniqueConstraint,
-    enumerable_constraint
+    enumerable_constraint,
+    register_translator
 )
 from goodtables.registry import registry, spec
-from goodtables.error import spec as error_spec
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
 from ckanext.validation.logic import (
@@ -30,7 +31,8 @@ from ckanext.validation.helpers import (
     dump_json_value,
     bootstrap_version,
     show_validation_schemas,
-    validation_get_foreign_keys
+    validation_get_foreign_keys,
+    validation_get_goodtables_spec
 )
 from ckanext.validation.validators import (
     resource_schema_validator,
@@ -40,19 +42,13 @@ from ckanext.validation.utils import (
     get_create_mode_from_config,
     get_update_mode_from_config,
 )
-
+from ckan.lib.plugins import DefaultTranslation
 
 log = logging.getLogger(__name__)
 
-# Register custom checks here.
-# Not used check decorator because code should be kept in a seperate module.
-registry.register_check(ForeignKeyCheck, 'foreign-key', None, None, None)
-registry.register_check(geometry_check, 'missing-geometry', None, None, None)
-registry.register_check(UniqueConstraint, 'unique-constraint', None, None, None)
-registry.register_check(enumerable_constraint, 'enumerable-constraint', None, None, None)
 
+class ValidationPlugin(p.SingletonPlugin, DefaultTranslation):
 
-class ValidationPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurable)
     p.implements(p.IConfigurer)
     p.implements(p.IActions)
@@ -62,10 +58,10 @@ class ValidationPlugin(p.SingletonPlugin):
     p.implements(p.IPackageController, inherit=True)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IValidators)
+    p.implements(p.ITranslation)
 
     # IConfigurable
     def configure(self, config):
-
         # Check that if schema_directory given, it exists.
         schema_directory = config.get('ckanext.validation.schema_directory')
         if schema_directory:
@@ -137,11 +133,11 @@ to create the database tables:
             u'dump_json_value': dump_json_value,
             u'bootstrap_version': bootstrap_version,
             u'validator_show_validation_schemas': show_validation_schemas,
-            u'validation_get_foreign_keys': validation_get_foreign_keys
+            u'validation_get_foreign_keys': validation_get_foreign_keys,
+            u'validation_get_goodtables_spec': validation_get_goodtables_spec
         }
 
     # IResourceController
-
     def _process_schema_fields(self, data_dict):
         u'''
         Normalize the different ways of providing the `schema` field
@@ -165,7 +161,7 @@ to create the database tables:
         elif schema_url:
             if (not isinstance(schema_url, basestring) or
                     not schema_url.lower()[:4] == u'http'):
-                raise t.ValidationError({u'schema_url': 'Must be a valid URL'})
+                raise t.ValidationError({u'schema_url': _('Must be a valid URL')})
             data_dict[u'schema'] = schema_url
         elif schema_json:
             data_dict[u'schema'] = schema_json

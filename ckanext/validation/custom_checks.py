@@ -1,38 +1,12 @@
 # encoding: utf-8
-from goodtables import Error, spec
+from goodtables import Error
 import ckantoolkit as t
 from collections import namedtuple
 import logging
-from goodtables.checks.constraints_checks import create_check_constraint
+from ckan.common import _
+import goodtables.registry
 
 log = logging.getLogger(__name__)
-
-spec['errors']['foreign-key'] = {
-    "name": "Foreign Key Error",
-    "type": "schema",
-    "context": "body",
-    "weight": 7,
-    "message": 'Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}',
-    "description": "Values in this field must be taken from the foreign key field in the referenced data table."
-}
-
-spec['errors']['missing-geometry'] = {
-    "name": "Geometry Error",
-    "type": "schema",
-    "context": "body",
-    "weight": 7,
-    "message": 'There is no geometry specified for row {row_number}.',
-    "description": "Every record in a geometry file, must include geometry co-ordinates."
-}
-
-spec['errors']["enumerable-constraint"] = {
-    "name": "Invalid Value",
-    "type": "schema",
-    "context": "body",
-    "weight": 7,
-    "message": "The value {value} in row {row_number} and column {column_number} is not found in the list of valid values for this field: {constraint}",
-    "description": "This field value should be equal to one of the values in the list of valid values.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."
-}
 
 
 def enumerable_constraint(cells):
@@ -305,9 +279,9 @@ def register_translator():
     # Workaround until core translation function defaults to Flask
     from paste.registry import Registry
     from ckan.lib.cli import MockTranslator
+    from pylons import translator
     registry = Registry()
     registry.prepare()
-    from pylons import translator
     registry.register(translator, MockTranslator())
 
 
@@ -315,3 +289,246 @@ def merge_two_dicts(x, y):
     z = x.copy()   # start with x's keys and values
     z.update(y)    # modifies z with y's keys and values & returns None
     return z
+
+
+def setup_custom_goodtables():
+    # Override the goodtables spec to include translation and custom errors
+    goodtables.registry.spec = get_spec_override()
+
+    # Register custom checks here.
+    goodtables.registry.registry.register_check(
+        ForeignKeyCheck, 'foreign-key', None, None, None
+    )
+    goodtables.registry.registry.register_check(
+        geometry_check, 'missing-geometry', None, None, None
+    )
+    goodtables.registry.registry.register_check(
+        UniqueConstraint, 'unique-constraint', None, None, None
+    )
+    goodtables.registry.registry.register_check(
+        enumerable_constraint, 'enumerable-constraint', None, None, None
+    )
+
+
+def get_spec_override():
+    return {
+        "version": "1.0.0",
+        "errors": {
+            "io-error": {
+                "name": _("IO Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _('The data source returned an IO Error of type {error_type}'),
+                "description": _('Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it\'s not correct.')
+            },
+            "http-error": {
+                "name": _("HTTP Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _("The data source returned an HTTP error with a status code of {status_code}"),
+                "description": _("Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."),
+            },
+            "source-error": {
+                "name": _("Source Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _("The data source has not supported or has inconsistent contents; no tabular data can be extracted"),
+                "description": _("Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."),
+            },
+            "scheme-error": {
+                "name": _("Scheme Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _("The data source is in an unknown scheme; no tabular data can be extracted"),
+                "description": _("Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."),
+            },
+            "format-error": {
+                "name": _("Format Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _("The data source is in an unknown format; no tabular data can be extracted"),
+                "description": _("Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."),
+            },
+            "encoding-error": {
+                "name": _("Encoding Error"),
+                "type": "source",
+                "context": "table",
+                "weight": 100,
+                "message": _("The data source could not be successfully decoded with {encoding} encoding"),
+                "description": _("Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."),
+            },
+            "blank-header": {
+                "name": _("Blank Header"),
+                "type": "structure",
+                "context": "head",
+                "weight": 3,
+                "message": _("Header in column {column_number} is blank"),
+                "description": _("A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."),
+            },
+            "duplicate-header": {
+                "name": _("Duplicate Header"),
+                "type": "structure",
+                "context": "head",
+                "weight": 3,
+                "message": _("Header in column {column_number} is duplicated to header in column(s) {column_numbers}"),
+                "description": _("Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."),
+            },
+            "blank-row": {
+                "name": _("Blank Row"),
+                "type": "structure",
+                "context": "body",
+                "weight": 9,
+                "message": _("Row {row_number} is completely blank"),
+                "description": _("This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."),
+            },
+            "duplicate-row": {
+                "name": _("Duplicate Row"),
+                "type": "structure",
+                "context": "body",
+                "weight": 5,
+                "message": _("Row {row_number} is duplicated to row(s) {row_numbers}"),
+                "description": _("The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."),
+            },
+            "extra-value": {
+                "name": _("Extra Value"),
+                "type": "structure",
+                "context": "body",
+                "weight": 9,
+                "message": _("Row {row_number} has an extra value in column {column_number}"),
+                "description": _("This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."),
+            },
+            "missing-value": {
+                "name": _("Missing Value"),
+                "type": "structure",
+                "context": "body",
+                "weight": 9,
+                "message": _("Row {row_number} has a missing value in column {column_number}"),
+                "description": _("This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."),
+            },
+            "schema-error": {
+                "name": _("Table Schema Error"),
+                "type": "schema",
+                "context": "table",
+                "weight": 15,
+                "message": _("Table Schema error: {error_message}"),
+                "description": _("Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."),
+            },
+            "non-matching-header": {
+                "name": _("Non-Matching Header"),
+                "type": "schema",
+                "context": "head",
+                "weight": 9,
+                "message": _("Header in column {column_number} doesn't match field name {field_name} in the schema"),
+                "description": _("One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."),
+            },
+            "extra-header": {
+                "name": _("Extra Header"),
+                "type": "schema",
+                "context": "head",
+                "weight": 9,
+                "message": _("There is an extra header in column {column_number}"),
+                "description": _("The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."),
+            },
+            "missing-header": {
+                "name": _("Missing Header"),
+                "type": "schema",
+                "context": "head",
+                "weight": 9,
+                "message": _("There is a missing header in column {column_number}"),
+                "description": _("Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."),
+            },
+            "type-or-format-error": {
+                "name": _("Type or Format Error"),
+                "type": "schema",
+                "context": "body",
+                "weight": 9,
+                "message": _("The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}"),
+                "description": _("The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."),
+            },
+            "required-constraint": {
+                "name": _("Required Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 9,
+                "message": _("Column {column_number} is a required field, but row {row_number} has no value"),
+                "description": _("This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."),
+            },
+            "pattern-constraint": {
+                "name": _("Pattern Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}"),
+                "description": _("This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."),
+            },
+            "unique-constraint": {
+                "name": _("Unique Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 9,
+                "message": _("Rows {row_numbers} has unique constraint violation in column {column_number}"),
+                "description": _("This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."),
+            },
+            "enumerable-constraint": {
+                "name": _("Invalid Value"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} is not found in the list of valid values for this field: {constraint}"),
+                "description": _("This field value should be equal to one of the values in a pre-specified list.\n\n  Please update the value making sure it exactly matches one of the valid values in the specified list."),
+            },
+            "minimum-constraint": {
+                "name": _("Minimum Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}"),
+                "description": _("This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."),
+            },
+            "maximum-constraint": {
+                "name": _("Maximum Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}"),
+                "description": _("This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."),
+            },
+            "minimum-length-constraint": {
+                "name": _("Minimum Length Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}"),
+                "description": _("A length of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."),
+            },
+            "maximum-length-constraint": {
+                "name": _("Maximum Length Constraint"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}"),
+                "description": _("A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."),
+            },
+            "missing-geometry": {
+                "name": _("Geometry Error"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("There is no geometry specified for row {row_number}."),
+                "description": _("Every record in a geometry file, must include geometry co-ordinates.")
+            },
+            "foreign-key": {
+                "name": _("Area ID Error"),
+                "type": "schema",
+                "context": "body",
+                "weight": 7,
+                "message": _("Value in column {column_number} and row {row_number} is not found in the referenced data table: {resource_id}"),
+                "description": _("Area IDs must match those from the referenced location hierachy.  Please check the location hierachy.")
+            }
+        }
+    }
