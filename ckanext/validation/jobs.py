@@ -8,6 +8,7 @@ import re
 import requests
 from sqlalchemy.orm.exc import NoResultFound
 from goodtables import validate
+from ckan.common import _
 from ckan.model import Session
 import ckan.lib.uploader as uploader
 import ckantoolkit as t
@@ -16,6 +17,7 @@ import zipfile
 from helpers import validation_load_json_schema
 from collections import OrderedDict
 from ckanext.validation.model import Validation
+from custom_checks import setup_custom_goodtables
 
 log = logging.getLogger(__name__)
 
@@ -157,7 +159,7 @@ def run_validation_job(resource):
     else:
         validation.status = u'error'
         validation.error = {
-            'message': '\n'.join(report['warnings']) or u'No tables found'
+            'message': '\n'.join(report['warnings']) or _(u'No tables found')
         }
 
     validation.finished = datetime.datetime.utcnow()
@@ -187,8 +189,8 @@ def _load_dataframe(data, extension):
         df = _read_geojson_file(data)
     else:
         raise t.ValidationError({
-            'Incorrect Extension': ['Cannot validate the file. Please check'
-                                    'the file extension is correct.']
+            _('Incorrect Extension'): [_('Cannot validate the file. Please check '
+                                    'the file extension is correct.')]
         })
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
@@ -202,9 +204,9 @@ def _read_csv_file(data, extension=None):
         log.warning(e, exc_info=True)
         extension = "(" + extension + ")" if extension else ""
         raise t.ValidationError({
-            'Format': [
-                'Could not read your CSV file. Are you sure your specified '
-                'format {} is correct?'.format(extension)
+            _('Format'): [
+                _('Could not read your CSV file. Are you sure your specified '
+                  'format {} is correct?').format(extension)
             ]
         })
 
@@ -218,17 +220,17 @@ def _read_excel_file(data, extension=None):
         log.warning(e, exc_info=True)
         extension = "(" + extension + ")" if extension else ""
         raise t.ValidationError({
-            'Format': [
-                'Could not read your Excel file. Are you sure your specified '
-                'format {} is correct?'.format(extension)
+            _('Format'): [
+                _('Could not read your Excel file. Are you sure your specified '
+                  'format {} is correct?').format(extension)
             ]
         })
 
     # Can only validate excel files with one worksheet.
     if len(excel_file.sheet_names) != 1:
         raise t.ValidationError({
-            'Multiple Worksheets': ['Your Excel file must contain only '
-                                    'one worksheet for validation.']
+            _('Multiple Worksheets'): [_('Your Excel file must contain only '
+                                         'one worksheet for validation.')]
         })
 
     return df
@@ -245,7 +247,7 @@ def _read_geojson_file(geojson_path):
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
-            'GeoJSON': [u'Unable to import json: ' + str(e)]
+            'GeoJSON': [_(u'Unable to import json: ') + str(e)]
         })
 
     # Structure the data
@@ -259,7 +261,7 @@ def _read_geojson_file(geojson_path):
 
     except Exception as e:
         raise t.ValidationError({
-            'GeoJSON': [u'Unable to import geoJSON: ' + str(e)]
+            'GeoJSON': [_(u'Unable to import geoJSON: ') + str(e)]
         })
 
     # Create the dataframe and insert the headers as the first row
@@ -282,13 +284,13 @@ def _read_shape_file(shp_path):
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
-            'SHP File': [u'Could not unzip file: ' + str(e)]
+            _('SHP File'): [_(u'Could not unzip file: ') + str(e)]
         })
 
     shp_files = filter(lambda v: '.shp' in v, files)
     if len(shp_files) != 1:
         raise t.ValidationError({
-            'SHP File': [u'Zipped archive must contain exactly one .shp file.']
+            _('SHP File'): [_(u'Zipped archive must contain exactly one .shp file.')]
         })
 
     try:
@@ -320,7 +322,7 @@ def _read_shape_file(shp_path):
     except shapefile.ShapefileException as e:
         log.error(e)
         raise t.ValidationError({
-            'SHP File': [u'Not a valid shp file: ' + str(e)]
+            _('SHP File'): [_(u'Not a valid shp file: ') + str(e)]
         })
 
 
@@ -353,6 +355,7 @@ def _excel_string_io_wrapper(df):
 
 
 def _validate_table(source, _format=u'csv', schema=None, **options):
+    setup_custom_goodtables()
     report = validate(
         source,
         format=_format,
@@ -392,7 +395,7 @@ def _prep_foreign_keys(package, table_schema, resource, df):
 
         if form_field in resource.keys() and not resource[form_field]:
             raise t.ValidationError({
-                'Required Foreign Key Configuration': ['Missing {} field'.format(field)]
+                _('Required Foreign Key Configuration'): [_('Missing {} field').format(field)]
             })
 
         try:
@@ -436,9 +439,9 @@ def _reorder_columns(schema, df):
     errors = {}
     for field in set(required_field_order) - set(submitted_field_order):
         df[field] = pandas.np.NaN
-        error_key = "Missing {} column".format(field)
-        error_message = ("Uploaded data file is missing required "
-                         "column \"{}\"".format(field))
+        error_key = _("Missing {} column").format(field)
+        error_message = (_("Uploaded data file is missing required "
+                         "column \"{}\"").format(field))
         errors[error_key] = [error_message]
 
     if errors:

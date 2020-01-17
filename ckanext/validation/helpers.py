@@ -7,6 +7,7 @@ from ckanext.scheming.helpers import scheming_get_dataset_schema
 from schemed_table import SchemedTable
 import logging
 import requests
+from custom_checks import get_spec_override
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def get_validation_badge(resource, in_listing=False):
     badge_url = url_for_static(
         '/images/badges/data-{}-flat.svg'.format(status))
 
-    return '''
+    return u'''
 <a href="{validation_url}" class="validation-badge">
     <img src="{badge_url}" alt="{alt}" title="{title}"/>
 </a>'''.format(
@@ -193,3 +194,9 @@ def _files_from_directory(path, extension='.json'):
                 name = file.split(".json")[0]
                 listed_files[name] = os.path.join(root, file)
     return listed_files
+
+
+def validation_get_goodtables_spec():
+    spec_override = get_spec_override()
+    log.warning("Spec Override: {}".format(spec_override))
+    return json.dumps(spec_override, sort_keys=True)

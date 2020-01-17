@@ -1,0 +1,1100 @@
+# French translations for ckanext-validation.
+# Copyright (C) 2019 ORGANIZATION
+# This file is distributed under the same license as the ckanext-validation
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-validation 0.0.4\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-01-17 12:14+0000\n"
+"PO-Revision-Date: 2019-12-20 14:41+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ckanext/validation/controller.py:36
+msgid "Unauthorized to read this validation report"
+msgstr ""
+"Vous ne disposez pas des droits nécessaires pour consulter ce rapport de "
+"validation."
+
+#: ckanext/validation/controller.py:39
+msgid "No validation report exists for this resource"
+msgstr "Il n’existe aucun rapport de validation pour cette ressource."
+
+#: ckanext/validation/custom_checks.py:318
+msgid "IO Error"
+msgstr "Erreur IO"
+
+#: ckanext/validation/custom_checks.py:322
+msgid "The data source returned an IO Error of type {error_type}"
+msgstr "La source des données a émis une erreur IO de type {error_type}."
+
+#: ckanext/validation/custom_checks.py:323
+msgid ""
+"Data reading error because of IO error.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix path if it's not correct."
+msgstr ""
+"Impossible de lire les données en raison d’une erreur IO.\n"
+"\n"
+" Solution possible :\n"
+" - corrigez le chemin d’accès s’il est erroné."
+
+#: ckanext/validation/custom_checks.py:326
+msgid "HTTP Error"
+msgstr "Erreur HTTP"
+
+#: ckanext/validation/custom_checks.py:330
+msgid "The data source returned an HTTP error with a status code of {status_code}"
+msgstr ""
+"La source des données a émis une erreur HTTP comportant un code de statut"
+" {status_code}."
+
+#: ckanext/validation/custom_checks.py:331
+msgid ""
+"Data reading error because of HTTP error.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix url link if it's not correct."
+msgstr ""
+"Impossible de lire les données en raison d’une erreur HTTP.\n"
+"\n"
+" Solution possible :\n"
+" - corrigez le lien url s’il est erroné."
+
+#: ckanext/validation/custom_checks.py:334
+msgid "Source Error"
+msgstr "Erreur de source"
+
+#: ckanext/validation/custom_checks.py:338
+msgid ""
+"The data source has not supported or has inconsistent contents; no "
+"tabular data can be extracted"
+msgstr ""
+"La source des données est incompatible avec le contenu ou comporte du "
+"contenu incohérent ; impossible d’extraire des données tabulaires."
+
+#: ckanext/validation/custom_checks.py:339
+msgid ""
+"Data reading error because of not supported or inconsistent contents.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data contents (e.g. change JSON data to array or arrays/objects).\n"
+" - Set correct source settings in {validator}."
+msgstr ""
+"Impossible de lire les données en raison d’un contenu incompatible ou "
+"incohérent.\n"
+"\n"
+" Solutions possibles :\n"
+" - corrigez le contenu des données (par exemple, convertissez les données"
+" JSON en tableau ou tableaux/objets),\n"
+" - paramétrez correctement la source dans {validator}."
+
+#: ckanext/validation/custom_checks.py:342
+msgid "Scheme Error"
+msgstr "Erreur de schéma"
+
+#: ckanext/validation/custom_checks.py:346
+msgid "The data source is in an unknown scheme; no tabular data can be extracted"
+msgstr ""
+"La source des données comporte un schéma inconnu ; impossible d’extraire "
+"des données tabulaires."
+
+#: ckanext/validation/custom_checks.py:347
+msgid ""
+"Data reading error because of incorrect scheme.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n"
+" - Set correct scheme in {validator}."
+msgstr ""
+"Impossible de lire les données en raison d’un schéma erroné.\n"
+"\n"
+" Solutions possibles :\n"
+" - corrigez le schéma des données (par exemple, convertissez le schéma "
+"ftp en http),\n"
+" - définissez un schéma exact dans {validator}."
+
+#: ckanext/validation/custom_checks.py:350
+msgid "Format Error"
+msgstr "Erreur de format"
+
+#: ckanext/validation/custom_checks.py:354
+msgid "The data source is in an unknown format; no tabular data can be extracted"
+msgstr ""
+"La source des données comporte un format inconnu ; impossible d’extraire "
+"des données tabulaires."
+
+#: ckanext/validation/custom_checks.py:355
+msgid ""
+"Data reading error because of incorrect format.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data format (e.g. change file extension from `txt` to `csv`).\n"
+" - Set correct format in {validator}."
+msgstr ""
+"Impossible de lire les données en raison d’un format erroné.\n"
+"\n"
+" Solutions possibles :\n"
+" - corrigez le format des données (par exemple, convertissez l’extension "
+"du fichier txt en csv),\n"
+" - définissez un format exact dans {validator}."
+
+#: ckanext/validation/custom_checks.py:358
+msgid "Encoding Error"
+msgstr "Erreur de codage"
+
+#: ckanext/validation/custom_checks.py:362
+msgid "The data source could not be successfully decoded with {encoding} encoding"
+msgstr "Impossible de décoder la source des données avec le codage {encoding}."
+
+#: ckanext/validation/custom_checks.py:363
+msgid ""
+"Data reading error because of an encoding problem.\n"
+"\n"
+" How it could be resolved:\n"
+" - Fix data source if it's broken.\n"
+" - Set correct encoding in {validator}."
+msgstr ""
+"Impossible de lire les données en raison d’un problème de codage.\n"
+"\n"
+" Solutions possibles :\n"
+"- réparez la source des données si elle est endommagée,\n"
+"- définissez un codage exact dans {validator}."
+
+#: ckanext/validation/custom_checks.py:366
+msgid "Blank Header"
+msgstr "En-tête vide"
+
+#: ckanext/validation/custom_checks.py:370
+msgid "Header in column {column_number} is blank"
+msgstr "L’en-tête de la colonne {column_number} est vide."
+
+#: ckanext/validation/custom_checks.py:371
+msgid ""
+"A column in the header row is missing a value. Column names should be "
+"provided.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column name to the first row of the data source.\n"
+" - If the first row starts with, or ends with a comma, remove it.\n"
+" - If this error should be ignored disable `blank-header` check in "
+"{validator}."
+msgstr ""
+"Valeur manquante dans une colonne de la ligne en-têtes. Le nom des "
+"colonnes doit être indiqué.\n"
+"\n"
+" Solutions possibles :\n"
+" - ajoutez le nom de colonne manquant dans la première ligne de la source"
+" des données,\n"
+" - si la première ligne commence ou se termine par une virgule, "
+"supprimez-la,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « en-"
+"tête vide » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:374
+msgid "Duplicate Header"
+msgstr "En-tête existant déjà"
+
+#: ckanext/validation/custom_checks.py:378
+msgid ""
+"Header in column {column_number} is duplicated to header in column(s) "
+"{column_numbers}"
+msgstr ""
+"L’en-tête de la colonne {column_number} est identique à l’en-tête de "
+"la/des colonnes(s) {column_numbers}."
+
+#: ckanext/validation/custom_checks.py:379
+msgid ""
+"Two columns in the header row have the same value. Column names should be"
+" unique.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column name to the first row of the data.\n"
+" - If the first row starts with, or ends with a comma, remove it.\n"
+" - If this error should be ignored disable `duplicate-header` check in "
+"{validator}."
+msgstr ""
+"Deux colonnes de la ligne en-têtes comportent la même valeur. Le nom des "
+"colonnes doit être unique.\n"
+"\n"
+" Solutions possibles :\n"
+" - ajoutez le nom de colonne manquant dans la première ligne de la source"
+" des données,\n"
+" - si la première ligne commence ou se termine par une virgule, "
+"supprimez-la,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « en-"
+"tête existant déjà » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:382
+msgid "Blank Row"
+msgstr "Ligne vide"
+
+#: ckanext/validation/custom_checks.py:386
+msgid "Row {row_number} is completely blank"
+msgstr "La ligne {row_number} est vide."
+
+#: ckanext/validation/custom_checks.py:387
+msgid ""
+"This row is empty. A row should contain at least one value.\n"
+"\n"
+" How it could be resolved:\n"
+" - Delete the row.\n"
+" - If this error should be ignored disable `blank-row` check in "
+"{validator}."
+msgstr ""
+"Cette ligne est vide. Les lignes doivent comporter au moins une valeur.\n"
+"\n"
+" Solutions possibles :\n"
+" - supprimez la ligne,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"ligne vide » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:390
+msgid "Duplicate Row"
+msgstr "Ligne existant déjà"
+
+#: ckanext/validation/custom_checks.py:394
+msgid "Row {row_number} is duplicated to row(s) {row_numbers}"
+msgstr "La ligne {row_number} est identique à la/aux ligne(s) {row_numbers}."
+
+#: ckanext/validation/custom_checks.py:395
+msgid ""
+"The exact same data has been seen in another row.\n"
+"\n"
+" How it could be resolved:\n"
+" - If some of the data is incorrect, correct it.\n"
+" - If the whole row is an incorrect duplicate, remove it.\n"
+" - If this error should be ignored disable `duplicate-row` check in "
+"{validator}."
+msgstr ""
+"Des données identiques sont déjà présentes dans une autre ligne.\n"
+"\n"
+" Solutions possibles :\n"
+" - si une partie des données est erronée, corrigez-les,\n"
+" - si l’ensemble de la ligne est un doublon erroné, supprimez-la,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"ligne existant déjà » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:398
+msgid "Extra Value"
+msgstr "Valeur supplémentaire"
+
+#: ckanext/validation/custom_checks.py:402
+msgid "Row {row_number} has an extra value in column {column_number}"
+msgstr ""
+"La ligne {row_number} comporte une valeur supplémentaire dans la colonne "
+"{column_number}."
+
+#: ckanext/validation/custom_checks.py:403
+msgid ""
+"This row has more values compared to the header row (the first row in the"
+" data source). A key concept is that all the rows in tabular data must "
+"have the same number of columns.\n"
+"\n"
+" How it could be resolved:\n"
+" - Check data has an extra comma between the values in this row.\n"
+" - If this error should be ignored disable `extra-value` check in "
+"{validator}."
+msgstr ""
+"Cette ligne comporte plus de valeurs que la ligne d’en-têtes (la première"
+" ligne de la source des données). Dans les données tabulaires, toutes les"
+" lignes doivent comporter un nombre identique de colonnes. Il s’agit là "
+"d’un principe important.\n"
+"\n"
+"Solutions possibles :\n"
+" - vérifiez si une virgule supplémentaire s’est glissée entre les valeurs"
+" de cette ligne,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur supplémentaire » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:406
+msgid "Missing Value"
+msgstr "Valeur manquante"
+
+#: ckanext/validation/custom_checks.py:410
+msgid "Row {row_number} has a missing value in column {column_number}"
+msgstr ""
+"La ligne {row_number} comporte une valeur manquante dans la colonne "
+"{column_number}."
+
+#: ckanext/validation/custom_checks.py:411
+msgid ""
+"This row has less values compared to the header row (the first row in the"
+" data source). A key concept is that all the rows in tabular data must "
+"have the same number of columns.\n"
+"\n"
+" How it could be resolved:\n"
+" - Check data is not missing a comma between the values in this row.\n"
+" - If this error should be ignored disable `missing-value` check in "
+"{validator}."
+msgstr ""
+"Cette ligne comporte moins de valeurs que la ligne d’en-têtes (la "
+"première ligne de la source des données). Dans les données tabulaires, "
+"toutes les lignes doivent comporter un nombre identique de colonnes. Il "
+"s’agit là d’un principe important.\n"
+"\n"
+"Solutions possibles :\n"
+" - vérifiez qu’il ne manque pas une virgule entre les valeurs de cette "
+"ligne,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur manquante » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:414
+msgid "Table Schema Error"
+msgstr "Erreur de schéma du tableau"
+
+#: ckanext/validation/custom_checks.py:418
+msgid "Table Schema error: {error_message}"
+msgstr "Erreur de schéma du tableau : {error_message}"
+
+#: ckanext/validation/custom_checks.py:419
+msgid ""
+"Provided schema is not valid.\n"
+"\n"
+" How it could be resolved:\n"
+" - Update schema descriptor to be a valid descriptor\n"
+" - If this error should be ignored disable schema checks in {validator}."
+msgstr ""
+"Le schéma fourni n’est pas valide.\n"
+"\n"
+" Solutions possibles :\n"
+" - corrigez le descripteur du schéma de manière à ce qu’il soit valide,\n"
+" - si vous souhaitez ignorer cette erreur, décochez les vérifications "
+"correspondant au schéma dans {validator}."
+
+#: ckanext/validation/custom_checks.py:422
+msgid "Non-Matching Header"
+msgstr "En-tête incohérent"
+
+#: ckanext/validation/custom_checks.py:426
+msgid ""
+"Header in column {column_number} doesn't match field name {field_name} in"
+" the schema"
+msgstr ""
+"L’en-tête de la colonne {column_number} ne correspond pas au nom du champ"
+" {field_name} dans le schéma."
+
+#: ckanext/validation/custom_checks.py:427
+msgid ""
+"One of the data source headers doesn't match the field name defined in "
+"the schema.\n"
+"\n"
+" How it could be resolved:\n"
+" - Rename header in the data source or field in the schema\n"
+" - If this error should be ignored disable `non-matching-header` check in"
+" {validator}."
+msgstr ""
+"Dans la source des données, l’un des en-têtes ne correspond pas au nom de"
+" champ défini dans le schéma.\n"
+"\n"
+" Solutions possibles :\n"
+" - renommez l’en-tête dans la source des données ou le champ dans le "
+"schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « en-"
+"tête incohérent » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:430
+msgid "Extra Header"
+msgstr "En-tête supplémentaire"
+
+#: ckanext/validation/custom_checks.py:434
+msgid "There is an extra header in column {column_number}"
+msgstr "La colonne {column_number} comporte un en-tête supplémentaire."
+
+#: ckanext/validation/custom_checks.py:435
+msgid ""
+"The first row of the data source contains header that doesn't exist in "
+"the schema.\n"
+"\n"
+" How it could be resolved:\n"
+" - Remove the extra column from the data source or add the missing field "
+"to the schema\n"
+" - If this error should be ignored disable `extra-header` check in "
+"{validator}."
+msgstr ""
+"La première ligne de la source des données n’existe pas dans le schéma.\n"
+"\n"
+" Solutions possibles :\n"
+" - supprimez la colonne supplémentaire dans la source des données ou "
+"ajoutez le champ manquant dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « en-"
+"tête supplémentaire » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:438
+msgid "Missing Header"
+msgstr "En-tête manquant"
+
+#: ckanext/validation/custom_checks.py:442
+msgid "There is a missing header in column {column_number}"
+msgstr "Il manque un en-tête dans la colonne {column_number}."
+
+#: ckanext/validation/custom_checks.py:443
+msgid ""
+"Based on the schema there should be a header that is missing in the first"
+" row of the data source.\n"
+"\n"
+" How it could be resolved:\n"
+" - Add the missing column to the data source or remove the extra field "
+"from the schema\n"
+" - If this error should be ignored disable `missing-header` check in "
+"{validator}."
+msgstr ""
+"D’après le schéma, il manque un en-tête qui devrait être présent dans la "
+"première ligne de la source des données.\n"
+"\n"
+" Solutions possibles :\n"
+" - ajoutez la colonne manquante dans la source des données ou supprimez "
+"le champ supplémentaire dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « en-"
+"tête manquant » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:446
+msgid "Type or Format Error"
+msgstr "Erreur de type ou de format"
+
+#: ckanext/validation/custom_checks.py:450
+msgid ""
+"The value {value} in row {row_number} and column {column_number} is not "
+"type {field_type} and format {field_format}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas au type {field_type} et au format "
+"{field_format}."
+
+#: ckanext/validation/custom_checks.py:451
+msgid ""
+"The value does not match the schema type and format for this field.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If this value is correct, adjust the type and/or format.\n"
+" - To ignore the error, disable the `type-or-format-error` check in "
+"{validator}. In this case all schema checks for row values will be "
+"ignored."
+msgstr ""
+"La valeur ne correspond pas au type et format de schéma pour ce champ.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, modifiez le type et/ou le format,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"erreur de type ou de format » dans {validator}. Par la suite, toutes les "
+"vérifications du schéma pour les valeurs de cette ligne seront ignorées."
+
+#: ckanext/validation/custom_checks.py:454
+msgid "Required Constraint"
+msgstr "Valeur obligatoire"
+
+#: ckanext/validation/custom_checks.py:458
+msgid ""
+"Column {column_number} is a required field, but row {row_number} has no "
+"value"
+msgstr ""
+"La ligne {row_number} ne comporte aucune valeur, alors que la colonne "
+"{column_number} correspond à un champ obligatoire."
+
+#: ckanext/validation/custom_checks.py:459
+msgid ""
+"This field is a required field, but it contains no value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove the `required` constraint from the "
+"schema.\n"
+" - If this error should be ignored disable `required-constraint` check in"
+" {validator}."
+msgstr ""
+"Ce champ ne comporte aucune valeur, alors qu’il est obligatoire.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, retirez le paramètre « obligatoire » dans "
+"le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur obligatoire » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:462
+msgid "Pattern Constraint"
+msgstr "Forme obligatoire"
+
+#: ckanext/validation/custom_checks.py:466
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the pattern constraint of {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas à la forme obligatoire définie dans "
+"{constraint}."
+
+#: ckanext/validation/custom_checks.py:467
+msgid ""
+"This field value should conform to constraint pattern.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `pattern` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `pattern-constraint` check in "
+"{validator}."
+msgstr ""
+"La valeur de ce champ doit correspondre à la forme obligatoire.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, retirez ou affinez la forme obligatoire "
+"dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"forme obligatoire » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:470
+msgid "Unique Constraint"
+msgstr "Valeur unique obligatoire"
+
+#: ckanext/validation/custom_checks.py:474
+msgid ""
+"Rows {row_numbers} has unique constraint violation in column "
+"{column_number}"
+msgstr ""
+"Les lignes {row_numbers} ne correspondent pas au paramètre de valeur "
+"unique obligatoire dans la colonne {column_number}."
+
+#: ckanext/validation/custom_checks.py:475
+msgid ""
+"This field is a unique field but it contains a value that has been used "
+"in another row.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then the values in this column are not unique. "
+"Remove the `unique` constraint from the schema.\n"
+" - If this error should be ignored disable `unique-constraint` check in "
+"{validator}."
+msgstr ""
+"Ce champ comporte une valeur déjà présente dans une autre ligne, alors "
+"que les valeurs doivent obligatoirement être uniques.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, cela signifie que les valeurs de cette "
+"colonne ne sont pas uniques. Par conséquent, retirez le paramètre "
+"obligatoire « unique » dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur unique obligatoire » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:478
+msgid "Invalid Value"
+msgstr "Valeur non valide"
+
+#: ckanext/validation/custom_checks.py:482
+msgid ""
+"The value {value} in row {row_number} and column {column_number} is not "
+"found in the list of valid values for this field: {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne figure pas parmi les valeurs valides pour ce champ : "
+"{constraint}."
+
+#: ckanext/validation/custom_checks.py:483
+msgid ""
+"This field value should be equal to one of the values in a pre-specified "
+"list.\n"
+"\n"
+"  Please update the value making sure it exactly matches one of the valid"
+" values in the specified list."
+msgstr ""
+"La valeur de ce champ doit être égale à l’une des valeurs figurant dans "
+"une liste prédéfinie.\n"
+"\n"
+"  Veuillez corriger cette valeur en veillant à ce qu’elle soit identique "
+"à l’une des valeurs valides prédéfinies."
+
+#: ckanext/validation/custom_checks.py:486
+msgid "Minimum Constraint"
+msgstr "Valeur minimale"
+
+#: ckanext/validation/custom_checks.py:490
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the minimum constraint of {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas à la valeur minimale de {constraint}."
+
+#: ckanext/validation/custom_checks.py:491
+msgid ""
+"This field value should be greater or equal than constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `minimum` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `minimum-constraint` check in "
+"{validator}."
+msgstr ""
+"La valeur de ce champ doit être supérieure ou égale à la valeur minimale."
+"\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, supprimez ou affinez la valeur minimale "
+"dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur minimale » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:494
+msgid "Maximum Constraint"
+msgstr "Valeur maximale"
+
+#: ckanext/validation/custom_checks.py:498
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the maximum constraint of {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas à la valeur maximale de {constraint}."
+
+#: ckanext/validation/custom_checks.py:499
+msgid ""
+"This field value should be less or equal than constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `maximum` constraint in"
+" the schema.\n"
+" - If this error should be ignored disable `maximum-constraint` check in "
+"{validator}."
+msgstr ""
+"La valeur de ce champ doit être inférieure ou égale à la valeur maximale."
+"\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, supprimez ou affinez la valeur maximale "
+"dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"valeur maximale » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:502
+msgid "Minimum Length Constraint"
+msgstr "Longueur minimale"
+
+#: ckanext/validation/custom_checks.py:506
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the minimum length constraint of {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas à la longueur minimale de {constraint}."
+
+#: ckanext/validation/custom_checks.py:507
+msgid ""
+"A length of this field value should be greater or equal than schema "
+"constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `minimumLength` "
+"constraint in the schema.\n"
+" - If this error should be ignored disable `minimum-length-constraint` "
+"check in {validator}."
+msgstr ""
+"Dans ce champ, la longueur de la valeur doit être supérieure ou égale à "
+"la valeur définie dans le schéma.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, supprimez ou affinez la longueur minimale "
+"dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"longueur minimale » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:510
+msgid "Maximum Length Constraint"
+msgstr "Longueur maximale"
+
+#: ckanext/validation/custom_checks.py:514
+msgid ""
+"The value {value} in row {row_number} and column {column_number} does not"
+" conform to the maximum length constraint of {constraint}"
+msgstr ""
+"La valeur {value} dans la ligne {row_number} et la colonne "
+"{column_number} ne correspond pas à la longueur maximale de {constraint}."
+
+#: ckanext/validation/custom_checks.py:515
+msgid ""
+"A length of this field value should be less or equal than schema "
+"constraint value.\n"
+"\n"
+" How it could be resolved:\n"
+" - If this value is not correct, update the value.\n"
+" - If value is correct, then remove or refine the `maximumLength` "
+"constraint in the schema.\n"
+" - If this error should be ignored disable `maximum-length-constraint` "
+"check in {validator}."
+msgstr ""
+"Dans ce champ, la longueur de la valeur doit être inférieure ou égale à "
+"la valeur définie dans le schéma.\n"
+"\n"
+" Solutions possibles :\n"
+" - si cette valeur est erronée, corrigez-la,\n"
+" - si cette valeur est exacte, supprimez ou affinez la longueur maximale "
+"dans le schéma,\n"
+" - si vous souhaitez ignorer cette erreur, décochez la vérification « "
+"longueur maximale » dans {validator}."
+
+#: ckanext/validation/custom_checks.py:518
+msgid "Geometry Error"
+msgstr "Erreur de géométrie"
+
+#: ckanext/validation/custom_checks.py:522
+msgid "There is no geometry specified for row {row_number}."
+msgstr "Aucune géométrie n’a été définie pour la colonne {row_number}."
+
+#: ckanext/validation/custom_checks.py:523
+msgid "Every record in a geometry file, must include geometry co-ordinates."
+msgstr ""
+"Dans un fichier de géométrie, tous les enregistrements doivent comprendre"
+" des coordonnées géométriques."
+
+#: ckanext/validation/custom_checks.py:526
+msgid "Area ID Error"
+msgstr "Erreur d’identifiant de zone"
+
+#: ckanext/validation/custom_checks.py:530
+msgid ""
+"Value in column {column_number} and row {row_number} is not found in the "
+"referenced data table: {resource_id}"
+msgstr ""
+"La valeur de la colonne {column_number} et de la ligne {row_number} ne "
+"figure pas dans le tableau de données servant de référence : "
+"{resource_id}."
+
+#: ckanext/validation/custom_checks.py:531
+msgid ""
+"Area IDs must match those from the referenced location hierachy.  Please "
+"check the location hierachy."
+msgstr ""
+"Les identifiants de zones doivent correspondre aux identifiants figurant "
+"dans la hiérarchie des lieux définie. Veuillez vérifier cette dernière."
+
+#: ckanext/validation/helpers.py:25
+msgid "Valid data"
+msgstr "Données valides"
+
+#: ckanext/validation/helpers.py:26
+msgid "Invalid data"
+msgstr "Données non valides"
+
+#: ckanext/validation/helpers.py:27
+msgid "Error during validation"
+msgstr "Erreur de validation"
+
+#: ckanext/validation/helpers.py:28
+msgid "Data validation unknown"
+msgstr "Validation des données inconnue"
+
+#: ckanext/validation/helpers.py:63
+msgid ""
+"\n"
+"There are validation issues with this file, please see the\n"
+"<a {params}>report</a> for details. Once you have resolved the issues,\n"
+"click the button below to replace the file."
+msgstr ""
+"\n"
+"Ce fichier comporte des problèmes de validation. Consultez le\n"
+"<a {params}>rapport</a> pour plus de détails. Une fois ces problèmes "
+"résolus,\n"
+"cliquez sur le bouton ci-dessous pour remplacer le fichier."
+
+#: ckanext/validation/jobs.py:162
+msgid "No tables found"
+msgstr "Aucun tableau trouvé"
+
+#: ckanext/validation/jobs.py:192
+msgid "Incorrect Extension"
+msgstr "Extension erronée"
+
+#: ckanext/validation/jobs.py:192
+msgid "Cannot validate the file. Please check the file extension is correct."
+msgstr ""
+"Impossible de valider le fichier. Veuillez vérifier que l’extension du "
+"fichier est exacte."
+
+#: ckanext/validation/jobs.py:207 ckanext/validation/jobs.py:223
+msgid "Format"
+msgstr "Format"
+
+#: ckanext/validation/jobs.py:208
+msgid ""
+"Could not read your CSV file. Are you sure your specified format {} is "
+"correct?"
+msgstr ""
+"Impossible de lire votre fichier CSV. Êtes-vous sûr que le format indiqué"
+" {} est exact ?"
+
+#: ckanext/validation/jobs.py:224
+msgid ""
+"Could not read your Excel file. Are you sure your specified format {} is "
+"correct?"
+msgstr ""
+"Impossible de lire votre fichier Excel. Êtes-vous sûr que le format "
+"indiqué {} est exact ?"
+
+#: ckanext/validation/jobs.py:232
+msgid "Multiple Worksheets"
+msgstr "Feuilles de calcul multiples"
+
+#: ckanext/validation/jobs.py:232
+msgid "Your Excel file must contain only one worksheet for validation."
+msgstr "Votre fichier Excel doit contenir une seule feuille de calcul à valider."
+
+#: ckanext/validation/jobs.py:250
+msgid "Unable to import json: "
+msgstr "Impossible d’importer json :"
+
+#: ckanext/validation/jobs.py:264
+msgid "Unable to import geoJSON: "
+msgstr "Impossible d’importer geoJSON :"
+
+#: ckanext/validation/jobs.py:287 ckanext/validation/jobs.py:293
+#: ckanext/validation/jobs.py:325
+msgid "SHP File"
+msgstr "Fichier SHP"
+
+#: ckanext/validation/jobs.py:287
+msgid "Could not unzip file: "
+msgstr "Impossible de décompresser le fichier :"
+
+#: ckanext/validation/jobs.py:293
+msgid "Zipped archive must contain exactly one .shp file."
+msgstr "L’archive compressée doit contenir exactement un fichier .shp."
+
+#: ckanext/validation/jobs.py:325
+msgid "Not a valid shp file: "
+msgstr "Le fichier n’est pas un fichier shp valide :"
+
+#: ckanext/validation/jobs.py:398
+msgid "Required Foreign Key Configuration"
+msgstr "Configuration de clé étrangère requise"
+
+#: ckanext/validation/jobs.py:398
+msgid "Missing {} field"
+msgstr "Champ {} manquant"
+
+#: ckanext/validation/jobs.py:442
+msgid "Missing {} column"
+msgstr "Colonne {} manquante"
+
+#: ckanext/validation/jobs.py:443
+msgid "Uploaded data file is missing required column \"{}\""
+msgstr ""
+"Le fichier de données transféré ne comporte pas la colonne obligatoire "
+"\"{}\""
+
+#: ckanext/validation/logic.py:86 ckanext/validation/logic.py:165
+#: ckanext/validation/logic.py:197
+msgid "Missing value"
+msgstr "Valeur manquante"
+
+#: ckanext/validation/logic.py:101
+msgid "Unsupported resource format.Must be one of {}"
+msgstr "Format de ressource incompatible. Doit obligatoirement être un format {}."
+
+#: ckanext/validation/logic.py:108
+msgid "Resource must have a valid URL or an uploaded file"
+msgstr "La ressource doit comporter une URL valide ou un fichier transféré."
+
+#: ckanext/validation/logic.py:545 ckanext/validation/logic.py:559
+msgid "Resource was not found."
+msgstr "La ressource n’a pas été trouvée."
+
+#: ckanext/validation/plugin.py:164
+msgid "Must be a valid URL"
+msgstr "Doit être une URL valide."
+
+#: ckanext/validation/validators.py:26
+msgid "Invalid Table Schema descriptor: {}"
+msgstr "Descripteur schéma tableau non valide : {}"
+
+#: ckanext/validation/validators.py:30
+msgid "JSON error in Table Schema descriptor: {}"
+msgstr "Erreur JSON dans le descripteur schéma tableau : {}"
+
+#: ckanext/validation/validators.py:41
+msgid "Invalid Table Schema: {}"
+msgstr "Schéma tableau non valide : {}"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:68
+msgid "Upload"
+msgstr "Télécharger"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:69
+msgid "Upload a Data Schema file from your computer"
+msgstr "Transférez un fichier de schéma de données à partir de votre ordinateur."
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:76
+msgid "Link"
+msgstr "Lien"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:77
+msgid "URL for a Data Schema file available on the Internet"
+msgstr "URL d’un fichier de schéma de données disponible sur Internet"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:84
+msgid "JSON"
+msgstr "JSON"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:85
+msgid "Enter manually a Table Schema JSON object"
+msgstr "Saisissez manuellement un objet JSON de schéma tableau."
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:89
+msgid "Clear"
+msgstr "Effacer"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:178
+#: ckanext/validation/templates/scheming/form_snippets/resource_schema.html:16
+msgid "Data Schema"
+msgstr "Schéma de données"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:180
+msgid "Data Schema URL"
+msgstr "URL Schéma de données"
+
+#: ckanext/validation/fanstatic/js/module-resource-schema.js:236
+msgid "Uploaded Data Schema"
+msgstr "Schéma de données transférées"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3092
+msgid "Schema"
+msgstr "Schéma"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3277
+msgid "Stop on first error"
+msgstr "Arrêter à la première erreur"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3283
+msgid ""
+"Indicate whether validation should stop on the first error, or attempt to"
+" collect all errors."
+msgstr ""
+"Indiquez si la validation doit s’arrêter à la première erreur ou tenter "
+"de compiler toutes les erreurs."
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3310
+msgid "Ignore blank rows"
+msgstr "Ignorer les lignes vides"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3316
+msgid ""
+"Indicate whether blank rows should be considered as errors, or simply "
+"ignored."
+msgstr ""
+"Indiquez si les lignes vides doivent être considérées comme des erreurs "
+"ou être simplement ignorées."
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3343
+msgid "Ignore duplicate rows"
+msgstr "Ignorer les lignes doublons"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3349
+msgid ""
+"Indicate whether duplicate rows should be considered as errors, or simply"
+" ignored."
+msgstr ""
+"Indiquez si les lignes existant déjà doivent être considérées comme des "
+"erreurs ou être simplement ignorées."
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3368
+msgid "There is fatal error in validation"
+msgstr "La validation présente une erreur fatale."
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3369
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3609
+msgid "Error details"
+msgstr "Détails de l’erreur"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3581
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3833
+msgid "Invalid"
+msgstr "Non valide"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3627
+msgid "The full list of error messages:"
+msgstr "Liste complète des messages d’erreurs :"
+
+#: ckanext/validation/fanstatic/vendor/goodtables-ui/goodtables-ui.js:3666
+msgid "Show next 10 rows"
+msgstr "Afficher les 10 lignes suivantes"
+
+#: ckanext/validation/templates/package/resource_read.html:11
+msgid "Resource ID:"
+msgstr "Identifiant ressource :"
+
+#: ckanext/validation/templates/package/resource_read.html:15
+#: ckanext/validation/templates/package/resource_read.html:17
+#: ckanext/validation/templates/package/resource_read.html:21
+#: ckanext/validation/templates/package/resource_read.html:23
+msgid "URL:"
+msgstr "URL :"
+
+#: ckanext/validation/templates/scheming/form_snippets/foreign_keys.html:10
+msgid "Edit Foreign Key References"
+msgstr "Configuration de clé étrangère"
+
+#: ckanext/validation/templates/scheming/form_snippets/foreign_keys.html:15
+msgid "External References (Foreign Keys)"
+msgstr "Références externes (clés étrangères)"
+
+#: ckanext/validation/templates/scheming/form_snippets/foreign_keys.html:16
+msgid "Browse Data"
+msgstr "Parcourir les données"
+
+#: ckanext/validation/templates/scheming/form_snippets/foreign_keys.html:20
+msgid ""
+"This resource table has fields whose values must match those specified in"
+" another table. For each field below, <a target=\"_blank\" "
+"href=\"/dataset\">please browse the data</a> to find the other table "
+"where these values are defined. Copy and paste the resource's ID below. "
+"E.g. For area_id you should find your finalised Geographic Data package, "
+"and copy and paste the resource ID of the location hierarchy below."
+msgstr ""
+
+#: ckanext/validation/templates/scheming/form_snippets/validation_options.html:16
+msgid ""
+" You can pass a JSON object of validation options. See <a "
+"href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
+"options\">here</a> for more information."
+msgstr ""
+"Vous pouvez passer un objet JSON correspondant à des options de "
+"validation. Plus d’informations <a "
+"href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
+"options\">ici</a>."
+
+#: ckanext/validation/templates/validation/validation_read.html:4
+msgid "Validation Report"
+msgstr "Rapport de validation"
+
+#: ckanext/validation/templates/validation/validation_read.html:27
+msgid "Validation timestamp"
+msgstr "Horodatage validation"
+
+#: ckanext/validation/templates/validation/validation_read.html:29
+msgid "Duration"
+msgstr "Durée"
+
+#: ckanext/validation/templates/validation/snippets/validation_report_dialog.html:6
+#: ckanext/validation/templates/validation/snippets/validation_report_dialog_bs2.html:4
+msgid "Data Validation Report"
+msgstr "Rapport de validation des données"
+
