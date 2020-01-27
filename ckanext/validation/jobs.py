@@ -479,7 +479,7 @@ def _correct_column_ordering(errors, column_mapping):
         x['message'] = re.sub(
             r'(olumn)( |-)([0-9]*)',
             'olumn {}'.format(new_col),
-            x['message']
+            x.get('message', '')
         )
         return x
     logging.debug("Fixing Column Order For Errors : {}".format(

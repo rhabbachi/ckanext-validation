@@ -195,8 +195,8 @@ class ForeignKeyCheck(object):
                         'foreign-key',
                         cell,
                         row_number=cell['row-number'],
-                        message=("No foreign-key reference found. "
-                                 "Does the referenced resource exist?")
+                        message=_("No foreign-key reference found. "
+                                  "Does the referenced resource exist?")
                     ))
                     self._missing_ref[field.descriptor.get('name')] = True
 
@@ -208,7 +208,10 @@ class ForeignKeyCheck(object):
                         message_substitutions={
                             'resource_id': resource_id,
                             'resource_url': resource_url
-                        }
+                        },
+                        message=_("Value in column {column_number} and row "
+                                  "{row_number} is not found in the "
+                                  "referenced data table: {resource_id}")
                     ))
 
         return errors
