@@ -11,7 +11,6 @@ log = logging.getLogger(__name__)
 
 def enumerable_constraint(cells):
     errors = []
-    log.warning("Called enumerable constraint")
 
     for cell in cells:
         field = cell.get('field')
@@ -30,7 +29,6 @@ def enumerable_constraint(cells):
                 'value': '"{}"'.format(value),
                 'constraint': '"{}"'.format('", "'.join(field.constraints['enum']))
             }
-            log.warning("Message substitutions: {}".format(message_substitutions))
             error = Error(
                 'enumerable-constraint',
                 cell,
