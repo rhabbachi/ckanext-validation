@@ -462,12 +462,11 @@ def _reorder_columns(schema, df):
             'The fields have had to be reordered to pass validation. '
             'Column numbers in error messages may be wrong!'
         )
-        for i, col in enumerate(old_column_order):
-            column_mapping[i+1] = new_column_order.index(col) + 1
+        for i, col in enumerate(new_column_order):
+            column_mapping[i+1] = old_column_order.index(col) + 1
         log.debug("Column Number Mapping: " + str(column_mapping))
 
     log.debug("Reordered data frame: {}".format(df))
-
     return df, column_mapping
 
 
@@ -482,7 +481,7 @@ def _correct_column_ordering(errors, column_mapping):
             x.get('message', '')
         )
         return x
-    logging.debug("Fixing Column Order For Errors : {}".format(
+    log.debug("Fixing Column Order For Errors : {}".format(
         errors
     ))
     return list(map(correct_columns, errors))
