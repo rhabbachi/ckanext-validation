@@ -4,11 +4,7 @@ dist: trusty
 python:
     - "2.7"
 env:
-    - CKAN_VERSION=master
     - CKAN_VERSION=dev-v2.8
-    - CKAN_VERSION=dev-v2.7
-    - CKAN_VERSION=dev-v2.6
-    - CKAN_VERSION=release-v2.5-latest
 services:
     - postgresql
     - redis-server
@@ -18,6 +14,16 @@ install:
 script: sh bin/travis-run.sh
 after_success:
     - coveralls
+notifications:
+  slack:
+    rooms:
+      - secure: COh4wTRcy78oxXwNRBnw3bgygQ6VG2wcpD88ldmZsfpPfMIvjDKwvDBZjRyuUOWv4B3JpqUPTt/S22yI6yVX1WNQtneSoiR1XuRnrHa6zKllrYaC4EwlGX4nDPzqxgrV/FMhvS8HmYPKGGdtdS6zVtI0FN5nvQMWEerZVp4erX9prXyu8Gup5Nj3zfCpL4NyQGx4hGPbzA8828a9H5mcbs3Tsma5vJ5QBTonbKbJxD47mqSouykHB9+yZNxDiK64EnRoi/5YlMMIIA0o+5GFuKT7XLUmYe8ZGaV9KA+YFg/1/S1XfUs6os+8co/Xs+6BeGmcV3jm8CciHEmwy2Cewm5uzHxvN1omJZUTtic2OhOEQDpuWgNpN5U80FTMOL1G+co+oJC46bOSotzJ0fQrS/DvC5QbN391lSk7Fp6p4m5obqHDelI49ilkowyBiqujKtP7RW5IaJMSphjjR9hCSalTud4YFAkZKS1RjsMdKaP3uBpHTVrFmBkisf4y6iYpm+1DoH2ViJ7GBfTOgR4fc56L9J2Bd550fkY8ivn5t/vW8xAJmUyrTM+Jewxpq/KXE8rGV+SaVC98yOPfwLPg3Wk0PZNCQHOosTVgcpFik2XtB5nFfl3yvvdZHU1YX4AlSp44zYu6zxinXQ2GnWJBitn7MZM0d577ugGCq0VSg3o=
+    on_success: change
+    on_failure: always
+    on_pull_requests: false
+  email:
+    on_success: never
+    on_failure: never
 cache:
   directories:
     - $HOME/.cache/pip
