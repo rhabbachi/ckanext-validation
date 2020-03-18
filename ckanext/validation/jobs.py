@@ -178,6 +178,7 @@ def run_validation_job(resource):
 
 
 def _load_dataframe(data, extension):
+
     # Read in table
     if extension == "csv":
         df = _read_csv_file(data, extension)
@@ -185,12 +186,12 @@ def _load_dataframe(data, extension):
         df = _read_excel_file(data, extension)
     elif extension in ["shp"]:
         df = _read_shape_file(data)
-    elif extension in ['geojson']:
-        df = _read_geojson_file(data)
+    elif extension in ['json', 'geojson']:
+        df = _read_json_file(data)
     else:
         raise t.ValidationError({
             _('Incorrect Extension'): [_('Cannot validate the file. Please check '
-                                    'the file extension is correct.')]
+                                         'the file extension is correct.')]
         })
     df.columns = df.iloc[0]
     df.index = df[df.columns[0]]
@@ -236,18 +237,18 @@ def _read_excel_file(data, extension=None):
     return df
 
 
-def _read_geojson_file(geojson_path):
+def _read_json_file(json_path):
     """
-    Reads a geojson file in as a pandas dataframe ready for validation.
+    Reads a json or geojson file in as a pandas dataframe ready for validation.
     """
     # Load as plain JSON
     try:
-        with open(geojson_path, 'r') as read_file:
+        with open(json_path, 'r') as read_file:
             geojson = json.load(read_file)
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
-            'GeoJSON': [_(u'Unable to import json: ') + str(e)]
+            'JSON': [_(u'Unable to import JSON: ') + str(e)]
         })
 
     # Structure the data
@@ -260,8 +261,9 @@ def _read_geojson_file(geojson_path):
         df_dict = map(create_row, geojson['features'])
 
     except Exception as e:
+        log.exception(e)
         raise t.ValidationError({
-            'GeoJSON': [_(u'Unable to import geoJSON: ') + str(e)]
+            'JSON': [_(u'Unable to import JSON: ') + str(e)]
         })
 
     # Create the dataframe and insert the headers as the first row
@@ -462,12 +464,11 @@ def _reorder_columns(schema, df):
             'The fields have had to be reordered to pass validation. '
             'Column numbers in error messages may be wrong!'
         )
-        for i, col in enumerate(old_column_order):
-            column_mapping[i+1] = new_column_order.index(col) + 1
+        for i, col in enumerate(new_column_order):
+            column_mapping[i+1] = old_column_order.index(col) + 1
         log.debug("Column Number Mapping: " + str(column_mapping))
 
     log.debug("Reordered data frame: {}".format(df))
-
     return df, column_mapping
 
 
@@ -482,7 +483,7 @@ def _correct_column_ordering(errors, column_mapping):
             x.get('message', '')
         )
         return x
-    logging.debug("Fixing Column Order For Errors : {}".format(
+    log.debug("Fixing Column Order For Errors : {}".format(
         errors
     ))
     return list(map(correct_columns, errors))
