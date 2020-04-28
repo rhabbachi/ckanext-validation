@@ -112,7 +112,15 @@ def run_validation_job(resource):
 
     # Having extracted/altered data, we wrap up as an excel StringIO.
     # This keeps dataframe in memory, rather than having to write back to disk.
-    source = _excel_string_io_wrapper(altered_df)
+    try:
+        source = _excel_string_io_wrapper(altered_df)
+    except Exception as e:
+        log.error(e, exc_info=True)
+        raise t.ValidationError({
+            _('Format'): [
+                _('Validation failed')
+            ]
+        })
     report = _validate_table(source, _format='xlsx', schema=schema, **options)
 
     # Hide uploaded files
@@ -200,7 +208,18 @@ def _load_dataframe(data, extension):
 
 def _read_csv_file(data, extension=None):
     try:
-        return pandas.read_csv(open(data, 'rb'), header=None, index_col=None)
+        return pandas.read_csv(open(data, 'rb'),
+                               header=None,
+                               index_col=None,
+                               encoding='utf-8')
+    except UnicodeDecodeError as e:
+        log.warning(e, exc_info=True)
+        raise t.ValidationError({
+            _('Format'): [
+                _('Could not decode your CSV file. '
+                  'Please, make sure your file is utf-8 encoded.')
+            ]
+        })
     except Exception as e:
         log.warning(e, exc_info=True)
         extension = "(" + extension + ")" if extension else ""
