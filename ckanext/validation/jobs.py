@@ -118,7 +118,9 @@ def run_validation_job(resource):
         log.error(e, exc_info=True)
         raise t.ValidationError({
             _('Format'): [
-                _('Validation failed')
+                _('Unexpected error while processing resource validation. '
+                  'Please check your input file and if necessary report a '
+                  'bug using the link in the page footer.')
             ]
         })
     report = _validate_table(source, _format='xlsx', schema=schema, **options)
