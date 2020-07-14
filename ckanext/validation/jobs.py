@@ -494,15 +494,15 @@ def _reorder_columns(schema, df):
 
 
 def _correct_column_ordering(errors, column_mapping):
-
     def correct_columns(x):
-        new_col = column_mapping[x['column-number']]
-        x['column-number'] = new_col
-        x['message'] = re.sub(
-            r'(olumn)( |-)([0-9]*)',
-            'olumn {}'.format(new_col),
-            x.get('message', '')
-        )
+        if x.get('column-number'):
+            new_col = column_mapping[x['column-number']]
+            x['column-number'] = new_col
+            x['message'] = re.sub(
+                r'(olumn)( |-)([0-9]*)',
+                'olumn {}'.format(new_col),
+                x.get('message', '')
+            )
         return x
     log.debug("Fixing Column Order For Errors : {}".format(
         errors
