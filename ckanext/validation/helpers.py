@@ -4,7 +4,6 @@ import os
 from ckan.lib.helpers import url_for_static
 from ckantoolkit import url_for, _, config, asbool, literal, get_action
 from ckanext.scheming.helpers import scheming_get_dataset_schema
-from schemed_table import SchemedTable
 import logging
 import requests
 from custom_checks import get_spec_override
@@ -117,15 +116,29 @@ def validation_get_schema(dataset_type, resource_type):
 
 
 def validation_load_json_schema(schema):
-    if schema.startswith('http'):
-        r = requests.get(schema)
-        return r.json()
-    elif schema[0].strip() not in ['{', '[']:  # If not a valid json string
-        schema_directory = config['ckanext.validation.schema_directory']
-        file_path = schema_directory + '/' + schema.strip() + '.json'
-        return validation_load_schemed_table(file_path).schema
-    else:
+    try:
+        if schema.startswith('http'):
+            r = requests.get(schema)
+            return r.json()
+
+        schema_filepath = get_schema_filepath(schema)
+        if schema_filepath:
+            with open(schema_filepath, 'rb') as schema_file:
+                return json.load(schema_file)
+
         return json.loads(schema)
+
+    # TODO: Except json.JSONDecodeError when upgrading to python 3
+    except ValueError as e:
+        log.error("Error loading schema: " + schema)
+        log.exception(e)
+        return None
+
+
+def get_schema_filepath(schema):
+    schema_directory = config['ckanext.validation.schema_directory']
+    schemas = _files_from_directory(schema_directory)
+    return schemas.get(schema)
 
 
 def validation_get_foreign_keys(dataset_type, resource_type, pkg_name):
@@ -169,21 +182,6 @@ def validation_get_foreign_keys(dataset_type, resource_type, pkg_name):
 
     log.warning(foreign_key_options)
     return foreign_key_options
-
-
-def validation_load_schemed_table(filepath):
-    """
-    Given an absolute file path (beginning with /) load a json schema object
-    in that file.
-    """
-    if os.path.exists(filepath):
-        try:
-            return SchemedTable(filepath)
-        except Exception:
-            log.error("Error reading schema " + filepath)
-            raise
-    else:
-        raise IOError(filepath + " file not found")
 
 
 def _files_from_directory(path, extension='.json'):
