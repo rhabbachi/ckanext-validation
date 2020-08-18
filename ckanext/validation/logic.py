@@ -20,6 +20,7 @@ from ckanext.validation.utils import (
     get_update_mode_from_config,
     delete_local_uploaded_file,
 )
+from ckanext.validation.helpers import validation_load_json_schema
 
 
 log = logging.getLogger(__name__)
@@ -592,8 +593,8 @@ def resource_update(context, data_dict):
     upload.upload(id, uploader.get_max_resource_size())
 
     # Custom code starts
-
-    if get_update_mode_from_config() == u'sync' and "schema" in data_dict:
+    schema = validation_load_json_schema(data_dict.get('schema', ''))
+    if get_update_mode_from_config() == u'sync' and schema:
         is_local_upload = (
             hasattr(upload, 'filename') and
             upload.filename is not None and
