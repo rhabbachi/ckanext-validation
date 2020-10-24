@@ -267,7 +267,7 @@ def resource_validation_run_batch(context, data_dict):
     count_resources = 0
 
     dataset_ids = data_dict.get('dataset_ids')
-    logging.info("Batch validating datasets: {}".format(dataset_ids))
+    log.info("Batch validating datasets: {}".format(dataset_ids))
     if isinstance(dataset_ids, basestring):
         try:
             dataset_ids = json.loads(dataset_ids)
