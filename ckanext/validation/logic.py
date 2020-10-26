@@ -267,6 +267,7 @@ def resource_validation_run_batch(context, data_dict):
     count_resources = 0
 
     dataset_ids = data_dict.get('dataset_ids')
+    log.info("Batch validating datasets: {}".format(dataset_ids))
     if isinstance(dataset_ids, basestring):
         try:
             dataset_ids = json.loads(dataset_ids)
@@ -485,7 +486,6 @@ def resource_create(context, data_dict):
                   uploader.get_max_resource_size())
 
     # Custom code starts
-    logging.warning("=============ckan_validation custom code================")
     if get_create_mode_from_config() == u'sync' and "schema" in data_dict:
         is_local_upload = (
             hasattr(upload, 'filename') and
@@ -493,7 +493,11 @@ def resource_create(context, data_dict):
             isinstance(upload, uploader.ResourceUpload))
         _run_sync_validation(
             resource_id, local_upload=is_local_upload, new_resource=True)
-
+        if data_dict.get('validate_package'):
+            t.get_action('resource_validation_run_batch')(
+                context,
+                {'dataset_ids': data_dict.get('package_id')}
+            )
     # Custom code ends
 
     model.repo.commit()
@@ -601,7 +605,11 @@ def resource_update(context, data_dict):
             isinstance(upload, uploader.ResourceUpload))
         _run_sync_validation(
             id, local_upload=is_local_upload, new_resource=False, schema=data_dict.get('schema'))
-
+        if data_dict.get('validate_package'):
+            t.get_action('resource_validation_run_batch')(
+                context,
+                {'dataset_ids': data_dict.get('package_id')}
+            )
     # Custom code ends
 
     model.repo.commit()

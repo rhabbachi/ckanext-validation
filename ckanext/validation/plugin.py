@@ -264,11 +264,17 @@ to create the database tables:
         else:
             # This is a resource
             resource_id = data_dict[u'id']
-
             if resource_id in self.resources_to_validate:
                 del self.resources_to_validate[resource_id]
 
                 _run_async_validation(resource_id)
+
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
+
 
     # IPackageController
 

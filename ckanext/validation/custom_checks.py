@@ -47,6 +47,7 @@ class UniqueConstraint(object):
 
     def __init__(self, **options):
         self.__unique_fields_cache = None
+        self.__primary_key_fields = None
 
     def check_row(self, cells):
         log.debug('Checking unique constraint')
@@ -54,7 +55,7 @@ class UniqueConstraint(object):
 
         # Prepare unique checks
         if self.__unique_fields_cache is None:
-            self.__unique_fields_cache = _create_unique_fields_cache(cells)
+            self._create_unique_fields_cache(cells)
 
         # Check unique
         for column_numbers, cache in self.__unique_fields_cache.items():
@@ -72,6 +73,7 @@ class UniqueConstraint(object):
                     # Custom code =============================================
                     message_substitutions = {
                         'row_numbers': str(row_number),
+                        'primary_key_fields': ', '.join(self.__primary_key_fields)
                     }
                     if len(column_numbers) == 1:
                         error = Error(
@@ -83,7 +85,7 @@ class UniqueConstraint(object):
                         error = Error(
                             'unique-constraint',
                             column_cells[0],
-                            message="Rows {row_numbers} have a composite uniqueness constraint violation. Primary key fields must form a unique combination in the dataset.",
+                            message="Rows {row_numbers} have a composite uniqueness constraint violation. Primary key fields ({primary_key_fields}) must form a unique combination in the dataset.",
                             message_substitutions=message_substitutions
                         )
                     # End Custom code =========================================
@@ -93,32 +95,33 @@ class UniqueConstraint(object):
 
         return errors
 
+    def _create_unique_fields_cache(self, cells):
+        primary_key_column_numbers = []
+        primary_key_fields = []
+        cache = {}
 
-# Internal
-def _create_unique_fields_cache(cells):
-    primary_key_column_numbers = []
-    cache = {}
+        # Unique
+        for column_number, cell in enumerate(cells, start=1):
+            field = cell.get('field')
+            if field is not None:
+                if field.descriptor.get('primaryKey'):
+                    primary_key_column_numbers.append(column_number)
+                    primary_key_fields.append(field.descriptor.get('name'))
+                if field.constraints.get('unique'):
+                    cache[tuple([column_number])] = {
+                        'data': set(),
+                        'refs': [],
+                    }
 
-    # Unique
-    for column_number, cell in enumerate(cells, start=1):
-        field = cell.get('field')
-        if field is not None:
-            if field.descriptor.get('primaryKey'):
-                primary_key_column_numbers.append(column_number)
-            if field.constraints.get('unique'):
-                cache[tuple([column_number])] = {
-                    'data': set(),
-                    'refs': [],
-                }
+        # Primary key
+        if primary_key_column_numbers:
+            cache[tuple(primary_key_column_numbers)] = {
+                'data': set(),
+                'refs': [],
+            }
 
-    # Primary key
-    if primary_key_column_numbers:
-        cache[tuple(primary_key_column_numbers)] = {
-            'data': set(),
-            'refs': [],
-        }
-
-    return cache
+        self.__unique_fields_cache = cache
+        self.__primary_key_fields = primary_key_fields
 
 
 def geometry_check(cells):
