@@ -169,7 +169,10 @@ to create the database tables:
         return data_dict
 
     def before_create(self, context, data_dict):
-        return self._process_schema_fields(data_dict)
+        updated_data_dict = self._process_schema_fields(data_dict)
+        if updated_data_dict.get('schema'):
+            updated_data_dict['validation_status'] = 'unkown'
+        return updated_data_dict
 
     resources_to_validate = {}
 
@@ -185,6 +188,11 @@ to create the database tables:
         else:
             # This is a resource
             self._handle_validation_for_resource(data_dict)
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
 
     def _data_dict_is_dataset(self, data_dict):
         return u'creator_user_id' in data_dict or u'owner_org' in data_dict
@@ -233,6 +241,7 @@ to create the database tables:
             needs_validation = True
 
         if needs_validation:
+            updated_resource['validation_status'] = 'unkown'
             self.resources_to_validate[updated_resource[u'id']] = True
 
         return updated_resource
@@ -261,14 +270,20 @@ to create the database tables:
                     # resources if necessary
                     self._handle_validation_for_resource(resource)
 
+        elif data_dict.get('validate_package'):
+            t.get_action('resource_validation_run_batch')(
+                context,
+                {'dataset_ids': data_dict.get('package_id')}
+            )
         else:
             # This is a resource
             resource_id = data_dict[u'id']
-
             if resource_id in self.resources_to_validate:
                 del self.resources_to_validate[resource_id]
-
                 _run_async_validation(resource_id)
+
+
+
 
     # IPackageController
 
@@ -295,7 +310,6 @@ to create the database tables:
 
 
 def _run_async_validation(resource_id):
-
     try:
         t.get_action(u'resource_validation_run')(
             {u'ignore_auth': True},
