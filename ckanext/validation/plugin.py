@@ -171,7 +171,7 @@ to create the database tables:
     def before_create(self, context, data_dict):
         updated_data_dict = self._process_schema_fields(data_dict)
         if updated_data_dict.get('schema'):
-            updated_data_dict['validation_status'] = 'unkown'
+            updated_data_dict['validation_status'] = 'unknown'
         return updated_data_dict
 
     resources_to_validate = {}
@@ -181,18 +181,12 @@ to create the database tables:
         if not get_create_mode_from_config() == u'async':
             return
 
-        if data_dict.get(u'resources'):
-            # This is a dataset
-            for resource in data_dict[u'resources']:
-                self._handle_validation_for_resource(resource)
-        else:
-            # This is a resource
-            self._handle_validation_for_resource(data_dict)
+        if not data_dict.get(u'resources'):
+            # This is not a package, it is a resource
             if data_dict.get('validate_package'):
-                t.get_action('resource_validation_run_batch')(
-                    context,
-                    {'dataset_ids': data_dict.get('package_id')}
-                )
+                resource_validation_run_batch(context, {'dataset_ids': data_dict['package_id']})
+            else:
+                self._handle_validation_for_resource(data_dict)
 
     def _data_dict_is_dataset(self, data_dict):
         return u'creator_user_id' in data_dict or u'owner_org' in data_dict
@@ -258,29 +252,15 @@ to create the database tables:
             del context['_validation_performed']
             return
 
-        if data_dict.get(u'resources'):
-            # This is a dataset
-            for resource in data_dict[u'resources']:
-                if resource[u'id'] in self.resources_to_validate:
-                    # This is part of a resource_update call, it will be
-                    # handled on the next `after_update` call
-                    continue
-                else:
-                    # This is an actual package_update call, validate the
-                    # resources if necessary
-                    self._handle_validation_for_resource(resource)
-
-        elif data_dict.get('validate_package'):
-            t.get_action('resource_validation_run_batch')(
-                context,
-                {'dataset_ids': data_dict.get('package_id')}
-            )
-        else:
-            # This is a resource
+        if not data_dict.get(u'resources'):
+            # This is not a package, it is a resource
             resource_id = data_dict[u'id']
             if resource_id in self.resources_to_validate:
                 del self.resources_to_validate[resource_id]
-                _run_async_validation(resource_id)
+                if data_dict.get('validate_package'):
+                    resource_validation_run_batch(context, {'dataset_ids': data_dict['package_id']})
+                else:
+                    _run_async_validation(resource_id)
 
 
 
