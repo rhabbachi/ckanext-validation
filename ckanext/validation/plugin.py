@@ -180,7 +180,9 @@ to create the database tables:
 
         if not get_create_mode_from_config() == u'async':
             return
-        if not self._data_dict_is_dataset(data_dict):
+
+        if not data_dict.get(u'resources'):
+            # This is not a package, it is a resource
             if data_dict.get('validate_package'):
                 resource_validation_run_batch(context, {'dataset_ids': data_dict['package_id']})
             else:
