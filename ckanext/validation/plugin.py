@@ -256,7 +256,6 @@ to create the database tables:
         return updated_resource
 
     def after_update(self, context, data_dict):
-
         is_dataset = self._data_dict_is_dataset(data_dict)
 
         # Need to allow create as well because resource_create calls
@@ -272,18 +271,7 @@ to create the database tables:
             del context['_validation_performed']
             return
 
-        if is_dataset:
-            for resource in data_dict.get(u'resources', []):
-                if resource[u'id'] in self.resources_to_validate:
-                    # This is part of a resource_update call, it will be
-                    # handled on the next `after_update` call
-                    continue
-                else:
-                    # This is an actual package_update call, validate the
-                    # resources if necessary
-                    self._handle_validation_for_resource(context, resource)
-
-        else:
+        if not is_dataset:
             # This is a resource
             resource_id = data_dict[u'id']
             if resource_id in self.resources_to_validate:
@@ -293,13 +281,7 @@ to create the database tables:
                         return
 
                 del self.resources_to_validate[resource_id]
-                if data_dict.get('validate_package'):
-                    resource_validation_run_batch(context, {'dataset_ids': data_dict['package_id']})
-                else:
-                    _run_async_validation(resource_id)
-
-
-
+                _run_async_validation(resource_id)
 
     # IPackageController
 

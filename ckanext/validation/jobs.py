@@ -184,10 +184,6 @@ def _validate(resource, validation):
     return validation
 
 
-def _patch(context, data_dict):
-    t.get_action('resource_patch')(context, data_dict)
-
-
 def _finish_validation_job(validation, resource):
     validation.finished = datetime.datetime.utcnow()
 
@@ -206,10 +202,7 @@ def _finish_validation_job(validation, resource):
         'validation_timestamp': validation.finished.isoformat()
     }
 
-    if get_update_mode_from_config() == u'async':
-        _patch(context, data_dict)
-    else:
-        t.enqueue_job(_patch, [context, data_dict])
+    t.get_action('resource_patch')(context, data_dict)
 
 
 def _load_dataframe(data, extension):
