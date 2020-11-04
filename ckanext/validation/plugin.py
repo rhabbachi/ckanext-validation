@@ -283,6 +283,13 @@ to create the database tables:
                 del self.resources_to_validate[resource_id]
                 _run_async_validation(resource_id)
 
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
+
+
     # IPackageController
 
     def before_index(self, index_dict):

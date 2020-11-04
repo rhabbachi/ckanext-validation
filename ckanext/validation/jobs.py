@@ -94,6 +94,15 @@ def _validate(resource, validation):
     schema = resource.get(u'schema')
     if schema and isinstance(schema, basestring):
         schema = validation_load_json_schema(schema)
+        
+    # Compile the correct list of checks to validate against.
+    options['checks'] = options.get('checks', ['structure', 'schema'])
+    if schema.get('customConstraints'):
+        custom_constraints = [
+            {'custom-constraint': v}
+            for v in schema['customConstraints']
+        ]
+        options['checks'] = options['checks'] + custom_constraints
 
     # Load the data as a dataframe
     _format = resource.get(u'format', u'').lower()
