@@ -18,12 +18,12 @@ from helpers import validation_load_json_schema
 from collections import OrderedDict
 from ckanext.validation.model import Validation
 from custom_checks import setup_custom_goodtables
+from ckanext.validation.utils import get_update_mode_from_config
 
 log = logging.getLogger(__name__)
 
 
 def run_validation_job(resource):
-
     log.debug(u'Validating resource {}'.format(resource['id']))
 
     try:
@@ -39,6 +39,16 @@ def run_validation_job(resource):
     Session.add(validation)
     Session.commit()
 
+    try:
+        validation = _validate(resource, validation)
+    except t.ValidationError as e:
+        validation.status = 'error'
+        validation.error = e.error_summary
+    finally:
+        _finish_validation_job(validation, resource)
+
+
+def _validate(resource, validation):
     options = t.config.get(
         u'ckanext.validation.default_validation_options')
     if options:
@@ -180,20 +190,28 @@ def run_validation_job(resource):
         validation.error = {
             'message': '\n'.join(report['warnings']) or _(u'No tables found')
         }
+    return validation
 
+
+def _finish_validation_job(validation, resource):
     validation.finished = datetime.datetime.utcnow()
 
     Session.add(validation)
     Session.commit()
 
     # Store result status in resource
-    t.get_action('resource_patch')(
-        {'ignore_auth': True,
-         'user': t.get_action('get_site_user')({'ignore_auth': True})['name'],
-         '_validation_performed': True},
-        {'id': resource['id'],
-         'validation_status': validation.status,
-         'validation_timestamp': validation.finished.isoformat()})
+    context = {
+        'ignore_auth': True,
+        'user': t.get_action('get_site_user')({'ignore_auth': True})['name'],
+        '_validation_performed': True
+    }
+    data_dict = {
+        'id': resource['id'],
+        'validation_status': validation.status,
+        'validation_timestamp': validation.finished.isoformat()
+    }
+
+    t.get_action('resource_patch')(context, data_dict)
 
 
 def _load_dataframe(data, extension):
@@ -278,7 +296,7 @@ def _read_json_file(json_path):
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
-            'JSON': [_(u'Unable to import JSON: ') + str(e)]
+            _('Format'): [_(u'Resource format set to \'JSON\', but an error occured whilst reading JSON.  Are you sure this resource is a valid JSON file?')]
         })
 
     # Structure the data

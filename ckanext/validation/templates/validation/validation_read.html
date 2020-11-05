@@ -6,8 +6,7 @@
 {% block breadcrumb_content_selected %}{% endblock %}
 {% block breadcrumb_content %}
   {{ super() }}
-
-  <li><a href="{{ h.url_for(controller='package', action='resource_read', id=dataset.id, resource_id=resource.id ) }}">{{ h.resource_display_name(resource)|truncate(30) }}</a></li>
+  <li>{% link_for h.resource_display_name(resource)|truncate(30), named_route=pkg.type ~ '_resource.read', id=pkg.name, resource_id=resource.id %}</li>
   <li class="active"><a href="">Validation Report</a></li>
 {% endblock %}
 
@@ -35,6 +34,17 @@
               window.spec_override = {{h.validation_get_goodtables_spec() | safe}};
             </script>
             <div id="report" {% if h.bootstrap_version() == '2' %}class="bs2"{% endif %} data-module="validation-report" data-module-report="{{ h.dump_json_value(validation.report) }}"></div>
+        {% endif %}
+
+        {% if validation.error %}
+        <div class="alert alert-danger">
+            <H4> {{_('Error validating data')}} </H4>
+            {% for key, value in validation.error.iteritems() %}
+                <p class="validation-error">
+                <span class="validation-error-key">{{key}}</span> - <span class="validation-error-message">{{value}}</span>
+                </p>
+            {% endfor %}
+        </div>
         {% endif %}
         </div>
       </div>

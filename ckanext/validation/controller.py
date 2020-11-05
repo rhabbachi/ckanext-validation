@@ -4,7 +4,6 @@ from ckantoolkit import (
     BaseController, c, NotAuthorized, ObjectNotFound,
     abort, _, render, get_action)
 
-
 class ValidationController(BaseController):
 
     def validation(self, resource_id):
@@ -29,7 +28,7 @@ class ValidationController(BaseController):
             return render(u'validation/validation_read.html', extra_vars={
                 u'validation': validation,
                 u'resource': resource,
-                u'dataset': dataset,
+                u'pkg_dict': dataset,
             })
 
         except NotAuthorized:
