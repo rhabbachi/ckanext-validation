@@ -13,6 +13,7 @@ from ckan.common import _
 import ckantoolkit as t
 
 from ckanext.validation.model import Validation
+from ckanext.validation.interfaces import IDataValidation
 from ckanext.validation.jobs import run_validation_job
 from ckanext.validation import settings
 from ckanext.validation.utils import (
@@ -80,7 +81,6 @@ def resource_validation_run(context, data_dict):
     :rtype: string
 
     '''
-
     t.check_access(u'resource_validation_run', context, data_dict)
 
     if not data_dict.get(u'resource_id'):
@@ -130,6 +130,13 @@ def resource_validation_run(context, data_dict):
 
     Session.add(validation)
     Session.commit()
+
+    data_dict = {
+        'id': resource['id'],
+        'validation_status': validation.status,
+        'validation_timestamp': validation.created.isoformat()
+    }
+    t.get_action('resource_patch')(context, data_dict)
 
     if async_job:
         enqueue_job(run_validation_job, [resource])
@@ -486,18 +493,22 @@ def resource_create(context, data_dict):
                   uploader.get_max_resource_size())
 
     # Custom code starts
-    if get_create_mode_from_config() == u'sync' and "schema" in data_dict:
-        is_local_upload = (
-            hasattr(upload, 'filename') and
-            upload.filename is not None and
-            isinstance(upload, uploader.ResourceUpload))
-        _run_sync_validation(
-            resource_id, local_upload=is_local_upload, new_resource=True)
-        if data_dict.get('validate_package'):
-            t.get_action('resource_validation_run_batch')(
-                context,
-                {'dataset_ids': data_dict.get('package_id')}
-            )
+    if get_create_mode_from_config() == u'sync':
+
+        run_validation = True
+
+        for plugin in plugins.PluginImplementations(IDataValidation):
+            if not plugin.can_validate(context, data_dict):
+                log.debug('Skipping validation for resource {}'.format(resource_id))
+                run_validation = False
+
+        if run_validation:
+            is_local_upload = (
+                hasattr(upload, 'filename') and
+                upload.filename is not None and
+                isinstance(upload, uploader.ResourceUpload))
+            _run_sync_validation(
+                resource_id, local_upload=is_local_upload, new_resource=True)
     # Custom code ends
 
     model.repo.commit()
@@ -597,19 +608,21 @@ def resource_update(context, data_dict):
     upload.upload(id, uploader.get_max_resource_size())
 
     # Custom code starts
-    schema = validation_load_json_schema(data_dict.get('schema', ''))
-    if get_update_mode_from_config() == u'sync' and schema:
-        is_local_upload = (
-            hasattr(upload, 'filename') and
-            upload.filename is not None and
-            isinstance(upload, uploader.ResourceUpload))
-        _run_sync_validation(
-            id, local_upload=is_local_upload, new_resource=False, schema=data_dict.get('schema'))
-        if data_dict.get('validate_package'):
-            t.get_action('resource_validation_run_batch')(
-                context,
-                {'dataset_ids': data_dict.get('package_id')}
-            )
+    if get_update_mode_from_config() == u'sync':
+
+        run_validation = True
+        for plugin in plugins.PluginImplementations(IDataValidation):
+            if not plugin.can_validate(context, data_dict):
+                log.debug('Skipping validation for resource {}'.format(id))
+                run_validation = False
+
+        if run_validation:
+            is_local_upload = (
+                hasattr(upload, 'filename') and
+                upload.filename is not None and
+                isinstance(upload, uploader.ResourceUpload))
+            _run_sync_validation(
+                id, local_upload=is_local_upload, new_resource=True)
     # Custom code ends
 
     model.repo.commit()

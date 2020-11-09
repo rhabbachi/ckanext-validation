@@ -210,9 +210,9 @@ class ForeignKeyCheck(object):
                             'resource_id': resource_id,
                             'resource_url': resource_url
                         },
-                        message=_("Value in column {column_number} and row "
+                        message=_("Area ID in column {column_number} and row "
                                   "{row_number} is not found in the "
-                                  "referenced data table: {resource_id}")
+                                  "referenced geographic hierachy (resource id: {resource_id})")
                     ))
 
         return errors
