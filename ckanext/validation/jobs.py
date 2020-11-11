@@ -44,6 +44,7 @@ def run_validation_job(resource):
     except t.ValidationError as e:
         validation.status = 'error'
         validation.error = e.error_summary
+        validation.report = {'valid': False}
     finally:
         _finish_validation_job(validation, resource)
 
@@ -94,7 +95,7 @@ def _validate(resource, validation):
     schema = resource.get(u'schema')
     if schema and isinstance(schema, basestring):
         schema = validation_load_json_schema(schema)
-        
+
     # Compile the correct list of checks to validate against.
     options['checks'] = options.get('checks', ['structure', 'schema'])
     if schema.get('customConstraints'):
