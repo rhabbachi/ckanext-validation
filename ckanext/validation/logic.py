@@ -509,6 +509,11 @@ def resource_create(context, data_dict):
                 isinstance(upload, uploader.ResourceUpload))
             _run_sync_validation(
                 resource_id, local_upload=is_local_upload, new_resource=True)
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
     # Custom code ends
 
     model.repo.commit()
@@ -623,7 +628,12 @@ def resource_update(context, data_dict):
                 isinstance(upload, uploader.ResourceUpload))
             _run_sync_validation(
                 id, local_upload=is_local_upload, new_resource=True)
-    # Custom code ends
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
+# Custom code ends
 
     model.repo.commit()
 
