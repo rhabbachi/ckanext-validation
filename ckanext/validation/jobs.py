@@ -487,26 +487,20 @@ def _reorder_columns(schema, df):
     required_field_order = [x['name'] for x in schema.get('fields', [])]
     submitted_field_order = list(df.columns)
 
-    errors = {}
-    for field in set(required_field_order) - set(submitted_field_order):
-        df[field] = pandas.np.NaN
-        error_key = _("Missing {} column").format(field)
-        error_message = (_("Uploaded data file is missing required "
-                         "column \"{}\"").format(field))
-        errors[error_key] = [error_message]
-
-    if errors:
-        raise t.ValidationError(errors)
-
     extra_columns = [x for x in submitted_field_order if x not in set(required_field_order)]
     new_column_order = required_field_order + extra_columns
     old_column_order = list(df.columns)
     column_mapping = {}
 
-    log.debug("New Order: " + str(new_column_order))
-    log.debug("Old Order: " + str(old_column_order))
+    missing_columns = [x for x in required_field_order if x not in set(submitted_field_order)]
+    for column in missing_columns:
+        new_column_order.remove(column)
+
+    log.debug("New Order: {}".format(new_column_order))
+    log.debug("Old Order: {}".format(old_column_order))
 
     if new_column_order != old_column_order:
+
         log.debug("Switching column order")
         df = df[new_column_order]
         log.debug(
@@ -524,7 +518,7 @@ def _reorder_columns(schema, df):
 def _correct_column_ordering(errors, column_mapping):
     def correct_columns(x):
         if x.get('column-number'):
-            new_col = column_mapping[x['column-number']]
+            new_col = column_mapping.get(x['column-number'], x['column-number'])
             x['column-number'] = new_col
             x['message'] = re.sub(
                 r'(olumn)( |-)([0-9]*)',
