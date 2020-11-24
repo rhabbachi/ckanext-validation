@@ -188,10 +188,7 @@ to create the database tables:
             for resource in data_dict.get(u'resources', []):
                 self._handle_validation_for_resource(context, resource)
         else:
-            # This is a resource. Resources don't need to be handled here
-            # as there is always a previous `package_update` call that will
-            # trigger the `before_update` and `after_update` hooks
-            pass
+            _run_async_validation(data_dict['id'])
 
     def _data_dict_is_dataset(self, data_dict):
         return (
