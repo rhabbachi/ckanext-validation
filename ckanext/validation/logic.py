@@ -136,6 +136,7 @@ def resource_validation_run(context, data_dict):
         'validation_status': validation.status,
         'validation_timestamp': validation.created.isoformat()
     }
+    context['_dont_validate'] = True
     t.get_action('resource_patch')(context, data_dict)
 
     if async_job:
@@ -266,7 +267,6 @@ def resource_validation_run_batch(context, data_dict):
 
 
     '''
-
     t.check_access(u'resource_validation_run_batch', context, data_dict)
 
     page = 1
@@ -633,8 +633,8 @@ def resource_update(context, data_dict):
                     context,
                     {'dataset_ids': data_dict.get('package_id')}
                 )
-# Custom code ends
 
+    # Custom code ends
     model.repo.commit()
 
     resource = t.get_action('resource_show')(context, {'id': id})
