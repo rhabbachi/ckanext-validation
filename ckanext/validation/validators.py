@@ -3,7 +3,7 @@ import json
 import tableschema
 from ckan.common import _
 from ckantoolkit import Invalid, config
-
+import logging
 
 # Input validators
 
@@ -20,13 +20,14 @@ def resource_schema_validator(value, context):
             return value
 
         try:
+
             descriptor = json.loads(str(value))
             if not isinstance(descriptor, dict):
                 msg = _(u'Invalid Table Schema descriptor: {}').format(value)
                 raise Invalid(msg)
 
         except ValueError as e:
-            msg = _(u'JSON error in Table Schema descriptor: {}').format(e)
+            msg = _(u'JSON error in Table Schema descriptor {}: {}').format(value, e)
             raise Invalid(msg)
     else:
         descriptor = value

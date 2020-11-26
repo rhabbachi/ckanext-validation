@@ -68,7 +68,7 @@ class ValidationPlugin(p.SingletonPlugin, DefaultTranslation):
         if schema_directory:
             if not os.path.isdir(schema_directory):
                 raise ValueError(
-                    'ckanext.validation.schema_directory not a valid path'
+                    'ckanext.validation.schema_directory not a valid path {}'.format(os.path.abspath(schema_directory) )
                 )
 
     # IConfigurer
@@ -178,12 +178,10 @@ to create the database tables:
     resources_to_validate = {}
 
     def after_create(self, context, data_dict):
-
         is_dataset = self._data_dict_is_dataset(data_dict)
 
         if not get_create_mode_from_config() == u'async':
             return
-
         if is_dataset:
             for resource in data_dict.get(u'resources', []):
                 self._handle_validation_for_resource(context, resource)
@@ -194,7 +192,6 @@ to create the database tables:
                     context,
                     {'dataset_ids': data_dict.get('package_id')}
                 )
-
     def _data_dict_is_dataset(self, data_dict):
         return (
             u'creator_user_id' in data_dict
