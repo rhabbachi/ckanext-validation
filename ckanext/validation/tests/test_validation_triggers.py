@@ -32,25 +32,32 @@ class TestAsyncValidationTriggers(object):
 
     @mock.patch('ckanext.validation.logic.enqueue_job')
     def test_create_resource_for_validation(self, mock_enqueue):
-        sysadmin = factories.Sysadmin()
+        # Check validation job is enqueued during resource_create if resource has a schema field
         dataset = factories.Dataset(type='dataset-test')
         resource = {'format': 'csv', 'url_type': 'upload', 'schema': 'test_schema', 'package_id': dataset['id']}
+        # The line below fails because ckanext.validation.logic.resource_validation_run calls resource_patch action without user specified
+        # Why does this work in the UI but not here in the test???
         helpers.call_action('resource_create', None, **resource)
         assert mock_enqueue.call_count == 1
         assert mock_enqueue.call_args[0][0] == run_validation_job
         assert mock_enqueue.call_args[0][1][0]['id'] == resource['id']
 
     def test_update_resource_for_validation(self):
+        # Check validation job is enqueued during resource_update if resource has a schema field
         pass
 
     def test_create_resource_not_for_validation(self):
+        # Check no badges attached during resource_create if resource has no schema field
         pass
 
     def test_update_resource_not_for_validation(self):
+        # Check no badges attached during resource_update if resource has no schema field
         pass
 
     def test_create_resource_for_validate_package(self):
+        # Check batch validation occurs on resource_create if resource has validate_package field
         pass
 
     def test_update_resource_for_validate_package(self):
+        # Check batch validation occurs on resource_update if resource has validate_package field
         pass
