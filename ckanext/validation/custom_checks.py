@@ -11,8 +11,12 @@ log = logging.getLogger(__name__)
 
 
 class CustomConstraint(object):
-
-    # Public
+    """
+    Copied from the core good tables module to alter the behaviour slightly.
+    We want to ignore rows where data does not exist.  The principle here is
+    that the required constraint should be used to catch missing data, not the
+    custom constraint.
+    """
 
     def __init__(self, constraint, **options):
         self.__constraint = constraint
@@ -32,8 +36,11 @@ class CustomConstraint(object):
             # This call should be considered as a safe expression evaluation
             # https://github.com/danthedeckie/simpleeval
             assert simple_eval(self.__constraint, names=names)
+
+        # ADR customisation of the upstream code simply catches NameNotDefined
         except NameNotDefined:
             return []
+
         except Exception:
             row_number = cells[0]['row-number']
             message = 'Custom constraint "{constraint}" fails for row {row_number}'
