@@ -171,8 +171,6 @@ to create the database tables:
 
     def before_create(self, context, data_dict):
         updated_data_dict = self._process_schema_fields(data_dict)
-        if updated_data_dict.get('schema'):
-            updated_data_dict['validation_status'] = 'unknown'
         return updated_data_dict
 
     resources_to_validate = {}
@@ -252,7 +250,6 @@ to create the database tables:
             needs_validation = True
 
         if needs_validation:
-            updated_resource['validation_status'] = 'unkown'
             self.resources_to_validate[updated_resource[u'id']] = True
 
         return updated_resource
