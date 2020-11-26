@@ -188,10 +188,12 @@ to create the database tables:
             for resource in data_dict.get(u'resources', []):
                 self._handle_validation_for_resource(context, resource)
         else:
-            # This is a resource. Resources don't need to be handled here
-            # as there is always a previous `package_update` call that will
-            # trigger the `before_update` and `after_update` hooks
-            pass
+            _run_async_validation(data_dict['id'])
+            if data_dict.get('validate_package'):
+                t.get_action('resource_validation_run_batch')(
+                    context,
+                    {'dataset_ids': data_dict.get('package_id')}
+                )
 
     def _data_dict_is_dataset(self, data_dict):
         return (
@@ -272,6 +274,12 @@ to create the database tables:
             return
 
         if not is_dataset:
+            if context.get('_dont_validate'):
+                # Ugly, but needed to avoid circular loops caused by the
+                # validation job calling resource_patch (which calls
+                # package_update)
+                del context['_dont_validate']
+                return
             # This is a resource
             resource_id = data_dict[u'id']
             if resource_id in self.resources_to_validate:
@@ -283,17 +291,15 @@ to create the database tables:
                 del self.resources_to_validate[resource_id]
                 _run_async_validation(resource_id)
 
-            if data_dict.get('validate_package'):
-                t.get_action('resource_validation_run_batch')(
-                    context,
-                    {'dataset_ids': data_dict.get('package_id')}
-                )
+                if data_dict.get('validate_package'):
+                    t.get_action('resource_validation_run_batch')(
+                        context,
+                        {'dataset_ids': data_dict.get('package_id')}
+                    )
 
 
     # IPackageController
-
     def before_index(self, index_dict):
-
         res_status = []
         dataset_dict = json.loads(index_dict['validated_data_dict'])
         for resource in dataset_dict.get('resources', []):
@@ -306,7 +312,6 @@ to create the database tables:
         return index_dict
 
     # IValidators
-
     def get_validators(self):
         return {
             'resource_schema_validator': resource_schema_validator,
