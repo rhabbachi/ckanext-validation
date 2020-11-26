@@ -5,8 +5,55 @@ from collections import namedtuple
 import logging
 from ckan.common import _
 import goodtables.registry
+from simpleeval import simple_eval, NameNotDefined
 
 log = logging.getLogger(__name__)
+
+
+class CustomConstraint(object):
+    """
+    Copied from the core good tables module to alter the behaviour slightly.
+    We want to ignore rows where data does not exist.  The principle here is
+    that the required constraint should be used to catch missing data, not the
+    custom constraint.
+    """
+
+    def __init__(self, constraint, **options):
+        self.__constraint = constraint
+
+    def check_row(self, cells):
+        # Prepare names
+        names = {}
+        for cell in cells:
+            if None not in [cell.get('header'), cell.get('value')]:
+                try:
+                    names[cell['header']] = float(cell['value'])
+                except ValueError:
+                    pass
+
+        # Check constraint
+        try:
+            # This call should be considered as a safe expression evaluation
+            # https://github.com/danthedeckie/simpleeval
+            assert simple_eval(self.__constraint, names=names)
+
+        # ADR customisation of the upstream code simply catches NameNotDefined
+        except NameNotDefined:
+            return []
+
+        except Exception:
+            row_number = cells[0]['row-number']
+            message = 'Custom constraint "{constraint}" fails for row {row_number}'
+            message_substitutions = {
+                'constraint': self.__constraint,
+            }
+            error = Error(
+                'custom-constraint',
+                row_number=row_number,
+                message=message,
+                message_substitutions=message_substitutions
+            )
+            return [error]
 
 
 def enumerable_constraint(cells):
@@ -311,6 +358,9 @@ def setup_custom_goodtables():
     )
     goodtables.registry.registry.register_check(
         enumerable_constraint, 'enumerable-constraint', None, None, None
+    )
+    goodtables.registry.registry.register_check(
+        CustomConstraint, 'custom-constraint', type='custom', context='body'
     )
 
 
