@@ -171,8 +171,6 @@ to create the database tables:
 
     def before_create(self, context, data_dict):
         updated_data_dict = self._process_schema_fields(data_dict)
-        if updated_data_dict.get('schema'):
-            updated_data_dict['validation_status'] = 'unknown'
         return updated_data_dict
 
     resources_to_validate = {}
@@ -188,6 +186,10 @@ to create the database tables:
             for resource in data_dict.get(u'resources', []):
                 self._handle_validation_for_resource(context, resource)
         else:
+            for plugin in p.PluginImplementations(IDataValidation):
+                if not plugin.can_validate(context, data_dict):
+                    log.debug('Skipping validation for resource {}'.format(data_dict['id']))
+                    return
             _run_async_validation(data_dict['id'])
             if data_dict.get('validate_package'):
                 t.get_action('resource_validation_run_batch')(
@@ -252,7 +254,6 @@ to create the database tables:
             needs_validation = True
 
         if needs_validation:
-            updated_resource['validation_status'] = 'unkown'
             self.resources_to_validate[updated_resource[u'id']] = True
 
         return updated_resource
