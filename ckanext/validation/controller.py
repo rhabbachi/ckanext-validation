@@ -4,6 +4,7 @@ from ckantoolkit import (
     BaseController, c, NotAuthorized, ObjectNotFound,
     abort, _, render, get_action)
 
+
 class ValidationController(BaseController):
 
     def validation(self, resource_id):

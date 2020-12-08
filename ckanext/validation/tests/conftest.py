@@ -8,7 +8,7 @@ def log():
         # - format for errors: (row-number, column-number, code)
         # - format for report: (table-number, row-number, column-number, code)
         result = []
-        
+
         def pack_error(error, table_number='skip'):
             error = dict(error)
             error = [

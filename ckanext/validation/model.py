@@ -10,6 +10,10 @@ from sqlalchemy.dialects.postgresql import JSON
 
 from ckan.model.meta import metadata
 
+import sys
+if sys.version_info.major == 3:
+    unicode = str
+
 log = logging.getLogger(__name__)
 
 

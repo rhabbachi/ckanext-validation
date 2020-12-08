@@ -111,7 +111,6 @@ target yourself. Not to be used with -r or -d.''')
                                help='''Location of the CSV validation
 report file on the relevant commands.''')
 
-
     _page_size = 100
 
     def command(self):
@@ -332,7 +331,6 @@ report file on the relevant commands.''')
                                 else:
                                     outputs['formats_success'][resource['format']] = 1
 
-
                     if len(query['results']) < self._page_size:
                         break
 
@@ -380,6 +378,5 @@ Formats breakdown (validation failed or errored):
 {msg_errors}
 CSV Report stored in {output_csv}
 '''.format(**outputs)
-
 
         log.info(msg)

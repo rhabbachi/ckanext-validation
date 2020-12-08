@@ -165,8 +165,6 @@ def validation_get_foreign_keys(dataset_type, resource_type, pkg_name):
     for key in foreign_keys:
 
         field = filter(lambda x: x['name'] == key['fields'], schema['fields'])[0]
-        ref_resource_type = key['reference']['resource']
-        ref_resource_field = key['reference']['fields']
         ref_options = []
 
         default_value = organization_extras.get('foreign-key-'+key['fields'])
