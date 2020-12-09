@@ -472,12 +472,12 @@ class TestResourceValidationOnCreate(FunctionalTestBase):
 
             with assert_raises(t.ValidationError) as e:
 
-                    call_action(
-                        'resource_create',
-                        package_id=dataset['id'],
-                        format='CSV',
-                        upload=mock_upload
-                    )
+                call_action(
+                    'resource_create',
+                    package_id=dataset['id'],
+                    format='CSV',
+                    upload=mock_upload
+                )
 
         assert 'validation' in e.exception.error_dict
         assert 'missing-value' in str(e.exception)

@@ -6,6 +6,7 @@ import datetime
 import json
 import re
 import requests
+from six import string_types
 from sqlalchemy.orm.exc import NoResultFound
 from goodtables import validate
 from ckan.common import _
@@ -18,7 +19,6 @@ from helpers import validation_load_json_schema
 from collections import OrderedDict
 from ckanext.validation.model import Validation
 from custom_checks import setup_custom_goodtables
-from ckanext.validation.utils import get_update_mode_from_config
 
 log = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def _validate(resource, validation):
         options = {}
 
     resource_options = resource.get(u'validation_options')
-    if resource_options and isinstance(resource_options, basestring):
+    if resource_options and isinstance(resource_options, string_types):
         resource_options = json.loads(resource_options)
     if resource_options:
         options.update(resource_options)
@@ -93,7 +93,7 @@ def _validate(resource, validation):
 
     # Load the the schema as a dictionary
     schema = resource.get(u'schema')
-    if schema and isinstance(schema, basestring):
+    if schema and isinstance(schema, string_types):
         schema = validation_load_json_schema(schema)
 
     # Compile the correct list of checks to validate against.
@@ -297,7 +297,8 @@ def _read_json_file(json_path):
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
-            _('Format'): [_(u'Resource format set to \'JSON\', but an error occured whilst reading JSON.  Are you sure this resource is a valid JSON file?')]
+            _('Format'): [_(u'Resource format set to \'JSON\', but an error occured whilst reading JSON.'
+                            'Are you sure this resource is a valid JSON file?')]
         })
 
     # Structure the data
