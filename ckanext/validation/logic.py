@@ -4,8 +4,8 @@ import datetime
 import logging
 import json
 
+from six import string_types
 from sqlalchemy.orm.exc import NoResultFound
-
 import ckan.plugins as plugins
 import ckan.lib.uploader as uploader
 from ckan.common import _
@@ -21,7 +21,6 @@ from ckanext.validation.utils import (
     get_update_mode_from_config,
     delete_local_uploaded_file,
 )
-from ckanext.validation.helpers import validation_load_json_schema
 
 
 log = logging.getLogger(__name__)
@@ -275,18 +274,18 @@ def resource_validation_run_batch(context, data_dict):
 
     dataset_ids = data_dict.get('dataset_ids')
     log.info("Batch validating datasets: {}".format(dataset_ids))
-    if isinstance(dataset_ids, basestring):
+    if isinstance(dataset_ids, string_types):
         try:
             dataset_ids = json.loads(dataset_ids)
-        except ValueError as e:
+        except ValueError:
             dataset_ids = [dataset_ids]
 
     search_params = data_dict.get('query')
-    if isinstance(search_params, basestring):
+    if isinstance(search_params, string_types):
         try:
             search_params = json.loads(search_params)
-        except ValueError as e:
-            msg = 'Error parsing search parameters'.format(search_params)
+        except ValueError:
+            msg = 'Error parsing search parameters: {}'.format(search_params)
             return {'output': msg}
 
     while True:
@@ -321,10 +320,9 @@ def resource_validation_run_batch(context, data_dict):
                         count_resources += 1
 
                     except t.ValidationError as e:
-                        log.warning(
-                            u'Could not run validation for resource {} ' +
-                            u'from dataset {}: {}'.format(
-                                resource['id'], dataset['name'], str(e)))
+                        log.warning(u'Could not run validation for resource {} from dataset {}: {}'.format(
+                            resource['id'], dataset['name'], str(e))
+                        )
 
             if len(query['results']) < page_size:
                 break
@@ -480,7 +478,7 @@ def resource_create(context, data_dict):
         context['use_cache'] = False
         t.get_action('package_update')(context, pkg_dict)
         context.pop('defer_commit')
-    except t.ValidationError, e:
+    except t.ValidationError as e:
         try:
             raise t.ValidationError(e.error_dict['resources'][-1])
         except (KeyError, IndexError):
@@ -604,7 +602,7 @@ def resource_update(context, data_dict):
         context['use_cache'] = False
         updated_pkg_dict = t.get_action('package_update')(context, pkg_dict)
         context.pop('defer_commit')
-    except t.ValidationError, e:
+    except t.ValidationError as e:
         try:
             raise t.ValidationError(e.error_dict['resources'][-1])
         except (KeyError, IndexError):

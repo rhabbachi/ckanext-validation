@@ -4,17 +4,10 @@ import logging
 import cgi
 import json
 import os
+from six import string_types
 import ckan.plugins as p
 from ckan.common import _
 import ckantoolkit as t
-from custom_checks import (
-    ForeignKeyCheck,
-    geometry_check,
-    UniqueConstraint,
-    enumerable_constraint,
-    register_translator
-)
-from goodtables.registry import registry, spec
 from ckanext.validation import settings
 from ckanext.validation.model import tables_exist
 from ckanext.validation.logic import (
@@ -160,7 +153,7 @@ to create the database tables:
         if isinstance(schema_upload, cgi.FieldStorage):
             data_dict[u'schema'] = schema_upload.file.read()
         elif schema_url:
-            if (not isinstance(schema_url, basestring) or
+            if (not isinstance(schema_url, string_types) or
                     not schema_url.lower()[:4] == u'http'):
                 raise t.ValidationError({u'schema_url': _('Must be a valid URL')})
             data_dict[u'schema'] = schema_url
@@ -297,7 +290,6 @@ to create the database tables:
                         context,
                         {'dataset_ids': data_dict.get('package_id')}
                     )
-
 
     # IPackageController
     def before_index(self, index_dict):
