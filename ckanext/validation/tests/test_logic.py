@@ -12,13 +12,13 @@ import ckan.model as model
 import ckanext.validation.model as vmodel
 
 from ckan.tests.helpers import (
-    call_action, call_auth, change_config, reset_db, FunctionalTestBase
+    call_action, call_auth, change_config
 )
 from ckan.tests import factories
 
 import ckantoolkit as t
 
-from ckanext.validation.model import create_tables, tables_exist, Validation
+from ckanext.validation.model import Validation
 from ckanext.validation.tests.helpers import (
         VALID_CSV, INVALID_CSV, VALID_REPORT,
         mock_uploads, MockFieldStorage
@@ -26,6 +26,7 @@ from ckanext.validation.tests.helpers import (
 
 
 Session = model.Session
+
 
 @pytest.fixture
 def initdb():
@@ -565,7 +566,6 @@ class TestResourceValidationOnUpdate(object):
     @classmethod
     def _apply_config_changes(cls, cfg):
         cfg['ckanext.validation.run_on_update_sync'] = True
-
 
     @mock_uploads
     def test_validation_fails_on_upload(self, mock_open, app):

@@ -15,10 +15,9 @@ from ckan.lib.helpers import url_for
 
 from ckanext.validation.model import create_tables, tables_exist
 from ckanext.validation.tests.helpers import (
-    VALID_CSV, INVALID_CSV, mock_uploads
+    VALID_CSV, mock_uploads
 )
 
-from bs4 import BeautifulSoup
 
 PLUGIN_CONTROLLER = 'ckanext.validation.controller:ValidationController'
 
@@ -62,8 +61,6 @@ class TestResourceSchemaForm(object):
         dataset = Dataset()
 
         env, response = _get_resource_new_page_as_sysadmin(app, dataset['id'])
-
-        html = BeautifulSoup(response.body)
 
         form = response.forms['resource-edit']
         assert_in('schema', form.fields)
@@ -193,10 +190,6 @@ class TestResourceSchemaForm(object):
     @pytest.mark.skip(reason="Operation forbidden for unknown reason")
     def test_resource_form_update(self, app):
 
-        dataset = Dataset()
-        user = Sysadmin()
-        env = {'REMOTE_USER': user['name'].encode('ascii')}
-
         value = {
             'fields': [
                 {'name': 'code'},
@@ -204,7 +197,7 @@ class TestResourceSchemaForm(object):
             ]
         }
         dataset = Dataset()
-        resource = Resource(
+        Resource(
             package_id=dataset['id'],
             url='https://example.com/data.csv',
             schema=value
@@ -217,24 +210,6 @@ class TestResourceSchemaForm(object):
                 {"name": "date"}
             ]
         }
-
-        response = app.post(
-            url_for(
-                "{}_resource.edit".format(dataset["type"]),
-                id=dataset["id"],
-                resource_id=resource["id"],
-                schema=value
-            )
-        )
-
-        # response = app.post(
-        #     url_for("dataset.edit", id=dataset["name"]), extra_environ=env,
-        #     data={
-        #         "notes": "changed",
-        #         "save": ""
-        #     },
-        #     follow_redirects=False
-        # )
 
         dataset = call_action('package_show', id=dataset['id'])
 
@@ -335,13 +310,7 @@ class TestResourceSchemaForm(object):
             ]
         }
 
-        json_value = json.dumps(value)
-
-        upload = ('schema_upload', 'schema.json', json_value)
         form['url'] = 'https://example.com/data.csv'
-
-        #webtest_submit(
-        #        form, 'save', upload_files=[upload], extra_environ=env)
 
         dataset = call_action('package_show', id=dataset['id'])
 
@@ -471,15 +440,6 @@ class TestResourceValidationOnCreateForm(object):
 
         app = self._get_test_app()
         env, response = _get_resource_new_page_as_sysadmin(app, dataset['id'])
-        form = response.forms['resource-edit']
-
-        upload = ('upload', 'invalid.csv', INVALID_CSV)
-
-        invalid_stream = io.BufferedReader(io.BytesIO(INVALID_CSV))
-
-        # with mock.patch('io.open', return_value=invalid_stream):
-        #    response = webtest_submit(
-        #        form, 'save', upload_files=[upload], extra_environ=env)
 
         assert_in('validation', response.body)
         assert_in('missing-value', response.body)
@@ -512,14 +472,6 @@ class TestResourceValidationOnUpdateForm(object):
         app = self._get_test_app()
         env, response = _get_resource_update_page_as_sysadmin(
             app, dataset['id'], dataset['resources'][0]['id'])
-        form = response.forms['resource-edit']
-
-        upload = ('upload', 'valid.csv', VALID_CSV)
-
-        valid_stream = io.BufferedReader(io.BytesIO(VALID_CSV))
-
-        # with mock.patch('io.open', return_value=valid_stream):
-        #    submit_and_follow(app, form, env, 'save', upload_files=[upload])
 
         dataset = call_action('package_show', id=dataset['id'])
 
@@ -538,15 +490,6 @@ class TestResourceValidationOnUpdateForm(object):
         app = self._get_test_app()
         env, response = _get_resource_update_page_as_sysadmin(
             app, dataset['id'], dataset['resources'][0]['id'])
-        form = response.forms['resource-edit']
-
-        upload = ('upload', 'invalid.csv', INVALID_CSV)
-
-        invalid_stream = io.BufferedReader(io.BytesIO(INVALID_CSV))
-
-        # with mock.patch('io.open', return_value=invalid_stream):
-        #    response = webtest_submit(
-        #        form, 'save', upload_files=[upload], extra_environ=env)
 
         assert_in('validation', response.body)
         assert_in('missing-value', response.body)

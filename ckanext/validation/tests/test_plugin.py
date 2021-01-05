@@ -13,12 +13,14 @@ from ckanext.validation.jobs import run_validation_job
 import ckan.model as model
 import ckanext.validation.model as vmodel
 
+
 @pytest.fixture
 def initdb():
     model.Session.remove()
     model.Session.configure(bind=model.meta.engine)
     if not vmodel.tables_exist():
         vmodel.create_tables()
+
 
 class TestResourceControllerHooksUpdate(object):
 
@@ -211,6 +213,7 @@ class TestResourceControllerHooksCreate(object):
         call_action('resource_create', {}, **resource)
 
         mock_enqueue.assert_not_called()
+
 
 @pytest.mark.usefixtures(u'initdb')
 @pytest.mark.usefixtures(u'clean_db')

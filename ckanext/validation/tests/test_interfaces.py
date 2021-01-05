@@ -20,20 +20,6 @@ def initdb():
     if not vmodel.tables_exist():
         vmodel.create_tables()
 
-@pytest.fixture
-def count_calls():
-    calls = 0
-
-    def reset_counter(self):
-        self.calls = 0
-
-    def can_validate(self, context, data_dict):
-        self.calls += 1
-
-        if data_dict.get('my_custom_field') == 'xx':
-            return False
-
-        return True
 
 class TestPlugin(object):
 
@@ -165,6 +151,7 @@ class TestInterfaceSync(object):
         assert_equals(_get_plugin_calls(), 2)  # One for create and one for update
 
         assert not mock_validation.called
+
 
 @pytest.mark.usefixtures(u'initdb')
 @pytest.mark.usefixtures(u'clean_db')
