@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: ckanext-validation 0.0.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2020-11-19 14:06+0000\n"
-"PO-Revision-Date: 2019-12-20 14:41+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2020-12-14 12:00+0300\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: ckanext/validation/controller.py:35
 msgid "Unauthorized to read this validation report"
@@ -34,9 +35,6 @@ msgid "No foreign-key reference found. Does the referenced resource exist?"
 msgstr ""
 
 #: ckanext/validation/custom_checks.py:213
-#, fuzzy
-#| msgid "" "Value in column {column_number} and row {row_number} is not found
-#| in the " "referenced data table: {resource_id}"
 msgid ""
 "Area ID in column {column_number} and row {row_number} is not found in "
 "the referenced geographic hierachy (resource id: {resource_id})"
@@ -845,6 +843,9 @@ msgid ""
 "input file and if necessary report a bug using the link in the page "
 "footer."
 msgstr ""
+"Erreur inattendue lors du traitement de la validation des ressources. Veuillez "
+"vérifier votre fichier d'entrée et si nécessaire signaler un problème en "
+"utilisant le lien en bas du page."
 
 #: ckanext/validation/jobs.py:192
 msgid "No tables found"
@@ -861,20 +862,15 @@ msgstr ""
 "fichier est exacte."
 
 #: ckanext/validation/jobs.py:249
-#, fuzzy
-#| msgid "" "Could not read your Excel file. Are you sure your specified format
-#| {} is " "correct?"
 msgid ""
 "Could not decode your CSV file. Please, make sure your file is utf-8 "
 "encoded."
 msgstr ""
-"Impossible de lire votre fichier Excel. Êtes-vous sûr que le format "
-"indiqué {} est exact ?"
+"Impossible de lire votre fichier CSV. "
 
 #: ckanext/validation/jobs.py:258
 msgid ""
-"Could not read your CSV file. Are you sure your specified format {} is "
-"correct?"
+"Could not read your CSV file. Are you sure your specified format {} is correct?"
 msgstr ""
 "Impossible de lire votre fichier CSV. Êtes-vous sûr que le format indiqué"
 " {} est exact ?"
@@ -884,8 +880,8 @@ msgid ""
 "Could not read your Excel file. Are you sure your specified format {} is "
 "correct?"
 msgstr ""
-"Impossible de lire votre fichier Excel. Êtes-vous sûr que le format "
-"indiqué {} est exact ?"
+"Impossible de lire votre fichier Excel. Êtes-vous sûr que le format indiqué {} "
+"est exact ?"
 
 #: ckanext/validation/jobs.py:282
 msgid "Multiple Worksheets"
@@ -897,9 +893,12 @@ msgstr "Votre fichier Excel doit contenir une seule feuille de calcul à valider
 
 #: ckanext/validation/jobs.py:300
 msgid ""
-"Resource format set to 'JSON', but an error occured whilst reading JSON."
-"  Are you sure this resource is a valid JSON file?"
+"Resource format set to 'JSON', but an error occured whilst reading JSON.  Are "
+"you sure this resource is a valid JSON file?"
 msgstr ""
+"Format de ressource défini sur «JSON», mais une erreur s'est produite lors de "
+"la lecture de JSON. Êtes-vous sûr que cette ressource est un fichier JSON "
+"valide?"
 
 #: ckanext/validation/jobs.py:315
 #, fuzzy
@@ -1111,21 +1110,23 @@ msgid ""
 "E.g. For area_id you should find your finalised Geographic Data package, "
 "and copy and paste the resource ID of the location hierarchy below."
 msgstr ""
+"Cette table de ressources contient des champs dont les valeurs doivent "
+"correspondre à celles spécifiées dans une autre table. Pour chaque champ ci-"
+"dessous, <a target=\"_blank\" href=\"/dataset\"> veuillez parcourir les données "
+"</a> pour trouver l'autre tableau dans lequel ces valeurs sont définies. Copiez "
+"et collez l'ID de la ressource ci-dessous. Par exemple. Pour area_id, vous "
+"devez trouver votre package de données géographiques finalisé, puis copier et "
+"coller l'ID de ressource de la hiérarchie d'emplacement ci-dessous."
 
 #: ckanext/validation/templates/scheming/form_snippets/validation_options.html:16
-#, fuzzy
-#| msgid "" " You can pass a JSON object of validation options. See <a "
-#| "href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
-#| "options\">here</a> for more information."
 msgid ""
-"You can pass a JSON object of validation options. See <a "
-"href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
-"options\">here</a> for more information."
+"You can pass a JSON object of validation options. See <a href=\"https://github."
+"com/frictionlessdata/ckanext-validation#validation-options\">here</a> for more "
+"information."
 msgstr ""
-"Vous pouvez passer un objet JSON correspondant à des options de "
-"validation. Plus d’informations <a "
-"href=\"https://github.com/frictionlessdata/ckanext-validation#validation-"
-"options\">ici</a>."
+"Vous pouvez passer un objet JSON correspondant à des options de validation. "
+"Plus d’informations <a href=\"https://github.com/frictionlessdata/ckanext-"
+"validation#validation-options\">ici</a>."
 
 #: ckanext/validation/templates/validation/validation_read.html:1
 msgid "Validation Report"
@@ -1133,7 +1134,7 @@ msgstr "Rapport de validation"
 
 #: ckanext/validation/templates/validation/validation_read.html:23
 msgid "Validation timestamp"
-msgstr "Horodatage validation"
+msgstr "Validation horodatage"
 
 #: ckanext/validation/templates/validation/validation_read.html:25
 msgid "Duration"
@@ -1149,31 +1150,3 @@ msgstr "Erreur de validation"
 #: ckanext/validation/templates/validation/snippets/validation_report_dialog_bs2.html:4
 msgid "Data Validation Report"
 msgstr "Rapport de validation des données"
-
-#~ msgid "Unable to import geoJSON: "
-#~ msgstr "Impossible d’importer geoJSON :"
-
-#~ msgid "Missing {} column"
-#~ msgstr "Colonne {} manquante"
-
-#~ msgid "Uploaded data file is missing required column \"{}\""
-#~ msgstr ""
-#~ "Le fichier de données transféré ne "
-#~ "comporte pas la colonne obligatoire "
-#~ "\"{}\""
-
-#~ msgid ""
-#~ "This resource table has fields whose "
-#~ "values must match those specified in "
-#~ "another table. For each field below, "
-#~ "<a target=\"_blank\" href=\"/dataset\">please browse"
-#~ " the data</a> to find the other "
-#~ "table where these values are defined."
-#~ " Copy and paste the resource's ID "
-#~ "below. E.g. For area_id you should "
-#~ "find your finalised Geographic Data "
-#~ "package, and copy and paste the "
-#~ "resource ID of the location hierarchy"
-#~ " below."
-#~ msgstr ""
-
