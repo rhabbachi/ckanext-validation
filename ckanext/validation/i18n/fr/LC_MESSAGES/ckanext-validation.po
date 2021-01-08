@@ -867,6 +867,7 @@ msgid ""
 "encoded."
 msgstr ""
 "Impossible de lire votre fichier CSV. "
+"Veuillez s’assurer que votre fichier est encodé utf-8"
 
 #: ckanext/validation/jobs.py:258
 msgid ""
