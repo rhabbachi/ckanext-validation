@@ -1,1 +1,4 @@
 pyfakefs==2.7
+pytest-ckan
+pytest-cov
+
