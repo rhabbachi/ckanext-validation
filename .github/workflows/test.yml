@@ -47,6 +47,9 @@ jobs:
       run: |
         pip install -r requirements.txt
         pip install -r dev-requirements.txt
+        pip install -e "git+https://github.com/fjelltopp/ckanext-scheming@development#egg=ckanext-scheming"
+        pip install -r https://raw.githubusercontent.com/fjelltopp/ckanext-scheming/development/requirements.txt
+
         pip install ckantoolkit
         pip install -e .
         # Replace default path to CKAN core config file with the one on the container
