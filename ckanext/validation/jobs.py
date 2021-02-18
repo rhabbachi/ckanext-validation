@@ -1,11 +1,14 @@
 # encoding: utf-8
-import cStringIO
+from six import StringIO
 import pandas
 import logging
 import datetime
 import json
 import re
 import requests
+import shapefile
+import zipfile
+from collections import OrderedDict
 from six import string_types
 from sqlalchemy.orm.exc import NoResultFound
 from goodtables import validate
@@ -13,12 +16,9 @@ from ckan.common import _
 from ckan.model import Session
 import ckan.lib.uploader as uploader
 import ckantoolkit as t
-import shapefile
-import zipfile
-from helpers import validation_load_json_schema
-from collections import OrderedDict
+from ckanext.validation.helpers import validation_load_json_schema
 from ckanext.validation.model import Validation
-from custom_checks import setup_custom_goodtables
+from ckanext.validation.custom_checks import setup_custom_goodtables
 
 log = logging.getLogger(__name__)
 
@@ -400,7 +400,7 @@ def _correct_transposition(report):
 
 def _excel_string_io_wrapper(df):
     df = df.iloc[1:]  # Remove headers
-    out = cStringIO.StringIO()
+    out = StringIO()
     df.to_excel(out, columns=None, index=None)
     out.seek(0)
     return out
