@@ -7,6 +7,9 @@ resource_schema_form_js:
     output: validation/%(version)s_resource_schema_form.js
     contents:
         - js/module-resource-schema.js
+    extra:
+      preload:
+        - base/main
 
 report_form_js:
     output: validation/%(version)s_report_form.js
@@ -14,6 +17,9 @@ report_form_js:
         - vendor/goodtables-ui/goodtables-ui.js
         - js/module-validation-report.js
         - js/module-modal-dialog.js
+    extra:
+      preload:
+        - base/main
 
 report_form_css:
     output: validation/%(version)s_report_form.css
@@ -27,6 +33,10 @@ report_js:
     contents:
         - vendor/goodtables-ui/goodtables-ui.js
         - js/module-validation-report.js
+    extra:
+      preload:
+        - base/main
+
 
 report_css:
     output: validation/%(version)s_report.css
