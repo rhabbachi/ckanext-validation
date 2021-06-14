@@ -4,9 +4,6 @@ import mock
 import datetime
 import pytest
 
-import ckan.model as model
-import ckanext.validation.model as vmodel
-
 from nose.tools import assert_in, assert_equals
 
 from ckan.tests.factories import Sysadmin, Dataset, Resource
@@ -20,14 +17,6 @@ from ckanext.validation.tests.helpers import (
 
 
 PLUGIN_CONTROLLER = 'ckanext.validation.controller:ValidationController'
-
-
-@pytest.fixture
-def initdb():
-    model.Session.remove()
-    model.Session.configure(bind=model.meta.engine)
-    if not vmodel.tables_exist():
-        vmodel.create_tables()
 
 
 def _get_resource_new_page_as_sysadmin(app, id):
@@ -50,8 +39,6 @@ def _get_resource_update_page_as_sysadmin(app, id, resource_id):
     return env, response
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceSchemaForm(object):
@@ -317,8 +304,6 @@ class TestResourceSchemaForm(object):
         assert_equals(dataset['resources'][0]['schema'], value)
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceValidationOptionsForm(object):
@@ -400,8 +385,6 @@ class TestResourceValidationOptionsForm(object):
 
 
 @pytest.mark.skip(reason="Upload logic has changed and this test needs to be redone")
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckanext.validation.run_on_create_sync', True)
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
@@ -447,8 +430,6 @@ class TestResourceValidationOnCreateForm(object):
 
 
 @pytest.mark.skip(reason="Upload logic has changed and this test needs to be redone")
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 class TestResourceValidationOnUpdateForm(object):
 
     @classmethod
@@ -498,8 +479,6 @@ class TestResourceValidationOnUpdateForm(object):
 
 @pytest.mark.usefixtures(u'with_request_context')
 @pytest.mark.ckan_config(u'ckanext.validation.run_on_create_sync', False)
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceValidationFieldsPersisted(object):

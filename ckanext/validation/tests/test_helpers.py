@@ -7,9 +7,6 @@ import pytest
 from ckan.tests.helpers import reset_db
 from ckan.tests import factories
 
-import ckan.model as model
-import ckanext.validation.model as vmodel
-
 from ckantoolkit import config
 
 from ckanext.validation.helpers import (
@@ -19,16 +16,6 @@ from ckanext.validation.helpers import (
 from ckanext.validation.model import create_tables, tables_exist
 
 
-@pytest.fixture
-def initdb():
-    model.Session.remove()
-    model.Session.configure(bind=model.meta.engine)
-    if not vmodel.tables_exist():
-        vmodel.create_tables()
-
-
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckanext.validation.run_on_create_sync', False)
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
@@ -124,8 +111,6 @@ class TestBadges(object):
         assert 'title=""' in out
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckanext.validation.run_on_create_sync', False)
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
