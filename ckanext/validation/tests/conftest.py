@@ -1,5 +1,12 @@
 import pytest
 
+from ckanext.validation.tests import validation_db_setup
+
+
+@pytest.fixture(autouse=True)
+def validation_setup(clean_db):
+    validation_db_setup()
+
 
 @pytest.fixture(scope='session')
 def log():
