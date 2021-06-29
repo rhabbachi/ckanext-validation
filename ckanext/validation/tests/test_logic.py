@@ -9,7 +9,6 @@ import mock
 import pytest
 
 import ckan.model as model
-import ckanext.validation.model as vmodel
 
 from ckan.tests.helpers import (
     call_action, call_auth, change_config
@@ -28,16 +27,6 @@ from ckanext.validation.tests.helpers import (
 Session = model.Session
 
 
-@pytest.fixture
-def initdb():
-    model.Session.remove()
-    model.Session.configure(bind=model.meta.engine)
-    if not vmodel.tables_exist():
-        vmodel.create_tables()
-
-
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceValidationRun(object):
@@ -159,8 +148,6 @@ class TestResourceValidationRun(object):
         assert_equals(validation.error, None)
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceValidationShow(object):
@@ -224,8 +211,6 @@ class TestResourceValidationShow(object):
             validation_show['finished'], validation.finished.isoformat())
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceValidationDelete(object):
@@ -273,8 +258,6 @@ class TestResourceValidationDelete(object):
         assert_equals(count_after, 0)
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestAuth(object):
@@ -447,8 +430,6 @@ class TestAuth(object):
                       resource_id=dataset['resources'][0]['id'])
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 @pytest.mark.skip(reason="All TestResourceValidationOnCreate tests fail in 2.9")
@@ -556,8 +537,6 @@ class TestResourceValidationOnCreate(object):
         assert 'validation_timestamp' in resource
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 @pytest.mark.skip(reason="All TestResourceValidationOnUpdate tests fail in 2.9")
@@ -678,8 +657,6 @@ class TestResourceValidationOnUpdate(object):
         assert 'validation_timestamp' in resource
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestSchemaFields(object):
@@ -772,8 +749,6 @@ class TestSchemaFields(object):
         assert 'schema_url' not in resource
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 @pytest.mark.skip(reason="All TestValidationOptionsField tests fail in 2.9")

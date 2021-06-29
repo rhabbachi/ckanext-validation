@@ -10,17 +10,6 @@ from ckan.tests.helpers import change_config
 from ckanext.validation.model import create_tables, tables_exist
 from ckanext.validation.jobs import run_validation_job
 
-import ckan.model as model
-import ckanext.validation.model as vmodel
-
-
-@pytest.fixture
-def initdb():
-    model.Session.remove()
-    model.Session.configure(bind=model.meta.engine)
-    if not vmodel.tables_exist():
-        vmodel.create_tables()
-
 
 class TestResourceControllerHooksUpdate(object):
 
@@ -160,8 +149,6 @@ class TestResourceControllerHooksUpdate(object):
         mock_enqueue.assert_not_called()
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestResourceControllerHooksCreate(object):
@@ -215,8 +202,6 @@ class TestResourceControllerHooksCreate(object):
         mock_enqueue.assert_not_called()
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestPackageControllerHooksCreate(object):
@@ -297,8 +282,6 @@ class TestPackageControllerHooksCreate(object):
         assert_equals(mock_enqueue.call_args[0][1][0]['id'], resource1['id'])
 
 
-@pytest.mark.usefixtures(u'initdb')
-@pytest.mark.usefixtures(u'clean_db')
 @pytest.mark.ckan_config(u'ckan.plugins', u'validation')
 @pytest.mark.usefixtures(u'with_plugins')
 class TestPackageControllerHooksUpdate(object):
