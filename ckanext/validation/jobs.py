@@ -16,6 +16,7 @@ from ckan.common import _
 from ckan.model import Session
 import ckan.lib.uploader as uploader
 import ckantoolkit as t
+from ckan.plugins import toolkit, core
 from ckanext.validation.helpers import validation_load_json_schema
 from ckanext.validation.model import Validation
 from ckanext.validation.custom_checks import setup_custom_goodtables
@@ -70,23 +71,29 @@ def _validate(resource, validation):
 
     source = None
     if resource.get(u'url_type') == u'upload':
-        upload = uploader.get_resource_uploader(resource)
-        if isinstance(upload, uploader.ResourceUpload):
-            source = upload.get_path(resource[u'id'])
+        if core.plugin_loaded('blob_storage'):
+            source = toolkit.get_action('get_resource_download_spec')(
+                {'ignore_auth': True},
+                {'id': resource['id']}
+            ).get('href')
         else:
-            # Upload is not the default implementation (ie it's a cloud storage
-            # implementation)
-            pass_auth_header = t.asbool(
-                t.config.get(u'ckanext.validation.pass_auth_header', True))
-            if dataset[u'private'] and pass_auth_header:
-                s = requests.Session()
-                s.headers.update({
-                    u'Authorization': t.config.get(
-                        u'ckanext.validation.pass_auth_header_value',
-                        _get_site_user_api_key())
-                })
+            upload = uploader.get_resource_uploader(resource)
+            if isinstance(upload, uploader.ResourceUpload):
+                source = upload.get_path(resource[u'id'])
+            else:
+                # Upload is not the default implementation (ie it's a cloud storage
+                # implementation)
+                pass_auth_header = t.asbool(
+                    t.config.get(u'ckanext.validation.pass_auth_header', True))
+                if dataset[u'private'] and pass_auth_header:
+                    s = requests.Session()
+                    s.headers.update({
+                        u'Authorization': t.config.get(
+                            u'ckanext.validation.pass_auth_header_value',
+                            _get_site_user_api_key())
+                    })
 
-                options[u'http_session'] = s
+                    options[u'http_session'] = s
 
     if not source:
         source = resource[u'url']
@@ -215,17 +222,16 @@ def _finish_validation_job(validation, resource):
     t.get_action('resource_patch')(context, data_dict)
 
 
-def _load_dataframe(data, extension):
-
+def _load_dataframe(data_url, extension):
     # Read in table
     if extension == "csv":
-        df = _read_csv_file(data, extension)
+        df = _read_csv_file(data_url, extension)
     elif extension in ["xls", "xlsx"]:
-        df = _read_excel_file(data, extension)
+        df = _read_excel_file(data_url, extension)
     elif extension in ["shp"]:
-        df = _read_shape_file(data)
+        df = _read_shape_file(data_url)
     elif extension in ['json', 'geojson']:
-        df = _read_json_file(data)
+        df = _read_json_file(data_url)
     else:
         raise t.ValidationError({
             _('Incorrect Extension'): [_('Cannot validate the file. Please check '
@@ -236,9 +242,9 @@ def _load_dataframe(data, extension):
     return df
 
 
-def _read_csv_file(data, extension=None):
+def _read_csv_file(data_url, extension=None):
     try:
-        return pandas.read_csv(open(data, 'rb'),
+        return pandas.read_csv(data_url,
                                header=None,
                                index_col=None,
                                encoding='utf-8')
@@ -261,9 +267,9 @@ def _read_csv_file(data, extension=None):
         })
 
 
-def _read_excel_file(data, extension=None):
+def _read_excel_file(data_url, extension=None):
     try:
-        excel_file = pandas.ExcelFile(open(data, 'rb'))
+        excel_file = pandas.ExcelFile(data_url)
         df = pandas.read_excel(excel_file, header=None, index_col=None)
 
     except Exception as e:
@@ -286,14 +292,14 @@ def _read_excel_file(data, extension=None):
     return df
 
 
-def _read_json_file(json_path):
+def _read_json_file(json_url):
     """
     Reads a json or geojson file in as a pandas dataframe ready for validation.
     """
     # Load as plain JSON
     try:
-        with open(json_path, 'r') as read_file:
-            geojson = json.load(read_file)
+        r = requests.get(json_url)
+        geojson = json.load(StringIO(r.content))
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
@@ -324,13 +330,14 @@ def _read_json_file(json_path):
     return df
 
 
-def _read_shape_file(shp_path):
+def _read_shape_file(shp_url):
     """
     Read a shapefile into a Pandas dataframe with a 'coords' column holding
     the geometry information. This uses the pyshp package.
     """
     try:
-        zipped_file = zipfile.PyZipFile(shp_path)
+        r = requests.get(shp_url)
+        zipped_file = zipfile.ZipFile(StringIO(r.content))
         files = zipped_file.namelist()
 
     except Exception as e:
