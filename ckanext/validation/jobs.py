@@ -299,7 +299,7 @@ def _read_json_file(json_url):
     # Load as plain JSON
     try:
         r = requests.get(json_url)
-        geojson = json.load(StringIO(r.content))
+        geojson = r.json()
     except Exception as e:
         log.exception(e)
         raise t.ValidationError({
