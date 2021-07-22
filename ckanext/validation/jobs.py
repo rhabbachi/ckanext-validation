@@ -247,7 +247,9 @@ def _read_csv_file(data_url, extension=None):
         return pandas.read_csv(data_url,
                                header=None,
                                index_col=None,
-                               encoding='utf-8')
+                               encoding='utf-8',
+                               sep=';',
+                               decimal=',')
     except UnicodeDecodeError as e:
         log.warning(e, exc_info=True)
         raise t.ValidationError({
