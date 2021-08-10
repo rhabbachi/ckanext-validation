@@ -38,6 +38,8 @@ from ckanext.validation.utils import (
 from ckan.lib.plugins import DefaultTranslation
 from ckanext.validation.interfaces import IDataValidation
 
+from werkzeug.datastructures import FileStorage
+
 log = logging.getLogger(__name__)
 
 
@@ -152,6 +154,8 @@ to create the database tables:
 
         if isinstance(schema_upload, cgi.FieldStorage):
             data_dict[u'schema'] = schema_upload.file.read()
+        if isinstance(schema_upload, FileStorage):
+            data_dict[u'schema'] = schema_upload.read()
         elif schema_url:
             if (not isinstance(schema_url, string_types) or
                     not schema_url.lower()[:4] == u'http'):
