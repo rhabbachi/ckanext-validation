@@ -152,17 +152,32 @@ to create the database tables:
         schema_url = data_dict.pop(u'schema_url', None)
         schema_json = data_dict.pop(u'schema_json', None)
 
-        if isinstance(schema_upload, cgi.FieldStorage):
+        processed = False
+
+        if not processed and isinstance(schema_upload, cgi.FieldStorage):
             data_dict[u'schema'] = schema_upload.file.read()
-        if isinstance(schema_upload, FileStorage):
-            data_dict[u'schema'] = schema_upload.read()
-        elif schema_url:
+            processed = True
+
+        if not processed and isinstance(schema_upload, FileStorage):
+            # Sometime a dummy empty file is returned instead of the actual
+            # content.
+            content = schema_upload.read()
+            if content:
+                data_dict[u'schema'] = content
+                processed = True
+            else:
+                log.debug("schema_upload file is empty.")
+
+        if not processed and schema_url:
             if (not isinstance(schema_url, string_types) or
                     not schema_url.lower()[:4] == u'http'):
                 raise t.ValidationError({u'schema_url': _('Must be a valid URL')})
             data_dict[u'schema'] = schema_url
-        elif schema_json:
+            processed = True
+
+        if not processed and schema_json:
             data_dict[u'schema'] = schema_json
+            processed = True
 
         return data_dict
 
