@@ -99,7 +99,7 @@ def _validate(resource, validation):
         source = resource[u'url']
 
     # Load the the schema as a dictionary
-    schema = resource.get(u'schema')
+    schema = resource.get(u'schema', {})
     if schema and isinstance(schema, string_types):
         schema = validation_load_json_schema(schema)
 
